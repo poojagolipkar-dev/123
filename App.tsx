@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ViewState, Booking, Car, BookingStatus } from './types';
+import { ViewState, Booking, Car, BookingStatus, Notification } from './types';
 import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
 import DashboardView from './components/DashboardView';
 import BookingForm from './components/BookingForm';
@@ -7,6 +7,7 @@ import BookingList from './components/BookingList';
 import Login from './components/Login';
 import Sidebar from './components/Sidebar';
 import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
+import { getNotifications, saveNotification, markAllAsRead, clearNotifications } from './services/notificationService';
 import { isAuthenticated } from './services/authService';
 
 const App: React.FC = () => {
@@ -14,6 +15,7 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [unsavedDraft, setUnsavedDraft] = useState<Partial<Booking> | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(true);
@@ -54,8 +56,26 @@ const App: React.FC = () => {
     if (isLoggedIn) {
         setBookings(getBookings());
         setCars(getCars());
+        setNotifications(getNotifications());
     }
   }, [isLoggedIn]);
+
+  const addNotification = (type: 'info' | 'success' | 'warning' | 'error', message: string) => {
+      const newNotification = saveNotification({ type, message });
+      if (newNotification) {
+          setNotifications(prev => [newNotification, ...prev]);
+      }
+  };
+
+  const handleMarkAllRead = () => {
+      const updated = markAllAsRead();
+      setNotifications(updated);
+  };
+
+  const handleClearNotifications = () => {
+      clearNotifications();
+      setNotifications([]);
+  };
 
   // Check for unsaved draft whenever entering the draft view
   useEffect(() => {
@@ -104,6 +124,7 @@ const App: React.FC = () => {
             } as Car;
             handleUpdateCar(updatedCar);
         }
+        addNotification('success', `Booking completed for ${booking.fullName}`);
         setCurrentView('complete'); // Redirect to Done list
     } else if (booking.status === BookingStatus.PRE_BOOKING || booking.status === BookingStatus.ONGOING) {
         // Update car status to Rented
@@ -114,11 +135,14 @@ const App: React.FC = () => {
         
         // Redirect based on status
         if (booking.status === BookingStatus.ONGOING) {
+            addNotification('info', `Booking started for ${booking.fullName}`);
             setCurrentView('all_bookings');
         } else {
+            addNotification('info', `Pre-booking created for ${booking.fullName}`);
             setCurrentView('pre_booking');
         }
     } else {
+        addNotification('info', `Booking saved for ${booking.fullName}`);
         setCurrentView('all_bookings');
     }
 
@@ -130,17 +154,20 @@ const App: React.FC = () => {
   const handleAddCar = (car: Car) => {
     saveCar(car);
     setCars(getCars());
+    addNotification('success', `Car ${car.name} added successfully`);
   };
 
   const handleUpdateCar = (car: Car) => {
     saveCar(car);
     setCars(getCars());
+    // Don't notify on every update to avoid spam, or make it optional
   };
   
   const handleDeleteCar = (id: string) => {
     if (window.confirm("Are you sure you want to delete this car? This action cannot be undone.")) {
         deleteCar(id);
         setCars(getCars());
+        addNotification('warning', `Car deleted`);
     }
   };
 
@@ -148,6 +175,7 @@ const App: React.FC = () => {
     if (window.confirm("Are you sure you want to delete this booking? This action cannot be undone.")) {
         deleteBooking(id);
         setBookings(getBookings());
+        addNotification('warning', `Booking deleted`);
     }
   };
 
@@ -275,25 +303,23 @@ const App: React.FC = () => {
           className="flex-1 overflow-y-auto scroll-smooth relative h-full flex flex-col"
         >
           {/* Mobile Top Bar */}
-          {currentView !== 'new_booking' && !(currentView === 'complete' && editingBooking) && (
-            <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-neutral-800 sticky top-0 z-40">
-              <button 
-                onClick={() => setIsDrawerOpen(true)}
-                className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
-              >
-                <Menu size={24} />
-              </button>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                  <span className="text-white font-black text-[10px]">S</span>
-                </div>
-                <span className="font-black text-slate-800 dark:text-white tracking-tighter text-xs">SHREE</span>
+          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-neutral-800 sticky top-0 z-40">
+            <button 
+              onClick={() => setIsDrawerOpen(true)}
+              className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+                <span className="text-white font-black text-[10px]">S</span>
               </div>
-              <div className="w-10" /> {/* Spacer for balance */}
+              <span className="font-black text-slate-800 dark:text-white tracking-tighter text-xs">SHREE</span>
             </div>
-          )}
+            <div className="w-10" /> {/* Spacer for balance */}
+          </div>
 
-          <div className={`w-full min-h-full px-3 md:px-8 pb-40 ${(currentView === 'new_booking' || (currentView === 'complete' && editingBooking)) ? 'pt-0' : 'pt-4 md:pt-6'}`}>
+          <div className="w-full min-h-full px-3 md:px-8 pb-40 pt-4 md:pt-6">
             {currentView === 'dashboard' && (
               <DashboardView 
                 cars={cars} 
@@ -304,6 +330,9 @@ const App: React.FC = () => {
                 onUpdateCar={handleUpdateCar}
                 onDeleteCar={handleDeleteCar}
                 onLogout={() => setIsLoggedIn(false)}
+                notifications={notifications}
+                onMarkAllRead={handleMarkAllRead}
+                onClearNotifications={handleClearNotifications}
               />
             )}
 

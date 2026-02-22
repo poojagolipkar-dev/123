@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Car, Booking, BookingStatus } from '../types';
-import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone } from 'lucide-react';
+import { Car, Booking, BookingStatus, Notification } from '../types';
+import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check } from 'lucide-react';
 import { logout, updateCredentials, getCredentials } from '../services/authService';
 import { resetAllOdometers } from '../services/storageService';
 
@@ -14,12 +14,35 @@ interface DashboardProps {
   onUpdateCar: (car: Car) => void;
   onDeleteCar: (id: string) => void;
   onLogout: () => void;
+  notifications?: Notification[];
+  onMarkAllRead?: () => void;
+  onClearNotifications?: () => void;
 }
 
-const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, toggleTheme, onAddCar, onUpdateCar, onDeleteCar, onLogout }) => {
+const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, toggleTheme, onAddCar, onUpdateCar, onDeleteCar, onLogout, notifications = [], onMarkAllRead, onClearNotifications }) => {
   const [revenueType, setRevenueType] = useState<'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom'>('monthly');
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [revenueCarId, setRevenueCarId] = useState<string>('');
+  
+  // Notification State
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
   
   // Settings State
   const [showSettings, setShowSettings] = useState(false);
@@ -343,12 +366,94 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
   return (
     <div className="space-y-6 pb-10 md:p-5">
-      <header className="flex justify-between items-center mb-4 animate-enter px-1">
+      <header className="flex justify-between items-center mb-4 animate-enter px-1 relative z-30">
         <div>
             <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight transition-colors">Dashboard</h1>
             <p className="text-sm text-slate-500 dark:text-neutral-400 font-medium mt-1">Overview & Analytics</p>
         </div>
         <div className="flex items-center gap-2">
+            {/* Notification Bell */}
+            <div className="relative" ref={notificationRef}>
+                <button 
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="w-10 h-10 rounded-full bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 shadow-sm flex items-center justify-center text-slate-600 dark:text-neutral-300 hover:scale-105 active:scale-95 transition-all relative"
+                >
+                    <Bell size={20} />
+                    {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white dark:border-neutral-900 animate-pulse">
+                            {unreadCount > 9 ? '9+' : unreadCount}
+                        </span>
+                    )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {showNotifications && (
+                    <div className="absolute -right-2 md:right-0 top-12 w-[calc(100vw-2rem)] sm:w-96 bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 z-50 overflow-hidden animate-scale-in origin-top-right">
+                        <div className="p-4 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center bg-slate-50/50 dark:bg-neutral-800/50 backdrop-blur-sm">
+                            <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <Bell size={16} className="text-blue-500"/> Notifications
+                            </h3>
+                            <div className="flex gap-2">
+                                {unreadCount > 0 && (
+                                    <button 
+                                        onClick={onMarkAllRead}
+                                        className="text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-2 py-1 rounded-lg transition-colors"
+                                    >
+                                        Mark all read
+                                    </button>
+                                )}
+                                <button 
+                                    onClick={onClearNotifications}
+                                    className="text-[10px] font-bold text-slate-500 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800 px-2 py-1 rounded-lg transition-colors"
+                                >
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div className="max-h-[60vh] overflow-y-auto">
+                            {notifications.length === 0 ? (
+                                <div className="p-8 text-center text-slate-400 dark:text-neutral-500 flex flex-col items-center gap-2">
+                                    <Bell size={32} className="opacity-20" />
+                                    <p className="text-sm">No notifications yet</p>
+                                </div>
+                            ) : (
+                                <div className="divide-y divide-slate-100 dark:divide-neutral-800">
+                                    {notifications.map((notification) => (
+                                        <div key={notification.id} className={`p-4 hover:bg-slate-50 dark:hover:bg-neutral-800/50 transition-colors ${!notification.read ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}`}>
+                                            <div className="flex gap-3">
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                                                    notification.type === 'success' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                                                    notification.type === 'warning' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' :
+                                                    notification.type === 'error' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+                                                    'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                                                }`}>
+                                                    {notification.type === 'success' ? <CheckCircle size={14} /> :
+                                                     notification.type === 'warning' ? <AlertTriangle size={14} /> :
+                                                     notification.type === 'error' ? <AlertTriangle size={14} /> :
+                                                     <Bell size={14} />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className={`text-sm ${!notification.read ? 'font-semibold text-slate-800 dark:text-white' : 'text-slate-600 dark:text-neutral-300'}`}>
+                                                        {notification.message}
+                                                    </p>
+                                                    <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1">
+                                                        {new Date(notification.timestamp).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                                {!notification.read && (
+                                                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 shrink-0"></div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <button 
                 onClick={openSettings}
                 className="w-10 h-10 rounded-full bg-slate-900 dark:bg-white border border-transparent shadow-md flex items-center justify-center text-white dark:text-slate-900 hover:scale-105 active:scale-95 transition-all"

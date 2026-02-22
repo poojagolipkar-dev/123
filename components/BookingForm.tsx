@@ -842,7 +842,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
   return (
     <div className="pb-24 relative">
        {/* Sticky Header */}
-       <div className="sticky top-0 md:top-0 z-40 bg-slate-50/95 dark:bg-black/95 backdrop-blur-md border-b border-slate-200 dark:border-neutral-800 p-4 flex justify-between items-center px-4 md:px-6 shadow-sm animate-enter transition-colors">
+       <div className="relative md:sticky md:top-0 z-30 bg-slate-50/95 dark:bg-black/95 backdrop-blur-md border-b border-slate-200 dark:border-neutral-800 p-4 flex justify-between items-center px-4 md:px-6 shadow-sm animate-enter transition-colors rounded-t-3xl md:rounded-none mt-2 md:mt-0">
           <h2 className="text-base md:text-xl font-bold text-slate-800 dark:text-white tracking-tight truncate pr-2 flex-1">
             {mode === 'complete' ? 'Complete Trip' : mode === 'edit' ? 'Edit Booking' : 'New Booking'}
           </h2>

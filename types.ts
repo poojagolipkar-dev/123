@@ -83,4 +83,12 @@ export interface Booking {
   remarks: string;
 }
 
+export interface Notification {
+  id: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  message: string;
+  timestamp: number;
+  read: boolean;
+}
+
 export type ViewState = 'dashboard' | 'new_booking' | 'draft' | 'pre_booking' | 'complete' | 'all_bookings';
