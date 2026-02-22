@@ -271,7 +271,7 @@ const App: React.FC = () => {
         {/* Content Area */}
         <main 
           key={currentView} 
-          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar relative h-full flex flex-col"
+          className="flex-1 overflow-y-auto scroll-smooth relative h-full flex flex-col"
         >
           {/* Mobile Top Bar */}
           <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-neutral-800 sticky top-0 z-40">
