@@ -16,7 +16,6 @@ const App: React.FC = () => {
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [unsavedDraft, setUnsavedDraft] = useState<Partial<Booking> | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(true);
-  const [isMobileView, setIsMobileView] = useState(false);
 
   // Theme State
   const [darkMode, setDarkMode] = useState(() => {
@@ -180,17 +179,10 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen flex justify-center items-center p-0 transition-all duration-500 ${isMobileView ? 'bg-slate-200 dark:bg-neutral-900 py-8' : ''}`}>
-      {/* App Container - Full Screen on Desktop or Mobile Frame */}
-      <div className={`h-screen bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex flex-col relative overflow-hidden border-0 transition-all duration-500 ${isMobileView ? 'w-[375px] max-h-[812px] rounded-[3rem] border-[8px] border-slate-800 dark:border-neutral-800 shadow-2xl' : 'w-full'}`}>
+    <div className="min-h-screen flex justify-center items-center p-0 transition-colors duration-500">
+      {/* App Container - Full Screen on Desktop */}
+      <div className="w-full h-screen bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex flex-col relative overflow-hidden border-0">
         
-        {/* Mobile Notch */}
-        {isMobileView && (
-          <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-[100] pointer-events-none">
-            <div className="w-32 h-6 bg-slate-800 dark:bg-neutral-800 rounded-b-2xl"></div>
-          </div>
-        )}
-
         {/* Content Area - Removed max-w-7xl to allow full width */}
         <main 
           key={currentView} 
@@ -202,9 +194,7 @@ const App: React.FC = () => {
                 cars={cars} 
                 bookings={bookings} 
                 darkMode={darkMode}
-                isMobileView={isMobileView}
                 toggleTheme={toggleTheme}
-                toggleMobileView={() => setIsMobileView(!isMobileView)}
                 onAddCar={handleAddCar}
                 onUpdateCar={handleUpdateCar}
                 onDeleteCar={handleDeleteCar}
@@ -368,13 +358,6 @@ const App: React.FC = () => {
             })}
           </nav>
         </div>
-
-        {/* Mobile Home Indicator */}
-        {isMobileView && (
-          <div className="absolute bottom-1 inset-x-0 h-1 flex justify-center z-[100] pointer-events-none">
-            <div className="w-24 h-1 bg-slate-300 dark:bg-neutral-700 rounded-full"></div>
-          </div>
-        )}
       </div>
     </div>
   );
