@@ -574,6 +574,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
           ...prev,
           fullName: customer.fullName,
           mobile: customer.mobile,
+          email: customer.email,
           address: customer.address,
           houseType: customer.houseType,
           clientPhoto: customer.clientPhoto, // Copy photo
@@ -1152,6 +1153,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         <Section title="Client Details" icon={User} className="delay-300">
             <Input label="Full Name" value={formData.fullName} onChange={(v:any) => handleChange('fullName', v)} />
             <Input label="Mobile" type="tel" value={formData.mobile} onChange={(v:any) => handleChange('mobile', v)} />
+            <Input label="Email" type="email" value={formData.email} onChange={(v:any) => handleChange('email', v)} />
             <div className="col-span-1 md:col-span-2">
                 <Input label="Address" value={formData.address} onChange={(v:any) => handleChange('address', v)} />
             </div>

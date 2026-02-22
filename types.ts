@@ -47,6 +47,7 @@ export interface Booking {
   clientPhoto?: string;
   fullName: string;
   mobile: string;
+  email?: string;
   address: string;
   houseType?: string;
 

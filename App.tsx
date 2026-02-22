@@ -5,7 +5,8 @@ import DashboardView from './components/DashboardView';
 import BookingForm from './components/BookingForm';
 import BookingList from './components/BookingList';
 import Login from './components/Login';
-import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar } from './services/storageService';
+import Sidebar from './components/Sidebar';
+import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
 import { isAuthenticated } from './services/authService';
 
 const App: React.FC = () => {
@@ -61,7 +62,7 @@ const App: React.FC = () => {
     }
   }, [currentView]);
 
-  // Auto-hide Navigation Logic
+  // Auto-hide Navigation Logic (Mobile Only)
   useEffect(() => {
     if (!isLoggedIn) return;
     
@@ -142,6 +143,13 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDeleteBooking = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this booking? This action cannot be undone.")) {
+        deleteBooking(id);
+        setBookings(getBookings());
+    }
+  };
+
   const loadUnsavedDraft = () => {
     const draft = getDraft();
     if (draft) {
@@ -159,12 +167,12 @@ const App: React.FC = () => {
 
   // Navigation Items
   const navItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dash' },
-    { id: 'new_booking', icon: PlusCircle, label: 'New' },
-    { id: 'draft', icon: FileEdit, label: 'Draft' }, 
-    { id: 'pre_booking', icon: Clock, label: 'Pre' },
-    { id: 'complete', icon: CheckSquare, label: 'Done' },
-    { id: 'all_bookings', icon: List, label: 'All' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { id: 'new_booking', icon: PlusCircle, label: 'New Booking' },
+    { id: 'draft', icon: FileEdit, label: 'Drafts' }, 
+    { id: 'pre_booking', icon: Clock, label: 'Pre-Booking' },
+    { id: 'complete', icon: CheckSquare, label: 'Completed' },
+    { id: 'all_bookings', icon: List, label: 'All Bookings' },
   ];
 
   if (!isLoggedIn) {
@@ -181,12 +189,23 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex justify-center items-center p-0 transition-colors duration-500">
       {/* App Container - Full Screen on Desktop */}
-      <div className="w-full h-screen bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex flex-col relative overflow-hidden border-0">
+      <div className="w-full h-screen bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex relative overflow-hidden border-0">
         
-        {/* Content Area - Removed max-w-7xl to allow full width */}
+        {/* Left Sidebar - Visible on Desktop */}
+        <Sidebar 
+          navItems={navItems} 
+          currentView={currentView} 
+          onViewChange={(view) => {
+            setCurrentView(view);
+            setEditingBooking(null);
+          }}
+          darkMode={darkMode}
+        />
+
+        {/* Content Area */}
         <main 
           key={currentView} 
-          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar"
+          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar relative"
         >
           <div className="w-full h-full px-4 md:px-8 pb-32 pt-6">
             {currentView === 'dashboard' && (
@@ -258,6 +277,7 @@ const App: React.FC = () => {
                           setEditingBooking(b);
                           setCurrentView('complete');
                       }}
+                      onDelete={handleDeleteBooking}
                   />
               </div>
             )}
@@ -275,6 +295,7 @@ const App: React.FC = () => {
                   setEditingBooking(b);
                   setCurrentView('complete');
                 }}
+                onDelete={handleDeleteBooking}
               />
             )}
 
@@ -303,6 +324,7 @@ const App: React.FC = () => {
                     }}
                     onComplete={(b) => {
                     }}
+                    onDelete={handleDeleteBooking}
                   />
               )
             )}
@@ -319,14 +341,15 @@ const App: React.FC = () => {
                   setEditingBooking(b);
                   setCurrentView('complete');
                 }}
+                onDelete={handleDeleteBooking}
                 onRefresh={() => setBookings(getBookings())}
               />
             )}
           </div>
         </main>
 
-        {/* Modern Floating Bottom Navigation Dock */}
-        <div className={`absolute bottom-6 inset-x-0 flex justify-center z-50 pointer-events-none transition-transform duration-700 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[180%]'}`}>
+        {/* Modern Floating Bottom Navigation Dock - Hidden on Desktop */}
+        <div className={`md:hidden absolute bottom-10 inset-x-0 flex justify-center z-50 pointer-events-none transition-transform duration-700 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[180%]'}`}>
           <nav className="pointer-events-auto bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-red-500 dark:border-red-500 p-2 rounded-[2.5rem] shadow-2xl shadow-slate-300/50 dark:shadow-black/50 flex justify-between items-center w-[92%] max-w-[380px] md:max-w-xl transition-all duration-300 ring-1 ring-red-500/40 dark:ring-red-500/40">
             {navItems.map((item) => {
               const isActive = currentView === item.id;
@@ -350,7 +373,7 @@ const App: React.FC = () => {
                   {/* Floating Label for Active State */}
                   {isActive && (
                      <span className="absolute -bottom-8 text-[10px] font-bold text-slate-800 dark:text-white bg-white/90 dark:bg-neutral-800/90 backdrop-blur-md px-2.5 py-1 rounded-lg shadow-sm animate-scale-in whitespace-nowrap z-50 pointer-events-none border border-slate-200/50 dark:border-neutral-700/50">
-                        {item.label}
+                        {item.label.split(' ')[0]}
                      </span>
                   )}
                 </button>

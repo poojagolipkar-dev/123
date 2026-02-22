@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Booking, BookingStatus, Car } from '../types';
-import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Mail } from 'lucide-react';
+import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Mail, Trash2 } from 'lucide-react';
 import { saveBooking } from '../services/storageService';
 import * as XLSX from 'xlsx';
 import { generateInvoicePDF, viewInvoicePDF, sendInvoiceWhatsApp, sendInvoiceEmail } from '../services/invoiceService';
@@ -11,10 +11,11 @@ interface BookingListProps {
   filterStatus?: BookingStatus;
   onEdit: (booking: Booking) => void;
   onComplete: (booking: Booking) => void;
+  onDelete?: (id: string) => void;
   onRefresh?: () => void;
 }
 
-const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus, onEdit, onComplete, onRefresh }) => {
+const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus, onEdit, onComplete, onDelete, onRefresh }) => {
   const [dateRange, setDateRange] = useState<{start: string, end: string}>({ start: '', end: '' });
   const [selectedCarId, setSelectedCarId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -402,6 +403,15 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                             >
                                 <FileText size={18} />
                             </button>
+                            {onDelete && (
+                                <button 
+                                    onClick={() => onDelete(booking.id)} 
+                                    className="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full hover:bg-red-500 hover:text-white transition-all hover:scale-110 shadow-sm border border-red-200/50 flex items-center justify-center"
+                                    title="Delete Booking"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            )}
                         </>
                     ) : (
                         <>
@@ -411,6 +421,15 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                             <button onClick={() => onComplete(booking)} className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full hover:bg-emerald-500 hover:text-white hover:shadow-lg hover:shadow-emerald-200 dark:hover:shadow-none transition-all hover:scale-110 shadow-sm border border-emerald-200/50">
                                 <CheckCircle size={18} />
                             </button>
+                            {onDelete && (
+                                <button 
+                                    onClick={() => onDelete(booking.id)} 
+                                    className="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full hover:bg-red-500 hover:text-white transition-all hover:scale-110 shadow-sm border border-red-200/50 flex items-center justify-center"
+                                    title="Delete Booking"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            )}
                         </>
                     )}
                  </div>
