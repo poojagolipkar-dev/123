@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Car, Booking, BookingStatus } from '../types';
 import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff } from 'lucide-react';
 import { logout, updateCredentials, getCredentials } from '../services/authService';
+import { resetAllOdometers } from '../services/storageService';
 
 interface DashboardProps {
   cars: Car[];
@@ -702,6 +703,20 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                       >
                           Save Changes
                       </button>
+
+                      <div className="pt-2">
+                          <button 
+                              onClick={() => {
+                                  if (window.confirm("Are you sure you want to reset ALL car odometers to 0? This cannot be undone.")) {
+                                      resetAllOdometers();
+                                      window.location.reload(); 
+                                  }
+                              }}
+                              className="w-full py-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors border border-amber-200 dark:border-amber-800/50"
+                          >
+                              <Zap size={18} /> Reset All Odometers
+                          </button>
+                      </div>
 
                       <div className="border-t border-slate-100 dark:border-neutral-800 pt-5">
                           <button 

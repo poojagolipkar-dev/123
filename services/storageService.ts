@@ -30,7 +30,7 @@ export const getCars = (): Car[] => {
           name: 'WagonR (Petrol/CNG)',
           model: '2025',
           plateNumber: 'MH-06-CL-7364',
-          currentKm: 1200,
+          currentKm: 0,
           lastServiceKm: 0,
           serviceInterval: 10000,
           documents: [],
@@ -45,6 +45,17 @@ export const getCars = (): Car[] => {
     console.error("Error parsing cars data", e);
     return [];
   }
+};
+
+export const resetAllOdometers = () => {
+  const cars = getCars();
+  const updatedCars = cars.map(car => ({
+    ...car,
+    currentKm: 0,
+    lastServiceKm: 0
+  }));
+  safeSetItem(CARS_KEY, JSON.stringify(updatedCars));
+  return updatedCars;
 };
 
 export const saveCar = (car: Car) => {
