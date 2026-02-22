@@ -38,6 +38,34 @@ export const isAuthenticated = () => {
   return localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
 };
 
+export const setPin = (pin: string) => {
+  localStorage.setItem('shree_pin', pin);
+};
+
+export const getPin = (): string | null => {
+  return localStorage.getItem('shree_pin');
+};
+
+export const verifyPin = (pin: string): boolean => {
+  return localStorage.getItem('shree_pin') === pin;
+};
+
+export const removePin = () => {
+  localStorage.removeItem('shree_pin');
+};
+
+export const isAppLocked = (): boolean => {
+    return localStorage.getItem('shree_locked') === 'true';
+};
+
+export const setAppLocked = (locked: boolean) => {
+    if (locked) {
+        localStorage.setItem('shree_locked', 'true');
+    } else {
+        localStorage.removeItem('shree_locked');
+    }
+};
+
 export const getCredentials = () => {
     const stored = localStorage.getItem(CREDENTIALS_KEY);
     return stored ? JSON.parse(stored) : { username: 'admin', password: 'admin' };

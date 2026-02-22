@@ -5,13 +5,15 @@ import DashboardView from './components/DashboardView';
 import BookingForm from './components/BookingForm';
 import BookingList from './components/BookingList';
 import Login from './components/Login';
+import LockScreen from './components/LockScreen';
 import Sidebar from './components/Sidebar';
 import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
 import { getNotifications, saveNotification, markAllAsRead, clearNotifications } from './services/notificationService';
-import { isAuthenticated } from './services/authService';
+import { isAuthenticated, isAppLocked, setAppLocked, logout } from './services/authService';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
@@ -48,8 +50,37 @@ const App: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated()) {
       setIsLoggedIn(true);
+      if (isAppLocked()) {
+          setIsLocked(true);
+      }
     }
   }, []);
+
+  // Auto-Lock Timer (15 minutes)
+  useEffect(() => {
+    if (!isLoggedIn || isLocked) return;
+
+    let lockTimer: NodeJS.Timeout;
+    const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
+
+    const resetLockTimer = () => {
+      clearTimeout(lockTimer);
+      lockTimer = setTimeout(() => {
+        setIsLocked(true);
+        setAppLocked(true);
+      }, LOCK_TIME);
+    };
+
+    const events = ['mousemove', 'mousedown', 'touchstart', 'click', 'keydown', 'scroll'];
+    events.forEach(event => window.addEventListener(event, resetLockTimer, true));
+    
+    resetLockTimer();
+
+    return () => {
+      clearTimeout(lockTimer);
+      events.forEach(event => window.removeEventListener(event, resetLockTimer, true));
+    };
+  }, [isLoggedIn, isLocked]);
 
   // Load Data on Mount (only if logged in, but we can load anyway for readiness)
   useEffect(() => {
@@ -215,6 +246,25 @@ const App: React.FC = () => {
       );
   }
 
+  if (isLocked) {
+      return (
+          <div className={darkMode ? 'dark' : ''}>
+            <LockScreen 
+                onUnlock={() => {
+                    setIsLocked(false);
+                    setAppLocked(false);
+                }} 
+                onLogout={() => {
+                    logout();
+                    setIsLoggedIn(false);
+                    setIsLocked(false);
+                    setAppLocked(false);
+                }}
+            />
+          </div>
+      );
+  }
+
   return (
     <div className="h-screen h-[100dvh] w-full flex justify-center items-center p-0 transition-colors duration-500 overflow-hidden">
       {/* App Container - Full Screen on Desktop */}
@@ -246,10 +296,13 @@ const App: React.FC = () => {
           <div className="flex flex-col h-full">
             <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-neutral-800">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
                   <span className="text-white font-black text-sm">S</span>
                 </div>
-                <h1 className="font-black text-slate-800 dark:text-white tracking-tighter text-sm">SHREE</h1>
+                <div>
+                  <h1 className="font-black text-slate-800 dark:text-white tracking-tighter text-sm leading-none">SHREE SELF DRIVING</h1>
+                  <p className="text-[9px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest mt-0.5">& CAR RENTAL SERVICE</p>
+                </div>
               </div>
               <button 
                 onClick={() => setIsDrawerOpen(false)}
@@ -311,10 +364,13 @@ const App: React.FC = () => {
               <Menu size={24} />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center shrink-0">
                 <span className="text-white font-black text-[10px]">S</span>
               </div>
-              <span className="font-black text-slate-800 dark:text-white tracking-tighter text-xs">SHREE</span>
+              <div className="flex flex-col">
+                <span className="font-black text-slate-800 dark:text-white tracking-tighter text-[10px] leading-none">SHREE SELF DRIVING</span>
+                <span className="text-[8px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-tight">& CAR RENTAL SERVICE</span>
+              </div>
             </div>
             <div className="w-10" /> {/* Spacer for balance */}
           </div>
@@ -329,7 +385,10 @@ const App: React.FC = () => {
                 onAddCar={handleAddCar}
                 onUpdateCar={handleUpdateCar}
                 onDeleteCar={handleDeleteCar}
-                onLogout={() => setIsLoggedIn(false)}
+                onLogout={() => {
+                    logout();
+                    setIsLoggedIn(false);
+                }}
                 notifications={notifications}
                 onMarkAllRead={handleMarkAllRead}
                 onClearNotifications={handleClearNotifications}

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Car, Booking, BookingStatus, Notification } from '../types';
 import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check } from 'lucide-react';
-import { logout, updateCredentials, getCredentials } from '../services/authService';
+import { logout, updateCredentials, getCredentials, setPin, removePin, getPin } from '../services/authService';
 import { resetAllOdometers } from '../services/storageService';
 
 interface DashboardProps {
@@ -50,6 +50,10 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
   const [tempUsername, setTempUsername] = useState('');
   const [tempPassword, setTempPassword] = useState('');
   const [settingsMsg, setSettingsMsg] = useState('');
+  
+  // PIN State
+  const [tempPin, setTempPin] = useState('');
+  const [hasPin, setHasPin] = useState(false);
 
   const [showCarModal, setShowCarModal] = useState(false);
   const [newCar, setNewCar] = useState<Partial<Car>>({
@@ -69,6 +73,8 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       const creds = getCredentials();
       setTempUsername(creds.username);
       setTempPassword(creds.password);
+      setHasPin(!!getPin());
+      setTempPin('');
       setShowSettings(true);
       setShowPassword(false); // Reset to hidden
       setSettingsMsg('');
@@ -77,13 +83,35 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
   const handleSaveSettings = () => {
       if (tempUsername && tempPassword) {
           updateCredentials(tempUsername, tempPassword);
-          setSettingsMsg('Credentials updated successfully!');
+          
+          if (tempPin) {
+              if (tempPin.length === 4 && /^\d+$/.test(tempPin)) {
+                  setPin(tempPin);
+                  setHasPin(true);
+                  setTempPin('');
+                  setSettingsMsg('Credentials & PIN updated!');
+              } else {
+                  setSettingsMsg('PIN must be 4 digits.');
+                  return;
+              }
+          } else {
+              setSettingsMsg('Credentials updated successfully!');
+          }
+
           setTimeout(() => {
               setSettingsMsg('');
               setShowSettings(false);
           }, 1500);
       } else {
           setSettingsMsg('Username and Password cannot be empty.');
+      }
+  };
+
+  const handleRemovePin = () => {
+      if (window.confirm('Remove PIN lock?')) {
+          removePin();
+          setHasPin(false);
+          setSettingsMsg('PIN removed.');
       }
   };
 
@@ -782,6 +810,33 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                               >
                                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                               </button>
+                          </div>
+                      </div>
+
+                      <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-neutral-800">
+                          <label className="text-xs font-bold text-slate-500 dark:text-neutral-400 uppercase ml-1 flex justify-between">
+                              <span>App Lock (PIN)</span>
+                              {hasPin && <span className="text-emerald-500 flex items-center gap-1"><CheckCircle size={12}/> Active</span>}
+                          </label>
+                          <div className="relative group">
+                              <Smartphone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/>
+                              <input 
+                                  value={tempPin}
+                                  onChange={(e) => {
+                                      if (e.target.value.length <= 4) setTempPin(e.target.value);
+                                  }}
+                                  placeholder={hasPin ? "Change PIN (4 digits)" : "Set PIN (4 digits)"}
+                                  type="number"
+                                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 rounded-xl outline-none focus:border-blue-500 text-sm font-medium text-slate-900 dark:text-white"
+                              />
+                              {hasPin && (
+                                  <button 
+                                      onClick={handleRemovePin}
+                                      className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-2 py-1 rounded-lg transition-colors"
+                                  >
+                                      Remove
+                                  </button>
+                              )}
                           </div>
                       </div>
 
