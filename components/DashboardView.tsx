@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Car, Booking, BookingStatus } from '../types';
-import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff } from 'lucide-react';
+import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone } from 'lucide-react';
 import { logout, updateCredentials, getCredentials } from '../services/authService';
 import { resetAllOdometers } from '../services/storageService';
 
@@ -9,14 +9,16 @@ interface DashboardProps {
   cars: Car[];
   bookings: Booking[];
   darkMode: boolean;
+  isMobileView: boolean;
   toggleTheme: () => void;
+  toggleMobileView: () => void;
   onAddCar: (car: Car) => void;
   onUpdateCar: (car: Car) => void;
   onDeleteCar: (id: string) => void;
   onLogout: () => void;
 }
 
-const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, toggleTheme, onAddCar, onUpdateCar, onDeleteCar, onLogout }) => {
+const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, isMobileView, toggleTheme, toggleMobileView, onAddCar, onUpdateCar, onDeleteCar, onLogout }) => {
   const [revenueType, setRevenueType] = useState<'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom'>('monthly');
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [revenueCarId, setRevenueCarId] = useState<string>('');
@@ -360,6 +362,13 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 className="w-10 h-10 rounded-full bg-white dark:bg-neutral-800 border border-black shadow-sm flex items-center justify-center text-slate-600 dark:text-yellow-400 hover:scale-105 active:scale-95 transition-all"
             >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <button 
+                onClick={toggleMobileView}
+                className={`w-10 h-10 rounded-full border shadow-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${isMobileView ? 'bg-blue-600 text-white border-transparent' : 'bg-white dark:bg-neutral-800 border-black text-slate-600 dark:text-neutral-300'}`}
+                title="Toggle Mobile Preview"
+            >
+                <Smartphone size={20} />
             </button>
         </div>
       </header>
