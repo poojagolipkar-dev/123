@@ -342,8 +342,8 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
   };
 
   return (
-    <div className="space-y-6 pb-20 p-5">
-      <header className="flex justify-between items-center mb-4 animate-enter">
+    <div className="space-y-6 pb-10 md:p-5">
+      <header className="flex justify-between items-center mb-4 animate-enter px-1">
         <div>
             <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight transition-colors">Dashboard</h1>
             <p className="text-sm text-slate-500 dark:text-neutral-400 font-medium mt-1">Overview & Analytics</p>

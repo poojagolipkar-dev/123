@@ -187,9 +187,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center p-0 transition-colors duration-500">
+    <div className="h-screen h-[100dvh] w-full flex justify-center items-center p-0 transition-colors duration-500 overflow-hidden">
       {/* App Container - Full Screen on Desktop */}
-      <div className="w-full h-screen bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex relative overflow-hidden border-0">
+      <div className="w-full h-full bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex relative overflow-hidden border-0">
         
         {/* Left Sidebar - Visible on Desktop */}
         <Sidebar 
@@ -205,9 +205,9 @@ const App: React.FC = () => {
         {/* Content Area */}
         <main 
           key={currentView} 
-          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar relative"
+          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar relative h-full"
         >
-          <div className="w-full h-full px-4 md:px-8 pb-32 pt-6">
+          <div className="w-full min-h-full px-3 md:px-8 pb-40 pt-4 md:pt-6">
             {currentView === 'dashboard' && (
               <DashboardView 
                 cars={cars} 
