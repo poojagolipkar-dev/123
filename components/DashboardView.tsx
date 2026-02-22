@@ -365,65 +365,54 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       </header>
 
       {/* --- Quick Stats Cards --- */}
-      <div className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar animate-enter delay-75 snap-x md:grid md:grid-cols-4 md:overflow-visible md:mx-0 md:px-0">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 animate-enter delay-75">
           {/* Card 1: Pending Balance */}
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-black p-4 rounded-3xl text-white min-w-[160px] w-[45%] md:w-auto flex flex-col justify-between shadow-lg shadow-slate-300 dark:shadow-black/50 snap-start border border-white/10 dark:border-neutral-800">
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-black p-4 rounded-3xl text-white flex flex-col justify-between shadow-lg shadow-slate-300 dark:shadow-black/50 border border-white/10 dark:border-neutral-800">
              <div className="bg-white/10 w-8 h-8 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm">
                 <Wallet size={16} className="text-blue-300" />
              </div>
              <div>
-                <span className="text-xs text-slate-400 font-medium block">Outstanding</span>
-                <span className="text-xl font-bold tracking-tight">₹{stats.pendingAmount.toLocaleString()}</span>
+                <span className="text-[10px] sm:text-xs text-slate-400 font-medium block">Outstanding</span>
+                <span className="text-lg sm:text-xl font-bold tracking-tight">₹{stats.pendingAmount.toLocaleString()}</span>
              </div>
           </div>
 
           {/* Card 1b: Total Collected */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-900 p-4 rounded-3xl text-white min-w-[160px] w-[45%] md:w-auto flex flex-col justify-between shadow-lg shadow-blue-200 dark:shadow-blue-900/40 snap-start border border-white/10">
+          <div className="bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-900 p-4 rounded-3xl text-white flex flex-col justify-between shadow-lg shadow-blue-200 dark:shadow-blue-900/40 border border-white/10">
              <div className="bg-white/10 w-8 h-8 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm">
                 <IndianRupee size={16} className="text-white" />
              </div>
              <div>
-                <span className="text-xs text-blue-100 font-medium block">Total Collected</span>
-                <span className="text-xl font-bold tracking-tight">₹{stats.totalCollected.toLocaleString()}</span>
+                <span className="text-[10px] sm:text-xs text-blue-100 font-medium block">Total Collected</span>
+                <span className="text-lg sm:text-xl font-bold tracking-tight">₹{stats.totalCollected.toLocaleString()}</span>
              </div>
           </div>
 
           {/* Card 2: Active Trips */}
-          <div className="bg-white dark:bg-neutral-900 border border-black dark:border-neutral-800 p-4 rounded-3xl min-w-[150px] w-[40%] md:w-auto flex flex-col justify-between shadow-sm snap-start transition-colors">
+          <div className="bg-white dark:bg-neutral-900 border border-black dark:border-neutral-800 p-4 rounded-3xl flex flex-col justify-between shadow-sm transition-colors">
              <div className="bg-blue-50 dark:bg-blue-900/30 w-8 h-8 rounded-full flex items-center justify-center mb-4">
                 <Activity size={16} className="text-blue-600 dark:text-blue-400" />
              </div>
              <div>
-                <span className="text-xs text-slate-500 dark:text-neutral-400 font-medium block">Active Trips</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-neutral-400 font-medium block">Active Trips</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-xl font-bold text-slate-800 dark:text-white">{stats.activeTrips}</span>
+                    <span className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">{stats.activeTrips}</span>
                     <span className="text-[10px] text-slate-400 dark:text-neutral-500">/ {bookings.length}</span>
                 </div>
              </div>
           </div>
 
           {/* Card 3: Fleet Status */}
-          <div className="bg-white dark:bg-neutral-900 border border-black dark:border-neutral-800 p-4 rounded-3xl min-w-[150px] w-[40%] md:w-auto flex flex-col justify-between shadow-sm snap-start transition-colors">
+          <div className="bg-white dark:bg-neutral-900 border border-black dark:border-neutral-800 p-4 rounded-3xl flex flex-col justify-between shadow-sm transition-colors">
              <div className="bg-emerald-50 dark:bg-emerald-900/30 w-8 h-8 rounded-full flex items-center justify-center mb-4">
                 <CarIcon size={16} className="text-emerald-600 dark:text-emerald-400" />
              </div>
              <div>
-                <span className="text-xs text-slate-500 dark:text-neutral-400 font-medium block">Available Cars</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-neutral-400 font-medium block">Available Cars</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-xl font-bold text-slate-800 dark:text-white">{stats.available}</span>
+                    <span className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">{stats.available}</span>
                     <span className="text-[10px] text-slate-400 dark:text-neutral-500">/ {stats.totalCars}</span>
                 </div>
-             </div>
-          </div>
-
-           {/* Card 4: Service Alerts */}
-           <div className="bg-white dark:bg-neutral-900 border border-black dark:border-neutral-800 p-4 rounded-3xl min-w-[150px] w-[40%] md:w-auto hidden md:flex flex-col justify-between shadow-sm snap-start transition-colors">
-             <div className="bg-amber-50 dark:bg-amber-900/30 w-8 h-8 rounded-full flex items-center justify-center mb-4">
-                <Zap size={16} className="text-amber-600 dark:text-amber-400" />
-             </div>
-             <div>
-                <span className="text-xs text-slate-500 dark:text-neutral-400 font-medium block">Service Due</span>
-                <span className={`text-xl font-bold ${stats.serviceAlerts > 0 ? 'text-red-500 dark:text-red-400' : 'text-slate-800 dark:text-white'}`}>{stats.serviceAlerts}</span>
              </div>
           </div>
       </div>

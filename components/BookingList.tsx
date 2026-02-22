@@ -232,7 +232,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
             </div>
 
             {/* Date Range */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
                     <input 
                         type="date" 

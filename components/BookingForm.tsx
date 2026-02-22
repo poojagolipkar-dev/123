@@ -40,7 +40,7 @@ const Section = ({ title, icon: Icon, children, className }: any) => (
       </div>
       {title}
     </h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
       {children}
     </div>
   </div>
@@ -842,12 +842,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
   return (
     <div className="pb-24 relative">
        {/* Sticky Header */}
-       <div className="sticky top-0 z-40 bg-slate-50 dark:bg-black border-b border-slate-200 dark:border-neutral-800 p-4 flex justify-between items-center px-6 shadow-sm animate-enter transition-colors">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
+       <div className="sticky top-0 md:top-0 z-40 bg-slate-50/95 dark:bg-black/95 backdrop-blur-md border-b border-slate-200 dark:border-neutral-800 p-4 flex justify-between items-center px-4 md:px-6 shadow-sm animate-enter transition-colors">
+          <h2 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white tracking-tight truncate mr-2">
             {mode === 'complete' ? 'Complete Trip' : mode === 'edit' ? 'Edit Booking' : 'New Booking'}
           </h2>
-          <button type="button" onClick={onCancel} className="p-2 bg-slate-200/50 dark:bg-neutral-800 rounded-full text-slate-600 dark:text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95">
-            <X size={24} />
+          <button type="button" onClick={onCancel} className="p-2 bg-slate-200/50 dark:bg-neutral-800 rounded-full text-slate-600 dark:text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 shrink-0">
+            <X className="w-5 h-5 md:w-6 md:h-6" />
           </button>
        </div>
 
