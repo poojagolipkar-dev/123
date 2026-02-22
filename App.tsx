@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ViewState, Booking, Car, BookingStatus } from './types';
 import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
 import DashboardView from './components/DashboardView';
@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [unsavedDraft, setUnsavedDraft] = useState<Partial<Booking> | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const mainRef = useRef<HTMLDivElement>(null);
 
   // Theme State
   const [darkMode, setDarkMode] = useState(() => {
@@ -63,34 +64,33 @@ const App: React.FC = () => {
     }
   }, [currentView]);
 
-  // Auto-hide Navigation Logic (Mobile Only)
+  // Scroll-aware Navigation Visibility
   useEffect(() => {
-    if (!isLoggedIn) return;
-    
-    let hideTimer: NodeJS.Timeout;
+    const mainEl = mainRef.current;
+    if (!mainEl) return;
 
-    const resetTimer = () => {
-      setIsNavVisible(true);
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => {
+    let lastScrollY = mainEl.scrollTop;
+    
+    const handleScroll = () => {
+      const currentScrollY = mainEl.scrollTop;
+      const isScrollingDown = currentScrollY > lastScrollY;
+      const isScrollingUp = currentScrollY < lastScrollY;
+      
+      // Hide if scrolling down and not at the top
+      if (isScrollingDown && currentScrollY > 20) {
         setIsNavVisible(false);
-      }, 5000);
+      } 
+      // Show if scrolling up
+      else if (isScrollingUp) {
+        setIsNavVisible(true);
+      }
+      
+      lastScrollY = currentScrollY;
     };
 
-    // Events to detect user activity
-    const events = ['mousemove', 'mousedown', 'touchstart', 'click', 'keydown', 'scroll'];
-    
-    // Add listeners (use capture for scroll to detect scrolling in nested elements)
-    events.forEach(event => window.addEventListener(event, resetTimer, true));
-
-    // Initial timer start
-    resetTimer();
-
-    return () => {
-      clearTimeout(hideTimer);
-      events.forEach(event => window.removeEventListener(event, resetTimer, true));
-    };
-  }, [isLoggedIn]);
+    mainEl.addEventListener('scroll', handleScroll, { passive: true });
+    return () => mainEl.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSaveBooking = (booking: Booking) => {
     // If completing, update car mileage
@@ -270,27 +270,30 @@ const App: React.FC = () => {
 
         {/* Content Area */}
         <main 
+          ref={mainRef}
           key={currentView} 
           className="flex-1 overflow-y-auto scroll-smooth relative h-full flex flex-col"
         >
           {/* Mobile Top Bar */}
-          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-neutral-800 sticky top-0 z-40">
-            <button 
-              onClick={() => setIsDrawerOpen(true)}
-              className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
-            >
-              <Menu size={24} />
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-black text-[10px]">S</span>
+          {currentView !== 'new_booking' && !(currentView === 'complete' && editingBooking) && (
+            <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-neutral-800 sticky top-0 z-40">
+              <button 
+                onClick={() => setIsDrawerOpen(true)}
+                className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
+              >
+                <Menu size={24} />
+              </button>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+                  <span className="text-white font-black text-[10px]">S</span>
+                </div>
+                <span className="font-black text-slate-800 dark:text-white tracking-tighter text-xs">SHREE</span>
               </div>
-              <span className="font-black text-slate-800 dark:text-white tracking-tighter text-xs">SHREE</span>
+              <div className="w-10" /> {/* Spacer for balance */}
             </div>
-            <div className="w-10" /> {/* Spacer for balance */}
-          </div>
+          )}
 
-          <div className="w-full min-h-full px-3 md:px-8 pb-40 pt-4 md:pt-6">
+          <div className={`w-full min-h-full px-3 md:px-8 pb-40 ${(currentView === 'new_booking' || (currentView === 'complete' && editingBooking)) ? 'pt-0' : 'pt-4 md:pt-6'}`}>
             {currentView === 'dashboard' && (
               <DashboardView 
                 cars={cars} 
@@ -428,6 +431,34 @@ const App: React.FC = () => {
                 onRefresh={() => setBookings(getBookings())}
               />
             )}
+          </div>
+
+          {/* Bottom Navigation Bar (Scroll-Aware) */}
+          <div className={`md:hidden fixed bottom-5 left-4 right-4 z-50 transition-transform duration-300 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[150%]'}`}>
+            <nav className="bg-slate-900/90 dark:bg-neutral-800/90 backdrop-blur-xl text-white p-2 rounded-2xl shadow-2xl flex justify-between items-center px-2 border border-white/10">
+                {navItems.map((item) => {
+                    const isActive = currentView === item.id;
+                    const Icon = item.icon;
+                    return (
+                        <button
+                            key={item.id}
+                            onClick={() => {
+                                setCurrentView(item.id as ViewState);
+                                setEditingBooking(null);
+                            }}
+                            className={`p-2 sm:p-3 rounded-xl transition-all duration-200 flex flex-col items-center gap-1 ${isActive ? 'bg-blue-600 text-white shadow-lg scale-105' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                        >
+                            <Icon size={20} />
+                        </button>
+                    )
+                })}
+                <button
+                    onClick={() => setIsDrawerOpen(true)}
+                    className="p-2 sm:p-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                    <Menu size={20} />
+                </button>
+            </nav>
           </div>
         </main>
 

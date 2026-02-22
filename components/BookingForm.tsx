@@ -843,10 +843,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
     <div className="pb-24 relative">
        {/* Sticky Header */}
        <div className="sticky top-0 md:top-0 z-40 bg-slate-50/95 dark:bg-black/95 backdrop-blur-md border-b border-slate-200 dark:border-neutral-800 p-4 flex justify-between items-center px-4 md:px-6 shadow-sm animate-enter transition-colors">
-          <h2 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white tracking-tight truncate mr-2">
+          <h2 className="text-base md:text-xl font-bold text-slate-800 dark:text-white tracking-tight truncate pr-2 flex-1">
             {mode === 'complete' ? 'Complete Trip' : mode === 'edit' ? 'Edit Booking' : 'New Booking'}
           </h2>
-          <button type="button" onClick={onCancel} className="p-2 bg-slate-200/50 dark:bg-neutral-800 rounded-full text-slate-600 dark:text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 shrink-0">
+          <button type="button" onClick={onCancel} className="p-2 bg-slate-200/50 dark:bg-neutral-800 rounded-full text-slate-600 dark:text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 shrink-0 ml-2">
             <X className="w-5 h-5 md:w-6 md:h-6" />
           </button>
        </div>
