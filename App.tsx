@@ -349,7 +349,7 @@ const App: React.FC = () => {
         </main>
 
         {/* Modern Floating Bottom Navigation Dock - Hidden on Desktop */}
-        <div className={`md:hidden absolute bottom-14 inset-x-0 flex justify-center z-50 pointer-events-none transition-transform duration-700 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[180%]'}`}>
+        <div className={`md:hidden absolute bottom-20 inset-x-0 flex justify-center z-50 pointer-events-none transition-transform duration-700 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[180%]'}`}>
           <nav className="pointer-events-auto bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-red-500 dark:border-red-500 p-2 rounded-[2.5rem] shadow-2xl shadow-slate-300/50 dark:shadow-black/50 flex justify-between items-center w-[92%] max-w-[380px] md:max-w-xl transition-all duration-300 ring-1 ring-red-500/40 dark:ring-red-500/40">
             {navItems.map((item) => {
               const isActive = currentView === item.id;
