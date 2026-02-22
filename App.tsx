@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ViewState, Booking, Car, BookingStatus } from './types';
-import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
 import DashboardView from './components/DashboardView';
 import BookingForm from './components/BookingForm';
 import BookingList from './components/BookingList';
@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [unsavedDraft, setUnsavedDraft] = useState<Partial<Booking> | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Theme State
   const [darkMode, setDarkMode] = useState(() => {
@@ -202,11 +203,93 @@ const App: React.FC = () => {
           darkMode={darkMode}
         />
 
+        {/* Mobile Drawer Overlay */}
+        {isDrawerOpen && (
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] md:hidden animate-fade-in"
+            onClick={() => setIsDrawerOpen(false)}
+          />
+        )}
+
+        {/* Mobile Slidable Drawer */}
+        <div 
+          className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-neutral-900 z-[101] md:hidden transition-transform duration-500 ease-out shadow-2xl ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          <div className="flex flex-col h-full">
+            <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-neutral-800">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-black text-sm">S</span>
+                </div>
+                <h1 className="font-black text-slate-800 dark:text-white tracking-tighter text-sm">SHREE</h1>
+              </div>
+              <button 
+                onClick={() => setIsDrawerOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+              {navItems.map((item) => {
+                const isActive = currentView === item.id;
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setCurrentView(item.id as ViewState);
+                      setEditingBooking(null);
+                      setIsDrawerOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 ${
+                      isActive
+                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-lg'
+                        : 'text-slate-500 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-neutral-800'
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span className="text-sm">{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="p-6 border-t border-slate-100 dark:border-neutral-800">
+              <button 
+                onClick={toggleTheme}
+                className="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-neutral-800 rounded-2xl"
+              >
+                <span className="text-xs font-bold text-slate-600 dark:text-neutral-300 uppercase">Appearance</span>
+                {darkMode ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-slate-600" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Content Area */}
         <main 
           key={currentView} 
-          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar relative h-full"
+          className="flex-1 overflow-y-auto scroll-smooth no-scrollbar relative h-full flex flex-col"
         >
+          {/* Mobile Top Bar */}
+          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-neutral-800 sticky top-0 z-40">
+            <button 
+              onClick={() => setIsDrawerOpen(true)}
+              className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+                <span className="text-white font-black text-[10px]">S</span>
+              </div>
+              <span className="font-black text-slate-800 dark:text-white tracking-tighter text-xs">SHREE</span>
+            </div>
+            <div className="w-10" /> {/* Spacer for balance */}
+          </div>
+
           <div className="w-full min-h-full px-3 md:px-8 pb-40 pt-4 md:pt-6">
             {currentView === 'dashboard' && (
               <DashboardView 
@@ -348,39 +431,6 @@ const App: React.FC = () => {
           </div>
         </main>
 
-        {/* Modern Floating Bottom Navigation Dock - Hidden on Desktop */}
-        <div className={`md:hidden absolute bottom-20 inset-x-0 flex justify-center z-50 pointer-events-none transition-transform duration-700 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[180%]'}`}>
-          <nav className="pointer-events-auto bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-red-500 dark:border-red-500 p-2 rounded-[2.5rem] shadow-2xl shadow-slate-300/50 dark:shadow-black/50 flex justify-between items-center w-[92%] max-w-[380px] md:max-w-xl transition-all duration-300 ring-1 ring-red-500/40 dark:ring-red-500/40">
-            {navItems.map((item) => {
-              const isActive = currentView === item.id;
-              const Icon = item.icon;
-              
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setCurrentView(item.id as ViewState);
-                    setEditingBooking(null);
-                  }}
-                  className={`group relative flex flex-col items-center justify-center w-12 h-12 md:w-16 md:h-14 rounded-[1.2rem] transition-all duration-300 ease-out ${
-                    isActive 
-                      ? 'bg-slate-900 dark:bg-neutral-800 text-white shadow-xl shadow-slate-300 dark:shadow-black/50 -translate-y-3 scale-110 border border-transparent dark:border-neutral-700' 
-                      : 'text-slate-400 hover:text-slate-600 dark:hover:text-neutral-300 hover:bg-slate-100/50 dark:hover:bg-neutral-800/50'
-                  }`}
-                >
-                  <Icon size={22} strokeWidth={isActive ? 2.5 : 2} className="transition-transform duration-300 group-hover:scale-110" />
-                  
-                  {/* Floating Label for Active State */}
-                  {isActive && (
-                     <span className="absolute -bottom-8 text-[10px] font-bold text-slate-800 dark:text-white bg-white/90 dark:bg-neutral-800/90 backdrop-blur-md px-2.5 py-1 rounded-lg shadow-sm animate-scale-in whitespace-nowrap z-50 pointer-events-none border border-slate-200/50 dark:border-neutral-700/50">
-                        {item.label.split(' ')[0]}
-                     </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
       </div>
     </div>
   );

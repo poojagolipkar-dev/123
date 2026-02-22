@@ -108,7 +108,16 @@
         100% { transform: translate(0px, 0px) scale(1); }
       }
 
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
       /* Utility Classes for Animation */
+      .animate-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
       .animate-enter {
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         opacity: 0; /* Start hidden */
