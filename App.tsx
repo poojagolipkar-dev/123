@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ViewState, Booking, Car, BookingStatus, Notification } from './types';
-import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon, Settings } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon, Settings, Move } from 'lucide-react';
 import DashboardView from './components/DashboardView';
 import BookingForm from './components/BookingForm';
 import BookingList from './components/BookingList';
@@ -21,9 +21,137 @@ const App: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [unsavedDraft, setUnsavedDraft] = useState<Partial<Booking> | null>(null);
-  const [isNavVisible, setIsNavVisible] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
+
+  // Floating Nav State
+  const [navPosition, setNavPosition] = useState(() => {
+    if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('navPosition');
+        if (saved) return JSON.parse(saved);
+        return { x: 20, y: window.innerHeight - 100 };
+    }
+    return { x: 20, y: 600 };
+  });
+  const [isNavIdle, setIsNavIdle] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartPos = useRef({ x: 0, y: 0 });
+  const navStartPos = useRef({ x: 0, y: 0 });
+  const idleTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Idle Timer Logic
+  useEffect(() => {
+    const resetIdle = () => {
+        setIsNavIdle(false);
+        if (idleTimer.current) clearTimeout(idleTimer.current);
+        idleTimer.current = setTimeout(() => {
+            setIsNavIdle(true);
+        }, 2000);
+    };
+
+    const events = ['mousedown', 'mousemove', 'touchstart', 'touchmove', 'scroll', 'click', 'keydown'];
+    events.forEach(e => window.addEventListener(e, resetIdle));
+    
+    resetIdle();
+
+    return () => {
+        events.forEach(e => window.removeEventListener(e, resetIdle));
+        if (idleTimer.current) clearTimeout(idleTimer.current);
+    };
+  }, []);
+
+  // Drag Logic
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    // Only allow dragging from the handle or specific area if needed
+    // For now, we attach this to the container or a handle
+    setIsDragging(true);
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    
+    dragStartPos.current = { x: clientX, y: clientY };
+    navStartPos.current = { ...navPosition };
+  };
+
+  const handleDragMove = (e: any) => {
+    if (!isDragging) return;
+    e.preventDefault(); 
+    
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    const dx = clientX - dragStartPos.current.x;
+    const dy = clientY - dragStartPos.current.y;
+    
+    let newX = navStartPos.current.x + dx;
+    let newY = navStartPos.current.y + dy;
+    
+    // Boundary checks (keep fully on screen)
+    // Assuming nav width approx 300px, height 60px. 
+    // We can refine this by using ref to get actual dimensions.
+    const navEl = document.getElementById('floating-nav');
+    const width = navEl ? navEl.offsetWidth : 300;
+    const height = navEl ? navEl.offsetHeight : 60;
+
+    const maxX = window.innerWidth - width;
+    const maxY = window.innerHeight - height;
+    
+    newX = Math.max(0, Math.min(maxX, newX));
+    newY = Math.max(0, Math.min(maxY, newY));
+
+    setNavPosition({ x: newX, y: newY });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Keep nav on screen on resize
+  useEffect(() => {
+    const handleResize = () => {
+        setNavPosition(prev => {
+            const navEl = document.getElementById('floating-nav');
+            const width = navEl ? navEl.offsetWidth : 300; // Fallback width
+            const height = navEl ? navEl.offsetHeight : 60; // Fallback height
+            
+            const maxX = window.innerWidth - width;
+            const maxY = window.innerHeight - height;
+            
+            return {
+                x: Math.max(0, Math.min(prev.x, maxX)),
+                y: Math.max(0, Math.min(prev.y, maxY))
+            };
+        });
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isDragging) {
+        localStorage.setItem('navPosition', JSON.stringify(navPosition));
+    }
+  }, [isDragging, navPosition]);
+
+  useEffect(() => {
+    if (isDragging) {
+        window.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mouseup', handleDragEnd);
+        window.addEventListener('touchmove', handleDragMove, { passive: false });
+        window.addEventListener('touchend', handleDragEnd);
+    } else {
+        window.removeEventListener('mousemove', handleDragMove);
+        window.removeEventListener('mouseup', handleDragEnd);
+        window.removeEventListener('touchmove', handleDragMove);
+        window.removeEventListener('touchend', handleDragEnd);
+    }
+    return () => {
+        window.removeEventListener('mousemove', handleDragMove);
+        window.removeEventListener('mouseup', handleDragEnd);
+        window.removeEventListener('touchmove', handleDragMove);
+        window.removeEventListener('touchend', handleDragEnd);
+    };
+  }, [isDragging]);
 
   // Theme State
   const [darkMode, setDarkMode] = useState(() => {
@@ -116,33 +244,7 @@ const App: React.FC = () => {
     }
   }, [currentView]);
 
-  // Scroll-aware Navigation Visibility
-  useEffect(() => {
-    const mainEl = mainRef.current;
-    if (!mainEl) return;
 
-    let lastScrollY = mainEl.scrollTop;
-    
-    const handleScroll = () => {
-      const currentScrollY = mainEl.scrollTop;
-      const isScrollingDown = currentScrollY > lastScrollY;
-      const isScrollingUp = currentScrollY < lastScrollY;
-      
-      // Hide if scrolling down and not at the top
-      if (isScrollingDown && currentScrollY > 20) {
-        setIsNavVisible(false);
-      } 
-      // Show if scrolling up
-      else if (isScrollingUp) {
-        setIsNavVisible(true);
-      }
-      
-      lastScrollY = currentScrollY;
-    };
-
-    mainEl.addEventListener('scroll', handleScroll, { passive: true });
-    return () => mainEl.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleSaveBooking = (booking: Booking) => {
     // If completing, update car mileage
@@ -532,9 +634,29 @@ const App: React.FC = () => {
             )}
           </div>
 
-          {/* Bottom Navigation Bar (Scroll-Aware) */}
-          <div className={`md:hidden fixed bottom-5 left-4 right-4 z-50 transition-transform duration-300 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[150%]'}`}>
-            <nav className="bg-slate-900/90 dark:bg-neutral-800/90 backdrop-blur-xl text-white p-2 rounded-2xl shadow-2xl flex justify-between items-center px-2 border border-white/10">
+          {/* Floating Movable Navigation Bar */}
+          <div 
+            id="floating-nav"
+            className={`md:hidden fixed z-[999] transition-all duration-500 ease-in-out ${isNavIdle && !isDragging ? 'opacity-30 hover:opacity-100 scale-90 translate-y-10 blur-[1px]' : 'opacity-100 scale-100 translate-y-0 blur-0'}`}
+            style={{ 
+                left: navPosition.x, 
+                top: navPosition.y,
+                touchAction: 'none' 
+            }}
+          >
+            <nav className="bg-slate-900/90 dark:bg-neutral-800/90 backdrop-blur-xl text-white p-1.5 rounded-full shadow-2xl flex items-center gap-1 border border-white/10 relative max-w-[92vw] overflow-x-auto no-scrollbar">
+                
+                {/* Drag Handle */}
+                <div 
+                    className="p-2 cursor-move text-slate-500 hover:text-white active:text-blue-400 shrink-0"
+                    onMouseDown={handleDragStart}
+                    onTouchStart={handleDragStart}
+                >
+                    <Move size={16} />
+                </div>
+
+                <div className="w-px h-6 bg-white/10 mx-0.5 shrink-0"></div>
+
                 {navItems.map((item) => {
                     const isActive = currentView === item.id;
                     const Icon = item.icon;
@@ -545,17 +667,20 @@ const App: React.FC = () => {
                                 setCurrentView(item.id as ViewState);
                                 setEditingBooking(null);
                             }}
-                            className={`p-2 sm:p-3 rounded-xl transition-all duration-200 flex flex-col items-center gap-1 ${isActive ? 'bg-blue-600 text-white shadow-lg scale-105' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                            className={`p-2.5 rounded-full transition-all duration-200 flex items-center justify-center shrink-0 ${isActive ? 'bg-blue-600 text-white shadow-lg scale-110' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
                         >
-                            <Icon size={20} />
+                            <Icon size={18} />
                         </button>
                     )
                 })}
+                
+                <div className="w-px h-6 bg-white/10 mx-0.5 shrink-0"></div>
+
                 <button
                     onClick={() => setIsDrawerOpen(true)}
-                    className="p-2 sm:p-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                    className="p-2.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors shrink-0"
                 >
-                    <Menu size={20} />
+                    <Menu size={18} />
                 </button>
             </nav>
           </div>
