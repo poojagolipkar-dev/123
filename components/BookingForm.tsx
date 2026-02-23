@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Booking, BookingStatus, Car } from '../types';
-import { Camera, MapPin, Upload, Calendar, Clock, CreditCard, Save, X, User, FileEdit, CheckCircle, Loader2, CheckSquare, Trash2, FileText, SwitchCamera, Zap, ZapOff, Sun, RefreshCw, Aperture, PlayCircle, Search, Locate, Layers, Globe, ArrowLeft, AlertCircle, AlertTriangle, Car as CarIcon, Home, Users, Satellite, KeyRound, Lock, Unlock } from 'lucide-react';
+import { Camera, MapPin, Upload, Calendar, Clock, CreditCard, Save, X, User, FileEdit, CheckCircle, Loader2, CheckSquare, Trash2, FileText, SwitchCamera, Zap, ZapOff, Sun, RefreshCw, Aperture, PlayCircle, Search, Locate, Layers, Globe, ArrowLeft, AlertCircle, AlertTriangle, Car as CarIcon, Home, Users, Satellite, KeyRound, Lock, Unlock, Phone, Mail, FileText as FileIcon, IndianRupee } from 'lucide-react';
 import { saveDraft, clearDraft, generateNextBookingId, getBookings } from '../services/storageService';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
@@ -46,7 +46,7 @@ const Section = ({ title, icon: Icon, children, className }: any) => (
   </div>
 );
 
-const Input = ({ label, type = 'text', value, onChange, placeholder, readOnly = false, action, onAction }: any) => (
+const Input = ({ label, type = 'text', value, onChange, placeholder, readOnly = false, action, onAction, icon: Icon }: any) => (
   <div className="flex flex-col gap-1.5 group">
     <div className="flex justify-between items-end">
         <label className="text-xs font-bold text-slate-500 dark:text-neutral-400 ml-1 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors">{label}</label>
@@ -60,14 +60,21 @@ const Input = ({ label, type = 'text', value, onChange, placeholder, readOnly = 
             </button>
         )}
     </div>
-    <input 
-      type={type} 
-      value={value || ''} 
-      onChange={e => onChange(e.target.value)}
-      placeholder={placeholder}
-      readOnly={readOnly}
-      className={`p-3.5 rounded-xl border ${readOnly ? 'bg-slate-100 dark:bg-neutral-900 text-slate-500 border-black dark:border-neutral-800 cursor-not-allowed' : 'bg-slate-50 dark:bg-neutral-800 border-black dark:border-neutral-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 text-slate-700 dark:text-white'} outline-none text-sm transition-all font-medium`}
-    />
+    <div className="relative">
+        {Icon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-neutral-500 pointer-events-none">
+                <Icon size={18} />
+            </div>
+        )}
+        <input 
+        type={type} 
+        value={value || ''} 
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        className={`w-full p-3.5 ${Icon ? 'pl-10' : ''} rounded-xl border ${readOnly ? 'bg-slate-100 dark:bg-neutral-900 text-slate-500 border-black dark:border-neutral-800 cursor-not-allowed' : 'bg-slate-50 dark:bg-neutral-800 border-black dark:border-neutral-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 text-slate-700 dark:text-white'} outline-none text-sm transition-all font-medium`}
+        />
+    </div>
   </div>
 );
 
@@ -1134,28 +1141,29 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     readOnly 
                     value={new Date(formData.createdAt || Date.now()).toLocaleString()} 
                     onChange={() => {}}
+                    icon={Calendar}
                 />
             </div>
-            <Input label="Start Date" type="date" value={formData.startDate} onChange={(v:any) => handleChange('startDate', v)} action="Now" onAction={() => handleSetCurrentDateTime('start')} />
-            <Input label="Start Time" type="time" value={formData.startTime} onChange={(v:any) => handleChange('startTime', v)} action="Now" onAction={() => handleSetCurrentDateTime('start')} />
-            <Input label="End Date" type="date" value={formData.endDate} onChange={(v:any) => handleChange('endDate', v)} action="Now" onAction={() => handleSetCurrentDateTime('end')} />
-            <Input label="End Time" type="time" value={formData.endTime} onChange={(v:any) => handleChange('endTime', v)} action="Now" onAction={() => handleSetCurrentDateTime('end')} />
-            <Input label="Total Days" readOnly value={formData.totalDays} onChange={() => {}} />
-            <Input label="Total Time" readOnly value={formData.totalTime} onChange={() => {}} />
+            <Input label="Start Date" type="date" value={formData.startDate} onChange={(v:any) => handleChange('startDate', v)} action="Now" onAction={() => handleSetCurrentDateTime('start')} icon={Calendar} />
+            <Input label="Start Time" type="time" value={formData.startTime} onChange={(v:any) => handleChange('startTime', v)} action="Now" onAction={() => handleSetCurrentDateTime('start')} icon={Clock} />
+            <Input label="End Date" type="date" value={formData.endDate} onChange={(v:any) => handleChange('endDate', v)} action="Now" onAction={() => handleSetCurrentDateTime('end')} icon={Calendar} />
+            <Input label="End Time" type="time" value={formData.endTime} onChange={(v:any) => handleChange('endTime', v)} action="Now" onAction={() => handleSetCurrentDateTime('end')} icon={Clock} />
+            <Input label="Total Days" readOnly value={formData.totalDays} onChange={() => {}} icon={Clock} />
+            <Input label="Total Time" readOnly value={formData.totalTime} onChange={() => {}} icon={Clock} />
         </Section>
 
         <Section title="Odometer (KM)" icon={Clock} className="delay-200">
-            <Input label="Checkout KM" type="number" value={formData.checkoutKm} onChange={(v:any) => handleChange('checkoutKm', Number(v))} />
-            <Input label="Check-in KM" type="number" value={formData.checkinKm} onChange={(v:any) => handleChange('checkinKm', Number(v))} />
-            <Input label="Total KM" readOnly value={formData.totalKmTravelled} onChange={() => {}} />
+            <Input label="Checkout KM" type="number" value={formData.checkoutKm} onChange={(v:any) => handleChange('checkoutKm', Number(v))} icon={CarIcon} />
+            <Input label="Check-in KM" type="number" value={formData.checkinKm} onChange={(v:any) => handleChange('checkinKm', Number(v))} icon={CarIcon} />
+            <Input label="Total KM" readOnly value={formData.totalKmTravelled} onChange={() => {}} icon={CarIcon} />
         </Section>
 
         <Section title="Client Details" icon={User} className="delay-300">
-            <Input label="Full Name" value={formData.fullName} onChange={(v:any) => handleChange('fullName', v)} />
-            <Input label="Mobile" type="tel" value={formData.mobile} onChange={(v:any) => handleChange('mobile', v)} />
-            <Input label="Email" type="email" value={formData.email} onChange={(v:any) => handleChange('email', v)} />
+            <Input label="Full Name" value={formData.fullName} onChange={(v:any) => handleChange('fullName', v)} icon={User} />
+            <Input label="Mobile" type="tel" value={formData.mobile} onChange={(v:any) => handleChange('mobile', v)} icon={Phone} />
+            <Input label="Email" type="email" value={formData.email} onChange={(v:any) => handleChange('email', v)} icon={Mail} />
             <div className="col-span-1 md:col-span-2">
-                <Input label="Address" value={formData.address} onChange={(v:any) => handleChange('address', v)} />
+                <Input label="Address" value={formData.address} onChange={(v:any) => handleChange('address', v)} icon={MapPin} />
             </div>
         </Section>
 
@@ -1279,14 +1287,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                  
                  {formData.fastagRecharge === 'Self' && (
                      <div className="col-span-2">
-                        <Input label="Fastag Amount" type="number" value={formData.fastagRechargeAmount} onChange={(v:any) => handleChange('fastagRechargeAmount', Number(v))} />
+                        <Input label="Fastag Amount" type="number" value={formData.fastagRechargeAmount} onChange={(v:any) => handleChange('fastagRechargeAmount', Number(v))} icon={IndianRupee} />
                      </div>
                  )}
 
-                 <Input label="Advance Payment" type="number" value={formData.advancePayment} onChange={(v:any) => handleChange('advancePayment', Number(v))} />
-                 <Input label="Security Deposit" type="number" value={formData.securityDeposit} onChange={(v:any) => handleChange('securityDeposit', Number(v))} />
-                 <Input label="Gross Total" type="number" value={formData.grossTotal} onChange={(v:any) => handleChange('grossTotal', Number(v))} />
-                 <Input label="Total Paid" type="number" value={formData.totalPaid} onChange={(v:any) => handleChange('totalPaid', Number(v))} />
+                 <Input label="Advance Payment" type="number" value={formData.advancePayment} onChange={(v:any) => handleChange('advancePayment', Number(v))} icon={IndianRupee} />
+                 <Input label="Security Deposit" type="number" value={formData.securityDeposit} onChange={(v:any) => handleChange('securityDeposit', Number(v))} icon={IndianRupee} />
+                 <Input label="Gross Total" type="number" value={formData.grossTotal} onChange={(v:any) => handleChange('grossTotal', Number(v))} icon={IndianRupee} />
+                 <Input label="Total Paid" type="number" value={formData.totalPaid} onChange={(v:any) => handleChange('totalPaid', Number(v))} icon={IndianRupee} />
                  
                  <div className="col-span-2 bg-slate-100 dark:bg-neutral-800 p-4 rounded-2xl border border-black dark:border-neutral-700 flex justify-between items-center">
                      <span className="text-sm font-bold text-slate-600 dark:text-neutral-300 uppercase">Net Balance</span>

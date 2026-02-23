@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Car, Booking, BookingStatus, Notification } from '../types';
-import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check } from 'lucide-react';
+import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check, Gauge, Wrench, Clock } from 'lucide-react';
 import { logout, updateCredentials, getCredentials, setPin, removePin, getPin } from '../services/authService';
 import { resetAllOdometers } from '../services/storageService';
 
@@ -644,10 +644,12 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                             </div>
                         </div>
                         <div className="text-right">
-                             <div className="text-xs font-bold text-slate-700 dark:text-neutral-200 bg-slate-50 dark:bg-neutral-800 px-2 py-1 rounded-lg">
-                                {booking.endDate}
+                             <div className="text-xs font-bold text-slate-700 dark:text-neutral-200 bg-slate-50 dark:bg-neutral-800 px-2 py-1 rounded-lg flex items-center gap-1 justify-end">
+                                <CalendarClock size={12} className="text-blue-500" /> {booking.endDate}
                              </div>
-                             <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1">{booking.endTime}</p>
+                             <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 flex items-center gap-1 justify-end">
+                                <Clock size={10} /> {booking.endTime}
+                             </p>
                         </div>
                     </div>
                 ))}
@@ -710,15 +712,21 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 {/* Details Grid - Updated with Revenue */}
                 <div className="grid grid-cols-3 gap-2 mb-4">
                     <div className="bg-slate-50 dark:bg-neutral-800/50 p-2 rounded-xl text-center">
-                        <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold">Odometer</span>
+                        <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold flex justify-center items-center gap-1 mb-1">
+                            <Gauge size={10} /> Odometer
+                        </span>
                         <span className="text-xs font-bold text-slate-700 dark:text-neutral-200">{car.currentKm.toLocaleString()}</span>
                     </div>
                     <div className="bg-slate-50 dark:bg-neutral-800/50 p-2 rounded-xl text-center">
-                         <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold">Revenue</span>
+                         <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold flex justify-center items-center gap-1 mb-1">
+                            <IndianRupee size={10} /> Revenue
+                         </span>
                          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">₹{carRevenue.toLocaleString()}</span>
                     </div>
                     <div className="bg-slate-50 dark:bg-neutral-800/50 p-2 rounded-xl text-center">
-                         <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold">Next Service</span>
+                         <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold flex justify-center items-center gap-1 mb-1">
+                            <Wrench size={10} /> Next Service
+                         </span>
                          <span className="text-xs font-bold text-slate-700 dark:text-neutral-200">{(car.lastServiceKm + car.serviceInterval).toLocaleString()}</span>
                     </div>
                 </div>

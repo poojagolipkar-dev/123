@@ -332,13 +332,15 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 <p className="text-xs font-bold text-slate-700 dark:text-neutral-200">{getCarName(booking.carId)}</p>
               </div>
 
-              {/* Grid Stats */}
+                {/* Grid Stats */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/60 dark:bg-black/20 p-3 rounded-xl text-center border border-black/5 dark:border-white/5">
+                <div className="bg-white/60 dark:bg-black/20 p-3 rounded-xl text-center border border-black/5 dark:border-white/5 relative">
+                    <Calendar size={12} className="absolute top-2 left-2 text-slate-400 dark:text-neutral-600" />
                     <span className="text-[10px] text-slate-500 dark:text-neutral-400 block uppercase font-bold mb-1">Start Date</span>
                     <span className="text-sm font-bold text-slate-800 dark:text-white">{booking.startDate}</span>
                 </div>
-                <div className="bg-white/60 dark:bg-black/20 p-3 rounded-xl text-center border border-black/5 dark:border-white/5">
+                <div className="bg-white/60 dark:bg-black/20 p-3 rounded-xl text-center border border-black/5 dark:border-white/5 relative">
+                    <Calendar size={12} className="absolute top-2 left-2 text-slate-400 dark:text-neutral-600" />
                     <span className="text-[10px] text-slate-500 dark:text-neutral-400 block uppercase font-bold mb-1">End Date</span>
                     <span className="text-sm font-bold text-slate-800 dark:text-white">{booking.endDate}</span>
                 </div>
@@ -346,7 +348,9 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 {/* KM Details Added */}
                 <div className="col-span-2 bg-white/40 dark:bg-black/20 p-3 rounded-xl flex justify-between items-center border border-black/5 dark:border-white/5">
                      <div>
-                        <span className="text-[10px] text-slate-500 dark:text-neutral-400 block uppercase font-bold">Total Distance</span>
+                        <span className="text-[10px] text-slate-500 dark:text-neutral-400 block uppercase font-bold flex items-center gap-1">
+                            <MapPin size={10} /> Total Distance
+                        </span>
                         <span className="font-bold text-slate-800 dark:text-white">{booking.totalKmTravelled} km</span>
                      </div>
                      <div className="text-right">
