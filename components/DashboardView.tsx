@@ -565,18 +565,20 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 <select
                     value={revenueCarId}
                     onChange={(e) => setRevenueCarId(e.target.value)}
-                    className="flex-1 min-w-[140px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
+                    className="flex-1 min-w-[100px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-2 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
                 >
                     <option value="">All Vehicles</option>
                     {cars.map(c => (
-                        <option key={c.id} value={c.id}>{c.name} ({c.plateNumber})</option>
+                        <option key={c.id} value={c.id}>
+                            {c.name.length > 15 ? c.name.substring(0, 15) + '...' : c.name} ({c.plateNumber})
+                        </option>
                     ))}
                 </select>
 
                 <select 
                     value={revenueType} 
                     onChange={(e) => setRevenueType(e.target.value as any)}
-                    className="flex-1 min-w-[140px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
+                    className="flex-1 min-w-[100px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-2 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
                 >
                     <option value="monthly">Monthly</option>
                     <option value="daily">Daily</option>

@@ -108,7 +108,7 @@ const App: React.FC = () => {
   // Keep nav on screen on resize
   useEffect(() => {
     const handleResize = () => {
-        setNavPosition(prev => {
+        setNavPosition((prev: { x: number; y: number }) => {
             const navEl = document.getElementById('floating-nav');
             const width = navEl ? navEl.offsetWidth : 300; // Fallback width
             const height = navEl ? navEl.offsetHeight : 60; // Fallback height

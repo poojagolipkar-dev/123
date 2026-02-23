@@ -223,7 +223,9 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 >
                     <option value="">All Vehicles</option>
                     {cars.map(car => (
-                        <option key={car.id} value={car.id}>{car.name} ({car.plateNumber})</option>
+                        <option key={car.id} value={car.id}>
+                            {car.name.length > 20 ? car.name.substring(0, 20) + '...' : car.name} ({car.plateNumber})
+                        </option>
                     ))}
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
