@@ -396,7 +396,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
     <div className="space-y-6 pb-10 md:p-5">
       <header className="flex justify-between items-center mb-4 animate-enter px-1 relative z-30">
         <div>
-            <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight transition-colors">Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight transition-colors">Dashboard</h1>
             <p className="text-sm text-slate-500 dark:text-neutral-400 font-medium mt-1">Overview & Analytics</p>
         </div>
         <div className="flex items-center gap-2">
@@ -416,7 +416,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                    <div className="absolute -right-2 md:right-0 top-12 w-[calc(100vw-2rem)] sm:w-96 bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 z-50 overflow-hidden animate-scale-in origin-top-right">
+                    <div className="fixed left-4 right-4 top-20 md:absolute md:left-auto md:-right-2 md:top-12 md:w-96 bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 z-50 overflow-hidden animate-scale-in origin-top-right">
                         <div className="p-4 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center bg-slate-50/50 dark:bg-neutral-800/50 backdrop-blur-sm">
                             <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                 <Bell size={16} className="text-blue-500"/> Notifications
@@ -565,7 +565,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 <select
                     value={revenueCarId}
                     onChange={(e) => setRevenueCarId(e.target.value)}
-                    className="flex-1 text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
+                    className="flex-1 min-w-[140px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
                 >
                     <option value="">All Vehicles</option>
                     {cars.map(c => (
@@ -576,7 +576,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 <select 
                     value={revenueType} 
                     onChange={(e) => setRevenueType(e.target.value as any)}
-                    className="flex-1 text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
+                    className="flex-1 min-w-[140px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
                 >
                     <option value="monthly">Monthly</option>
                     <option value="daily">Daily</option>

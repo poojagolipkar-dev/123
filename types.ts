@@ -91,4 +91,4 @@ export interface Notification {
   read: boolean;
 }
 
-export type ViewState = 'dashboard' | 'new_booking' | 'draft' | 'pre_booking' | 'complete' | 'all_bookings';
+export type ViewState = 'dashboard' | 'new_booking' | 'draft' | 'pre_booking' | 'complete' | 'all_bookings' | 'settings';

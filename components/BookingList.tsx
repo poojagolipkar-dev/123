@@ -360,11 +360,11 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 </div>
               </div>
 
-              <div className="flex justify-between items-center pt-3 border-t border-black/5 dark:border-white/5 mt-1">
-                 <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500">
+              <div className="flex flex-wrap justify-between items-center pt-3 border-t border-black/5 dark:border-white/5 mt-1 gap-2">
+                 <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 shrink-0">
                     REF: {booking.id.slice(-8).toUpperCase()}
                  </div>
-                 <div className="flex gap-3">
+                 <div className="flex flex-wrap gap-2 justify-end">
                     {booking.status === BookingStatus.COMPLETED ? (
                         <>
                             <button 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ViewState, Booking, Car, BookingStatus, Notification } from './types';
-import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, FileEdit, Clock, CheckSquare, List, AlertCircle, ArrowRight, Menu, X, Sun, Moon, Settings } from 'lucide-react';
 import DashboardView from './components/DashboardView';
 import BookingForm from './components/BookingForm';
 import BookingList from './components/BookingList';
 import Login from './components/Login';
 import LockScreen from './components/LockScreen';
+
 import Sidebar from './components/Sidebar';
 import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
 import { getNotifications, saveNotification, markAllAsRead, clearNotifications } from './services/notificationService';
@@ -233,6 +234,7 @@ const App: React.FC = () => {
     { id: 'pre_booking', icon: Clock, label: 'Pre-Booking' },
     { id: 'complete', icon: CheckSquare, label: 'Completed' },
     { id: 'all_bookings', icon: List, label: 'All Bookings' },
+    { id: 'settings', icon: Settings, label: 'Settings' },
   ];
 
   if (!isLoggedIn) {
@@ -291,7 +293,7 @@ const App: React.FC = () => {
 
         {/* Mobile Slidable Drawer */}
         <div 
-          className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-neutral-900 z-[101] md:hidden transition-transform duration-500 ease-out shadow-2xl ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`fixed top-0 left-0 h-full w-72 max-w-[85vw] bg-white dark:bg-neutral-900 z-[101] md:hidden transition-transform duration-500 ease-out shadow-2xl ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >
           <div className="flex flex-col h-full">
             <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-neutral-800">
@@ -518,6 +520,15 @@ const App: React.FC = () => {
                 onDelete={handleDeleteBooking}
                 onRefresh={() => setBookings(getBookings())}
               />
+            )}
+
+            {currentView === 'settings' && (
+              <div className="space-y-6 animate-enter p-1 md:p-5">
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-4 tracking-tight animate-slide-in">Settings</h2>
+                <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-neutral-700">
+                  <p className="text-slate-600 dark:text-slate-400">Settings functionality coming soon...</p>
+                </div>
+              </div>
             )}
           </div>
 
