@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Booking, BookingStatus, Car } from '../types';
-import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Mail, Trash2 } from 'lucide-react';
+import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Mail, Trash2, FileEdit } from 'lucide-react';
 import { saveBooking } from '../services/storageService';
 import * as XLSX from 'xlsx';
 import { generateInvoicePDF, viewInvoicePDF, sendInvoiceWhatsApp, sendInvoiceEmail } from '../services/invoiceService';
@@ -369,6 +369,13 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                  <div className="flex flex-wrap gap-2 justify-end">
                     {booking.status === BookingStatus.COMPLETED ? (
                         <>
+                            <button 
+                                onClick={() => onEdit(booking)}
+                                className="p-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-500 hover:text-white transition-all hover:scale-110 shadow-sm border border-blue-200/50 flex items-center justify-center"
+                                title="Edit Booking"
+                            >
+                                <FileEdit size={18} />
+                            </button>
                             <button 
                                 onClick={() => {
                                     const car = cars.find(c => c.id === booking.carId);

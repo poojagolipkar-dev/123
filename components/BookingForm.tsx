@@ -1326,29 +1326,41 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                 Cancel
              </button>
 
-             <button 
-                type="button"
-                onClick={() => handleAction(BookingStatus.DRAFT)}
-                className="col-span-1 py-3 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold rounded-2xl hover:bg-amber-200 dark:hover:bg-amber-900/40 transition-colors active:scale-95 flex items-center justify-center gap-2 border border-amber-200 dark:border-amber-800"
-             >
-                <FileEdit size={18} /> Save Draft
-             </button>
+             {mode === 'edit' && initialData?.status === BookingStatus.COMPLETED ? (
+                 <button 
+                    type="button"
+                    onClick={() => handleAction(BookingStatus.COMPLETED)}
+                    className="col-span-1 py-3 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-blue-700"
+                 >
+                    <FileEdit size={18} /> Update Booking
+                 </button>
+             ) : (
+                 <>
+                     <button 
+                        type="button"
+                        onClick={() => handleAction(BookingStatus.DRAFT)}
+                        className="col-span-1 py-3 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-bold rounded-2xl hover:bg-amber-200 dark:hover:bg-amber-900/40 transition-colors active:scale-95 flex items-center justify-center gap-2 border border-amber-200 dark:border-amber-800"
+                     >
+                        <FileEdit size={18} /> Save Draft
+                     </button>
 
-             <button 
-                type="button"
-                onClick={() => handleAction(BookingStatus.PRE_BOOKING)}
-                className="col-span-2 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-blue-700"
-             >
-                <Clock size={20} /> Save as Pre-Booking
-             </button>
+                     <button 
+                        type="button"
+                        onClick={() => handleAction(BookingStatus.PRE_BOOKING)}
+                        className="col-span-2 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-blue-700"
+                     >
+                        <Clock size={20} /> {mode === 'edit' ? 'Update Pre-Booking' : 'Save as Pre-Booking'}
+                     </button>
 
-             <button 
-                type="button"
-                onClick={() => handleAction(BookingStatus.COMPLETED)}
-                className="col-span-2 py-4 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-emerald-200 dark:shadow-emerald-900/20 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-emerald-700"
-             >
-                <CheckCircle size={20} /> Save as Completed
-             </button>
+                     <button 
+                        type="button"
+                        onClick={() => handleAction(BookingStatus.COMPLETED)}
+                        className="col-span-2 py-4 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-emerald-200 dark:shadow-emerald-900/20 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-emerald-700"
+                     >
+                        <CheckCircle size={20} /> {mode === 'edit' ? 'Update & Complete' : 'Save as Completed'}
+                     </button>
+                 </>
+             )}
         </div>
 
        </div>

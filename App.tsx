@@ -655,9 +655,7 @@ const App: React.FC = () => {
                     <Move size={16} />
                 </div>
 
-                <div className="w-px h-6 bg-white/10 mx-0.5 shrink-0"></div>
-
-                {navItems.map((item) => {
+                {navItems.filter(item => item.id !== 'settings').map((item) => {
                     const isActive = currentView === item.id;
                     const Icon = item.icon;
                     return (
@@ -674,8 +672,6 @@ const App: React.FC = () => {
                     )
                 })}
                 
-                <div className="w-px h-6 bg-white/10 mx-0.5 shrink-0"></div>
-
                 <button
                     onClick={() => setIsDrawerOpen(true)}
                     className="p-2.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors shrink-0"
