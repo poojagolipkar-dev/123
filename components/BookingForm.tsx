@@ -941,7 +941,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
        <div className="px-5 mt-5">
         
         {/* Customer Lookup Section */}
-        <div className="bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-neutral-800 mb-5 animate-enter">
+        <div className="bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-neutral-800 mb-5 animate-enter relative z-30">
             <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-4 border-b border-black dark:border-neutral-800 pb-3">
                 <div className="bg-slate-100 dark:bg-neutral-800 p-1.5 rounded-lg text-slate-700 dark:text-neutral-300">
                     <Users size={16} /> 
@@ -949,7 +949,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                 Customer Lookup
             </h3>
             
-            <div className="relative z-20">
+            <div className="relative z-50">
                 <div className="relative">
                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                         <Search size={18} />

@@ -6,16 +6,18 @@ import BookingForm from './components/BookingForm';
 import BookingList from './components/BookingList';
 import Login from './components/Login';
 import LockScreen from './components/LockScreen';
+import SettingsView from './components/SettingsView';
 
 import Sidebar from './components/Sidebar';
 import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
 import { getNotifications, saveNotification, markAllAsRead, clearNotifications } from './services/notificationService';
-import { isAuthenticated, isAppLocked, setAppLocked, logout } from './services/authService';
+import { isAuthenticated, isAppLocked, setAppLocked, logout, getPin } from './services/authService';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
+  const [showBottomNav, setShowBottomNav] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -179,8 +181,10 @@ const App: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated()) {
       setIsLoggedIn(true);
-      if (isAppLocked()) {
+      if (isAppLocked() && getPin()) {
           setIsLocked(true);
+      } else {
+          setAppLocked(false);
       }
     }
   }, []);
@@ -194,6 +198,8 @@ const App: React.FC = () => {
 
     const resetLockTimer = () => {
       clearTimeout(lockTimer);
+      if (!getPin()) return; // Don't lock if no PIN set
+      
       lockTimer = setTimeout(() => {
         setIsLocked(true);
         setAppLocked(true);
@@ -472,8 +478,8 @@ const App: React.FC = () => {
                 <span className="text-white font-black text-[10px]">S</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-slate-800 dark:text-white tracking-tighter text-[10px] leading-none">SHREE SELF DRIVING</span>
-                <span className="text-[8px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-tight">& CAR RENTAL SERVICE</span>
+                <span className="font-black text-slate-800 dark:text-white tracking-tighter text-sm leading-none font-mono">SHREE SELF DRIVING</span>
+                <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-tight font-mono">& CAR RENTAL SERVICE</span>
               </div>
             </div>
             <div className="w-10" /> {/* Spacer for balance */}
@@ -625,19 +631,23 @@ const App: React.FC = () => {
             )}
 
             {currentView === 'settings' && (
-              <div className="space-y-6 animate-enter p-1 md:p-5">
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-4 tracking-tight animate-slide-in">Settings</h2>
-                <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-neutral-700">
-                  <p className="text-slate-600 dark:text-slate-400">Settings functionality coming soon...</p>
-                </div>
-              </div>
+              <SettingsView 
+                darkMode={darkMode}
+                toggleTheme={toggleTheme}
+                showBottomNav={showBottomNav}
+                toggleBottomNav={() => setShowBottomNav(!showBottomNav)}
+                onLogout={() => {
+                    logout();
+                    setIsLoggedIn(false);
+                }}
+              />
             )}
           </div>
 
           {/* Floating Movable Navigation Bar */}
           <div 
             id="floating-nav"
-            className={`md:hidden fixed z-[999] transition-all duration-500 ease-in-out ${isNavIdle && !isDragging ? 'opacity-0 scale-90 translate-y-10 pointer-events-none' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}
+            className={`md:hidden fixed z-[999] transition-all duration-500 ease-in-out ${!showBottomNav || (isNavIdle && !isDragging) ? 'opacity-0 scale-90 translate-y-10 pointer-events-none' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}
             style={{ 
                 left: navPosition.x, 
                 top: navPosition.y,

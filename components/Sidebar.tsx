@@ -23,8 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
           <span className="text-white font-black text-xl">S</span>
         </div>
         <div>
-          <h1 className="font-black text-slate-800 dark:text-white tracking-tighter leading-none text-sm">SHREE SELF DRIVING</h1>
-          <p className="text-[9px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest mt-0.5">& CAR RENTAL SERVICE</p>
+          <h1 className="font-black text-slate-800 dark:text-white tracking-tighter leading-none text-base font-mono">SHREE SELF DRIVING</h1>
+          <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest mt-0.5 font-mono">& CAR RENTAL SERVICE</p>
         </div>
       </div>
 
