@@ -55,7 +55,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
       </div>
 
-      <div className="bg-white dark:bg-neutral-900 w-full max-w-md p-8 rounded-3xl shadow-2xl border border-white/20 dark:border-neutral-800 relative z-10 animate-scale-in">
+      <div className="bg-white dark:bg-neutral-900 w-full max-w-md p-8 rounded-3xl shadow-2xl border border-white/20 dark:border-crm-border relative z-10 animate-scale-in">
          <div className="text-center mb-8">
             <div className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-500/30 mb-4 transform rotate-3">
                 <ShieldCheck size={40} className="text-white" />

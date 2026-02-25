@@ -144,7 +144,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
       {activeTab === 'general' && (
         <div className="grid gap-4 animate-slide-up">
             {/* Dark Mode Toggle */}
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-neutral-700 flex items-center justify-between group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-crm-border flex items-center justify-between group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
                 <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-amber-100 text-amber-600'}`}>
                         {darkMode ? <Moon size={24} /> : <Sun size={24} />}
@@ -163,7 +163,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
 
             {/* Bottom Nav Toggle */}
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-neutral-700 flex items-center justify-between group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-crm-border flex items-center justify-between group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
                 <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${showBottomNav ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-400'}`}>
                         <Smartphone size={24} />
@@ -186,7 +186,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
       {activeTab === 'security' && (
         <div className="grid gap-6 animate-slide-up">
             {/* App Lock Section */}
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-neutral-700">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-crm-border">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center ${hasPin ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
@@ -249,7 +249,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
 
             {/* Credentials Section */}
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-neutral-700">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-crm-border">
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
                         <User size={24} />

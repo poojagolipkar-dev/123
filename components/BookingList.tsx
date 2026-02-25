@@ -75,7 +75,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
         case BookingStatus.CANCELLED:
             return 'border-slate-200 dark:border-slate-800 border-l-[6px] border-l-slate-400 bg-slate-50 dark:bg-slate-900/50 grayscale opacity-75';
         default:
-            return 'border-black dark:border-neutral-800 bg-white dark:bg-neutral-900';
+            return 'border-black dark:border-crm-border bg-white dark:bg-neutral-900';
     }
   };
 
@@ -180,7 +180,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by client, car, or address..."
-            className="w-full pl-11 pr-10 py-4 bg-white dark:bg-neutral-900 border border-black dark:border-neutral-800 rounded-2xl shadow-sm text-sm outline-none focus:border-blue-500 transition-all text-slate-700 dark:text-white font-medium placeholder:text-slate-400 dark:placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900"
+            className="w-full pl-11 pr-10 py-4 bg-white dark:bg-neutral-900 border border-black dark:border-crm-border rounded-2xl shadow-sm text-sm outline-none focus:border-blue-500 transition-all text-slate-700 dark:text-white font-medium placeholder:text-slate-400 dark:placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900"
         />
         {searchQuery && (
             <button 
@@ -193,7 +193,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
       </div>
 
       {/* Filters Section */}
-      <div className="bg-white dark:bg-neutral-900 p-4 rounded-3xl shadow-sm border border-black dark:border-neutral-800 animate-enter transition-colors delay-75">
+      <div className="bg-white dark:bg-neutral-900 p-4 rounded-3xl shadow-sm border border-black dark:border-crm-border animate-enter transition-colors delay-75">
         <div className="flex items-center gap-2 mb-3">
             <Filter size={16} className="text-blue-600 dark:text-blue-400"/>
             <span className="text-xs font-bold text-slate-800 dark:text-neutral-200 uppercase tracking-wide">Filters</span>

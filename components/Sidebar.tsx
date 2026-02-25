@@ -17,7 +17,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, darkMode }) => {
   return (
-    <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-neutral-900 border-r border-slate-200 dark:border-neutral-800 h-screen transition-colors duration-300">
+    <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-neutral-900 border-r border-slate-200 dark:border-crm-border h-screen transition-colors duration-300">
       <div className="p-6 flex items-center gap-3">
         <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
           <span className="text-white font-black text-xl">S</span>
@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
         })}
       </nav>
 
-      <div className="p-6 border-t border-slate-100 dark:border-neutral-800">
+      <div className="p-6 border-t border-slate-100 dark:border-crm-border">
         <div className="bg-slate-50 dark:bg-neutral-800/50 rounded-2xl p-4">
           <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase mb-2">System Status</p>
           <div className="flex items-center gap-2">

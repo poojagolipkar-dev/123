@@ -33,8 +33,8 @@ interface BookingFormProps {
 
 // Helper Components
 const Section = ({ title, icon: Icon, children, className }: any) => (
-  <div className={`bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-neutral-800 mb-5 animate-enter transition-colors ${className}`}>
-    <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-5 border-b border-black dark:border-neutral-800 pb-3">
+  <div className={`bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-crm-border mb-5 animate-enter transition-colors ${className}`}>
+    <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-5 border-b border-black dark:border-crm-border pb-3">
       <div className="bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-lg text-blue-600 dark:text-blue-400">
         <Icon size={16} /> 
       </div>
@@ -80,7 +80,7 @@ const Input = ({ label, type = 'text', value, onChange, placeholder, readOnly = 
 
 const ClientPhotoUpload = ({ value, onCapture, onUpload, onClear }: any) => {
   return (
-    <div className="relative group overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 shadow-xl border border-black dark:border-neutral-800 transition-all hover:shadow-2xl hover:border-blue-200 dark:hover:border-blue-900 max-w-sm mx-auto">
+    <div className="relative group overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 shadow-xl border border-black dark:border-crm-border transition-all hover:shadow-2xl hover:border-blue-200 dark:hover:border-blue-900 max-w-sm mx-auto">
       <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-500 to-purple-600 opacity-10 dark:opacity-20 z-0"></div>
       
       <div className="relative z-10 flex flex-col items-center p-6 gap-6">
@@ -941,8 +941,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
        <div className="px-5 mt-5">
         
         {/* Customer Lookup Section */}
-        <div className="bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-neutral-800 mb-5 animate-enter relative z-30">
-            <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-4 border-b border-black dark:border-neutral-800 pb-3">
+        <div className="bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-crm-border mb-5 animate-enter relative z-30">
+            <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-4 border-b border-black dark:border-crm-border pb-3">
                 <div className="bg-slate-100 dark:bg-neutral-800 p-1.5 rounded-lg text-slate-700 dark:text-neutral-300">
                     <Users size={16} /> 
                 </div>

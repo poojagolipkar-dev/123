@@ -44,7 +44,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
   return (
     <div className="fixed inset-0 bg-slate-900 z-[200] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-xs flex flex-col items-center animate-enter">
-        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-slate-700">
+        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-crm-border">
           <Lock size={32} className="text-blue-500" />
         </div>
         
