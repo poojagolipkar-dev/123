@@ -179,7 +179,7 @@ const DocumentRow = ({
                {safeFiles.length > 0 && <span className="text-[10px] font-bold text-blue-600 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 rounded-full">{safeFiles.length} Added</span>}
           </div>
           
-          <div className="flex gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
               <input 
                   type="text" 
                   placeholder={placeholder || `${label} Number`}
@@ -192,11 +192,11 @@ const DocumentRow = ({
                   <button
                       type="button" 
                       onClick={onCameraCapture}
-                      className="w-11 h-11 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-800 active:scale-95 transition-all shadow-sm border border-black dark:border-blue-800"
+                      className="flex-1 sm:flex-none w-auto sm:w-11 h-11 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-800 active:scale-95 transition-all shadow-sm border border-black dark:border-blue-800"
                   >
                       <Camera size={20} />
                   </button>
-                  <label className="w-11 h-11 flex items-center justify-center bg-white dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-neutral-700 active:scale-95 transition-all shadow-sm border border-black dark:border-neutral-600">
+                  <label className="flex-1 sm:flex-none w-auto sm:w-11 h-11 flex items-center justify-center bg-white dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-neutral-700 active:scale-95 transition-all shadow-sm border border-black dark:border-neutral-600">
                       <Upload size={20} />
                       <input type="file" accept="image/*,application/pdf" multiple className="hidden" onChange={onFileUpload} />
                   </label>
@@ -213,14 +213,14 @@ const DocumentRow = ({
                                   <span className="text-[9px] font-bold mt-1">PDF</span>
                                </div>
                            ) : (
-                              <img src={file} alt="Doc" className="w-full h-full object-cover" />
+                               <img src={file} alt="Doc" className="w-full h-full object-cover" />
                            )}
                            
                            <button 
-                              onClick={() => onFileRemove(idx)}
-                              className="absolute top-1 right-1 bg-red-500/90 text-white p-1 rounded-full shadow-sm hover:bg-red-600 transition-colors backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover/file:opacity-100"
+                               onClick={() => onFileRemove(idx)}
+                               className="absolute top-1 right-1 bg-red-500/90 text-white p-1 rounded-full shadow-sm hover:bg-red-600 transition-colors backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover/file:opacity-100"
                            >
-                              <X size={10} />
+                               <X size={10} />
                            </button>
                       </div>
                   ))}
@@ -1264,8 +1264,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         </Section>
 
         <Section title="Payment Details" icon={CreditCard} className="delay-500">
-             <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-4">
-                 <div className="col-span-2">
+             <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 <div className="col-span-1 sm:col-span-2">
                      <label className="text-xs font-bold text-slate-500 dark:text-neutral-400 mb-2 block ml-1">Fastag Recharge By</label>
                      <div className="flex gap-2">
                          <button 
@@ -1286,7 +1286,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                  </div>
                  
                  {formData.fastagRecharge === 'Self' && (
-                     <div className="col-span-2">
+                     <div className="col-span-1 sm:col-span-2">
                         <Input label="Fastag Amount" type="number" value={formData.fastagRechargeAmount} onChange={(v:any) => handleChange('fastagRechargeAmount', Number(v))} icon={IndianRupee} />
                      </div>
                  )}
@@ -1296,7 +1296,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                  <Input label="Gross Total" type="number" value={formData.grossTotal} onChange={(v:any) => handleChange('grossTotal', Number(v))} icon={IndianRupee} />
                  <Input label="Total Paid" type="number" value={formData.totalPaid} onChange={(v:any) => handleChange('totalPaid', Number(v))} icon={IndianRupee} />
                  
-                 <div className="col-span-2 bg-slate-100 dark:bg-neutral-800 p-4 rounded-2xl border border-black dark:border-neutral-700 flex justify-between items-center">
+                 <div className="col-span-1 sm:col-span-2 bg-slate-100 dark:bg-neutral-800 p-4 rounded-2xl border border-black dark:border-neutral-700 flex justify-between items-center">
                      <span className="text-sm font-bold text-slate-600 dark:text-neutral-300 uppercase">Net Balance</span>
                      <span className={`text-xl font-extrabold ${(formData.netBalance || 0) > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
                         ₹{formData.netBalance?.toLocaleString() || 0}

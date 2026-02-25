@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Smartphone, Lock, User, Key, Shield, Check, X, Eye, EyeOff, LogOut, AlertCircle } from 'lucide-react';
+import { Moon, Sun, Smartphone, Lock, User, Key, Shield, Check, X, Eye, EyeOff, LogOut, AlertCircle, Database, RefreshCw, Link } from 'lucide-react';
 import { updateCredentials, getCredentials, setPin, getPin, removePin, verifyPin, setAppLocked } from '../services/authService';
+import { getSyncSettings, saveSyncSettings, performSync, restoreFromGoogleSheet, SyncSettings } from '../services/syncService';
 
 interface SettingsViewProps {
   darkMode: boolean;
@@ -17,7 +18,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   toggleBottomNav,
   onLogout
 }) => {
-  const [activeTab, setActiveTab] = useState<'general' | 'security'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'security' | 'sync'>('general');
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   
   // Security State
@@ -33,6 +34,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   const [confirmPin, setConfirmPin] = useState('');
   const [isSettingPin, setIsSettingPin] = useState(false);
 
+  // Sync State
+  const [syncSettings, setSyncSettings] = useState<SyncSettings>({ enabled: false, scriptUrl: '', autoSyncInterval: 60 });
+  const [isSyncing, setIsSyncing] = useState(false);
+
   // Feedback State
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
@@ -41,6 +46,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
     setCredentials(creds);
     setHasPin(!!getPin());
     setNewUsername(creds.username);
+    setSyncSettings(getSyncSettings());
   }, []);
 
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -106,6 +112,40 @@ const SettingsView: React.FC<SettingsViewProps> = ({
     }
   };
 
+  const handleSyncSettingsSave = () => {
+      saveSyncSettings(syncSettings);
+      showMessage('success', 'Sync settings saved');
+  };
+
+  const handleManualSync = async () => {
+      setIsSyncing(true);
+      const result = await performSync();
+      setIsSyncing(false);
+      
+      if (result.success) {
+          showMessage('success', result.message);
+          setSyncSettings(getSyncSettings()); // Refresh to get last synced time
+      } else {
+          showMessage('error', result.message);
+      }
+  };
+
+  const handleRestore = async () => {
+      if (window.confirm('This will overwrite your local data with data from Google Sheets. Are you sure?')) {
+          setIsSyncing(true);
+          const result = await restoreFromGoogleSheet();
+          setIsSyncing(false);
+          
+          if (result.success) {
+              showMessage('success', result.message);
+              // Optionally reload or refresh data
+              window.location.reload();
+          } else {
+              showMessage('error', result.message);
+          }
+      }
+  };
+
   return (
     <div className="space-y-6 animate-enter p-1 md:p-5 pb-24">
       <div className="flex items-center justify-between mb-6">
@@ -119,24 +159,30 @@ const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="flex p-1 bg-slate-100 dark:bg-neutral-800 rounded-xl mb-6 w-full md:w-fit">
+      <div className="flex p-1 bg-slate-100 dark:bg-neutral-800 rounded-xl mb-6 w-full md:w-fit overflow-x-auto">
         <button 
             onClick={() => setActiveTab('general')}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'general' ? 'bg-white dark:bg-neutral-700 text-blue-600 dark:text-white shadow-sm' : 'text-slate-500 dark:text-neutral-400 hover:text-slate-700'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'general' ? 'bg-white dark:bg-neutral-700 text-blue-600 dark:text-white shadow-sm' : 'text-slate-500 dark:text-neutral-400 hover:text-slate-700'}`}
         >
             General
         </button>
         <button 
             onClick={() => setActiveTab('security')}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'security' ? 'bg-white dark:bg-neutral-700 text-blue-600 dark:text-white shadow-sm' : 'text-slate-500 dark:text-neutral-400 hover:text-slate-700'}`}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'security' ? 'bg-white dark:bg-neutral-700 text-blue-600 dark:text-white shadow-sm' : 'text-slate-500 dark:text-neutral-400 hover:text-slate-700'}`}
         >
             Security
+        </button>
+        <button 
+            onClick={() => setActiveTab('sync')}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'sync' ? 'bg-white dark:bg-neutral-700 text-blue-600 dark:text-white shadow-sm' : 'text-slate-500 dark:text-neutral-400 hover:text-slate-700'}`}
+        >
+            Data Sync
         </button>
       </div>
 
       {message && (
         <div className={`p-4 rounded-xl mb-6 animate-fade-in flex items-center gap-3 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-            {message.type === 'success' ? <Check size={20} /> : <AlertCircle size={20} />} // Note: AlertCircle needs import if used
+            {message.type === 'success' ? <Check size={20} /> : <AlertCircle size={20} />}
             <span className="font-medium">{message.text}</span>
         </div>
       )}
@@ -332,6 +378,96 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                 </form>
             </div>
         </div>
+      )}
+
+      {activeTab === 'sync' && (
+          <div className="grid gap-6 animate-slide-up">
+              <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-crm-border">
+                  <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                          <Database size={24} />
+                      </div>
+                      <div>
+                          <h3 className="font-bold text-slate-800 dark:text-white text-lg">Google Sheet Sync</h3>
+                          <p className="text-slate-500 dark:text-neutral-400 text-sm">Automatically sync your data to Google Sheets</p>
+                      </div>
+                  </div>
+
+                  <div className="space-y-4">
+                      <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Google Apps Script URL</label>
+                          <div className="relative">
+                              <Link size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                              <input 
+                                  type="text" 
+                                  value={syncSettings.scriptUrl}
+                                  onChange={(e) => setSyncSettings({...syncSettings, scriptUrl: e.target.value})}
+                                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 transition-all text-slate-800 dark:text-white font-medium"
+                                  placeholder="https://script.google.com/macros/s/..."
+                              />
+                          </div>
+                          <p className="text-[10px] text-slate-400 mt-1">Deploy your Google Apps Script as a Web App and paste the URL here.</p>
+                      </div>
+
+                      <div className="flex items-center justify-between bg-slate-50 dark:bg-neutral-900 p-4 rounded-xl border border-slate-200 dark:border-neutral-700">
+                          <div>
+                              <h4 className="font-bold text-slate-800 dark:text-white text-sm">Automatic Sync</h4>
+                              <p className="text-xs text-slate-500 dark:text-neutral-400">Sync data in background periodically</p>
+                          </div>
+                          <button 
+                              onClick={() => setSyncSettings({...syncSettings, enabled: !syncSettings.enabled})}
+                              className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ease-in-out ${syncSettings.enabled ? 'bg-green-500' : 'bg-slate-300 dark:bg-neutral-700'}`}
+                          >
+                              <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${syncSettings.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                          </button>
+                      </div>
+
+                      {syncSettings.enabled && (
+                          <div>
+                              <label className="block text-xs font-bold text-slate-500 mb-1">Sync Frequency (Minutes)</label>
+                              <input 
+                                  type="number" 
+                                  min="15"
+                                  value={syncSettings.autoSyncInterval}
+                                  onChange={(e) => setSyncSettings({...syncSettings, autoSyncInterval: parseInt(e.target.value) || 60})}
+                                  className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 transition-all text-slate-800 dark:text-white font-medium"
+                              />
+                          </div>
+                      )}
+
+                      <div className="pt-4 flex gap-3 flex-wrap">
+                          <button 
+                              onClick={handleSyncSettingsSave}
+                              className="flex-1 py-3 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:opacity-90 transition-opacity"
+                          >
+                              Save Settings
+                          </button>
+                          <button 
+                              onClick={handleManualSync}
+                              disabled={isSyncing || !syncSettings.scriptUrl}
+                              className={`flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 transition-all ${isSyncing ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-green-50 text-green-600 hover:bg-green-100 border border-green-200'}`}
+                          >
+                              <RefreshCw size={18} className={isSyncing ? 'animate-spin' : ''} /> 
+                              {isSyncing ? 'Syncing...' : 'Sync Now'}
+                          </button>
+                          <button 
+                              onClick={handleRestore}
+                              disabled={isSyncing || !syncSettings.scriptUrl}
+                              className={`flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 transition-all ${isSyncing ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'}`}
+                          >
+                              <Database size={18} /> 
+                              Restore
+                          </button>
+                      </div>
+
+                      {syncSettings.lastSynced && (
+                          <p className="text-center text-xs text-slate-400 mt-2">
+                              Last synced: {syncSettings.lastSynced}
+                          </p>
+                      )}
+                  </div>
+              </div>
+          </div>
       )}
     </div>
   );

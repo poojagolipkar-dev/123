@@ -257,11 +257,11 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-2 px-1 animate-enter delay-100">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 px-1 animate-enter delay-100 gap-3">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight transition-colors">
           {getTitle()}
         </h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
             <>
                 <input 
                     type="file" 
@@ -272,14 +272,14 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 />
                 <button 
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center gap-1.5 bg-white dark:bg-neutral-900 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl text-xs font-bold border border-blue-200 dark:border-blue-800/50 shadow-sm active:scale-95 transition-transform hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white dark:bg-neutral-900 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl text-xs font-bold border border-blue-200 dark:border-blue-800/50 shadow-sm active:scale-95 transition-transform hover:bg-blue-50 dark:hover:bg-blue-900/20 whitespace-nowrap"
                 >
                     <Upload size={14} /> Import Data
                 </button>
             </>
             <button 
                 onClick={handleExportCSV}
-                className="flex items-center gap-1.5 bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-200 px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-neutral-800 shadow-sm active:scale-95 transition-transform hover:bg-slate-50 dark:hover:bg-neutral-800"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-200 px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-neutral-800 shadow-sm active:scale-95 transition-transform hover:bg-slate-50 dark:hover:bg-neutral-800 whitespace-nowrap"
             >
                 <Download size={14} /> Export CSV
             </button>

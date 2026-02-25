@@ -12,12 +12,13 @@ import Sidebar from './components/Sidebar';
 import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
 import { getNotifications, saveNotification, markAllAsRead, clearNotifications } from './services/notificationService';
 import { isAuthenticated, isAppLocked, setAppLocked, logout, getPin } from './services/authService';
+import { getSyncSettings, performSync } from './services/syncService';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
-  const [showBottomNav, setShowBottomNav] = useState(true);
+  const [showBottomNav, setShowBottomNav] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -216,6 +217,33 @@ const App: React.FC = () => {
       events.forEach(event => window.removeEventListener(event, resetLockTimer, true));
     };
   }, [isLoggedIn, isLocked]);
+
+  // Auto-Sync Implementation
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let syncTimer: NodeJS.Timeout;
+
+    const runSync = async () => {
+        const settings = getSyncSettings();
+        if (settings.enabled && settings.scriptUrl) {
+            console.log('Performing auto-sync...');
+            await performSync();
+        }
+        
+        // Schedule next run based on current settings
+        const nextSettings = getSyncSettings();
+        if (nextSettings.enabled) {
+            const intervalMs = Math.max(15, nextSettings.autoSyncInterval) * 60 * 1000;
+            syncTimer = setTimeout(runSync, intervalMs);
+        }
+    };
+
+    // Initial delay to not block startup
+    syncTimer = setTimeout(runSync, 5000);
+
+    return () => clearTimeout(syncTimer);
+  }, [isLoggedIn]);
 
   // Load Data on Mount (only if logged in, but we can load anyway for readiness)
   useEffect(() => {
