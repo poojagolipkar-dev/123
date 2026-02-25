@@ -46,7 +46,7 @@ const App: React.FC = () => {
         if (idleTimer.current) clearTimeout(idleTimer.current);
         idleTimer.current = setTimeout(() => {
             setIsNavIdle(true);
-        }, 2000);
+        }, 500);
     };
 
     const events = ['mousedown', 'mousemove', 'touchstart', 'touchmove', 'scroll', 'click', 'keydown'];
@@ -637,7 +637,7 @@ const App: React.FC = () => {
           {/* Floating Movable Navigation Bar */}
           <div 
             id="floating-nav"
-            className={`md:hidden fixed z-[999] transition-all duration-500 ease-in-out ${isNavIdle && !isDragging ? 'opacity-30 hover:opacity-100 scale-90 translate-y-10 blur-[1px]' : 'opacity-100 scale-100 translate-y-0 blur-0'}`}
+            className={`md:hidden fixed z-[999] transition-all duration-500 ease-in-out ${isNavIdle && !isDragging ? 'opacity-0 scale-90 translate-y-10 pointer-events-none' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}
             style={{ 
                 left: navPosition.x, 
                 top: navPosition.y,
