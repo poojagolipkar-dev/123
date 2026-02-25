@@ -439,7 +439,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                             </div>
                         </div>
                         
-                        <div className="max-h-[60vh] overflow-y-auto">
+                        <div className="max-h-[300px] overflow-y-auto overscroll-contain">
                             {notifications.length === 0 ? (
                                 <div className="p-8 text-center text-slate-400 dark:text-neutral-500 flex flex-col items-center gap-2">
                                     <Bell size={32} className="opacity-20" />
