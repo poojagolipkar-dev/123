@@ -1024,34 +1024,41 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
 
        {/* Preview Modal */}
        {previewImage && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-enter" onClick={() => { setPreviewImage(null); setExtractedText(null); }}>
-            <div className="relative max-w-6xl w-full max-h-[90vh] flex flex-col md:flex-row gap-6 items-center justify-center" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-enter" onClick={() => { setPreviewImage(null); setExtractedText(null); }}>
+            <div className="relative max-w-6xl w-full flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center" onClick={e => e.stopPropagation()}>
+                
+                {/* Close Button - Mobile (Inside) / Desktop (Outside) */}
                 <button 
                     onClick={() => { setPreviewImage(null); setExtractedText(null); }}
-                    className="absolute -top-12 right-0 p-2 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors active:scale-95 z-50"
+                    className="absolute top-2 right-2 md:-top-12 md:right-0 p-2 bg-black/50 md:bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors active:scale-95 z-[60]"
                 >
                     <X size={24} />
                 </button>
                 
-                <div className={`relative transition-all duration-300 ${extractedText ? 'w-full md:w-1/2 h-[40vh] md:h-[80vh]' : 'w-full h-[80vh]'}`}>
-                    <img src={previewImage} alt="Preview" className="w-full h-full object-contain rounded-2xl shadow-2xl border border-white/10 bg-black" />
+                <div className={`relative transition-all duration-300 bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${extractedText ? 'w-full md:w-1/2 h-[40vh] md:h-[80vh]' : 'w-full h-[60vh] md:h-[80vh]'}`}>
+                    <img src={previewImage} alt="Preview" className="w-full h-full object-contain" />
                     
                     {!extractedText && (
-                        <button 
-                            onClick={handleExtractText}
-                            disabled={isExtractingText}
-                            className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:bg-slate-100 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed z-50"
-                        >
-                            {isExtractingText ? (
-                                <>
-                                    <Loader2 size={20} className="animate-spin" /> Extracting...
-                                </>
-                            ) : (
-                                <>
-                                    <ScanText size={20} /> Extract Text
-                                </>
-                            )}
-                        </button>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex justify-center pb-8">
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleExtractText();
+                                }}
+                                disabled={isExtractingText}
+                                className="bg-white text-black px-8 py-4 rounded-full font-bold shadow-xl hover:bg-slate-100 active:scale-95 transition-all flex items-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed z-50 text-sm md:text-base"
+                            >
+                                {isExtractingText ? (
+                                    <>
+                                        <Loader2 size={20} className="animate-spin" /> Extracting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <ScanText size={20} /> Extract Text
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     )}
                 </div>
 
@@ -1078,7 +1085,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                                 </button>
                             </div>
                         </div>
-                        <div className="flex-1 p-6 overflow-y-auto bg-slate-50 dark:bg-neutral-950 font-mono text-sm leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                        <div className="flex-1 p-6 overflow-y-auto bg-slate-50 dark:bg-neutral-950 font-mono text-sm leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-wrap select-text">
                             {extractedText}
                         </div>
                     </div>
