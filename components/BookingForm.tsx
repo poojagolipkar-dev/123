@@ -354,6 +354,36 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
   const [isExtractingText, setIsExtractingText] = useState(false);
   const [extractedText, setExtractedText] = useState<string | null>(null);
 
+  const compressImage = (base64Str: string, maxWidth = 1024, maxHeight = 1024): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+    });
+  };
+
   const handleExtractText = async () => {
     if (!previewImage) return;
     
@@ -363,8 +393,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
         
+        // Compress image to ensure it fits within payload limits and processes faster on mobile
+        const compressedImage = await compressImage(previewImage);
+
         // Extract base64 data and mime type
-        const matches = previewImage.match(/^data:(.+);base64,(.+)$/);
+        const matches = compressedImage.match(/^data:(.+);base64,(.+)$/);
         if (!matches || matches.length !== 3) {
             throw new Error("Invalid image format");
         }
@@ -1007,7 +1040,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                         <button 
                             onClick={handleExtractText}
                             disabled={isExtractingText}
-                            className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:bg-slate-100 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:bg-slate-100 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed z-50"
                         >
                             {isExtractingText ? (
                                 <>
