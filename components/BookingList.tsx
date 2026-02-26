@@ -306,7 +306,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
               <div className="flex justify-between items-start">
                 <div className="flex gap-3 items-center flex-1">
                    {/* Avatar */}
-                   <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-black/20 overflow-hidden shrink-0 border border-black/10 dark:border-white/10 shadow-sm">
+                   <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-black/20 overflow-hidden shrink-0 border-2 border-[#D6F527] shadow-sm">
                       {booking.clientPhoto ? (
                           <img src={booking.clientPhoto} alt={booking.fullName} className="w-full h-full object-cover" />
                       ) : (

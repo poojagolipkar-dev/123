@@ -80,18 +80,24 @@ const Input = ({ label, type = 'text', value, onChange, placeholder, readOnly = 
 
 const ClientPhotoUpload = ({ value, onCapture, onUpload, onClear }: any) => {
   return (
-    <div className="relative group overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 shadow-xl border border-black dark:border-crm-border transition-all hover:shadow-2xl hover:border-blue-200 dark:hover:border-blue-900 max-w-sm mx-auto">
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-500 to-purple-600 opacity-10 dark:opacity-20 z-0"></div>
+    <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-br from-white to-slate-50 dark:from-neutral-900 dark:to-black shadow-2xl border border-slate-100 dark:border-neutral-800 transition-all hover:shadow-blue-500/10 max-w-sm mx-auto p-1">
+      {/* Premium Gradient Border Effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
       
-      <div className="relative z-10 flex flex-col items-center p-6 gap-6">
-        <div className="relative">
-            <div className={`w-40 h-40 rounded-full flex items-center justify-center overflow-hidden shadow-2xl border-4 transition-all duration-500 bg-white dark:bg-neutral-800 ${value ? 'border-black scale-100' : 'border-white dark:border-neutral-700 scale-100'}`}>
+      <div className="relative z-10 flex flex-col items-center p-8 gap-8 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm rounded-[20px]">
+        
+        {/* Photo Container */}
+        <div className="relative group/photo">
+            {/* Animated Ring */}
+            <div className={`absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-75 blur-sm transition-all duration-500 ${value ? 'animate-spin-slow opacity-100' : 'opacity-0'}`}></div>
+            
+            <div className={`relative w-48 h-48 rounded-full flex items-center justify-center overflow-hidden shadow-2xl border-[6px] transition-all duration-500 bg-slate-100 dark:bg-neutral-800 ${value ? 'border-[#D6F527] scale-100' : 'border-white dark:border-neutral-700 scale-100'}`}>
             {value ? (
                 <img src={value} alt="Client" className="w-full h-full object-cover animate-scale-in" />
             ) : (
-                <div className="flex flex-col items-center justify-center text-slate-300 dark:text-neutral-600">
-                    <User size={80} strokeWidth={1} />
-                    <span className="text-[10px] font-bold mt-2 uppercase tracking-widest opacity-50">No Photo</span>
+                <div className="flex flex-col items-center justify-center text-slate-300 dark:text-neutral-600 group-hover/photo:text-blue-500 transition-colors duration-300">
+                    <User size={64} strokeWidth={1.5} />
+                    <span className="text-[10px] font-bold mt-3 uppercase tracking-[0.2em] opacity-60">Add Photo</span>
                 </div>
             )}
             </div>
@@ -100,48 +106,45 @@ const ClientPhotoUpload = ({ value, onCapture, onUpload, onClear }: any) => {
                 <button 
                     type="button"
                     onClick={onClear}
-                    className="absolute top-1 right-1 p-2 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-all active:scale-90 z-20"
+                    className="absolute top-2 right-2 p-2.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 hover:scale-110 transition-all active:scale-90 z-20 border-2 border-white dark:border-black"
                 >
-                    <X size={16} strokeWidth={3} />
+                    <X size={18} strokeWidth={2.5} />
                 </button>
             )}
 
             {!value && (
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg animate-pulse border-2 border-white dark:border-neutral-800 whitespace-nowrap">
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-red-500 to-pink-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg shadow-red-500/30 animate-bounce border-2 border-white dark:border-black whitespace-nowrap tracking-wider">
                     REQUIRED
                 </div>
             )}
         </div>
 
-        <div className="w-full space-y-3">
-             <div className="grid grid-cols-2 gap-3 w-full">
-                <button
-                    type="button"
-                    onClick={onCapture}
-                    className="flex flex-col items-center justify-center gap-2 py-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl border border-blue-100 dark:border-blue-900/50 active:scale-95 transition-all hover:bg-blue-100 dark:hover:bg-blue-900/40 group/btn"
-                >
-                    <div className="p-2 bg-white dark:bg-blue-900/50 rounded-full shadow-sm group-hover/btn:scale-110 transition-transform">
-                        <Camera size={20} />
-                    </div>
-                    <span className="text-[10px] font-extrabold tracking-wider uppercase">Camera</span>
-                </button>
+        {/* Action Buttons */}
+        <div className="w-full grid grid-cols-2 gap-4">
+            <button
+                type="button"
+                onClick={onCapture}
+                className="relative overflow-hidden flex flex-col items-center justify-center gap-2 py-4 bg-slate-900 dark:bg-white text-white dark:text-black rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95 group/btn"
+            >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                    <Camera size={24} className="group-hover/btn:scale-110 transition-transform duration-300" />
+                    <span className="text-[10px] font-black tracking-widest uppercase">Camera</span>
+                </div>
+            </button>
 
-                <label className="flex flex-col items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-neutral-800/50 text-slate-600 dark:text-neutral-300 rounded-2xl border border-slate-200 dark:border-neutral-700 cursor-pointer active:scale-95 transition-all hover:bg-slate-100 dark:hover:bg-neutral-800 group/btn">
-                    <div className="p-2 bg-white dark:bg-neutral-700 rounded-full shadow-sm group-hover/btn:scale-110 transition-transform">
-                        <Upload size={20} />
-                    </div>
-                    <span className="text-[10px] font-extrabold tracking-wider uppercase">Upload</span>
-                    <input 
-                        type="file" 
-                        accept="image/*" 
-                        className="hidden" 
-                        onChange={onUpload}
-                    />
-                </label>
-            </div>
-             <p className="text-[10px] text-slate-400 dark:text-neutral-500 font-medium text-center">
-                Tap buttons to add client face photo
-            </p>
+            <label className="relative overflow-hidden flex flex-col items-center justify-center gap-2 py-4 bg-white dark:bg-neutral-800 text-slate-900 dark:text-white rounded-2xl shadow-lg border border-slate-100 dark:border-neutral-700 hover:border-blue-500/50 hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95 cursor-pointer group/btn">
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                    <Upload size={24} className="text-slate-400 dark:text-neutral-500 group-hover/btn:text-blue-500 transition-colors duration-300 group-hover/btn:scale-110 transition-transform" />
+                    <span className="text-[10px] font-black tracking-widest uppercase text-slate-500 dark:text-neutral-400 group-hover/btn:text-blue-600 dark:group-hover/btn:text-blue-400 transition-colors">Upload</span>
+                </div>
+                <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={onUpload}
+                />
+            </label>
         </div>
       </div>
     </div>
