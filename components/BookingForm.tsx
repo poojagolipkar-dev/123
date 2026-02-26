@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Booking, BookingStatus, Car } from '../types';
-import { Camera, MapPin, Upload, Calendar, Clock, CreditCard, Save, X, User, FileEdit, CheckCircle, Loader2, CheckSquare, Trash2, FileText, SwitchCamera, Zap, ZapOff, Sun, RefreshCw, Aperture, PlayCircle, Search, Locate, Layers, Globe, ArrowLeft, AlertCircle, AlertTriangle, Car as CarIcon, Home, Users, Satellite, KeyRound, Lock, Unlock, Phone, Mail, FileText as FileIcon, IndianRupee } from 'lucide-react';
+import { Camera, MapPin, Upload, Calendar, Clock, CreditCard, Save, X, User, FileEdit, CheckCircle, Loader2, CheckSquare, Trash2, FileText, SwitchCamera, Zap, ZapOff, Sun, RefreshCw, Aperture, PlayCircle, Search, Locate, Layers, Globe, ArrowLeft, AlertCircle, AlertTriangle, Car as CarIcon, Home, Users, Satellite, KeyRound, Lock, Unlock, Phone, Mail, FileText as FileIcon, IndianRupee, ScanText, Copy } from 'lucide-react';
 import { saveDraft, clearDraft, generateNextBookingId, getBookings } from '../services/storageService';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import { GoogleGenAI } from "@google/genai";
 
 // --- OpenStreetMap / Leaflet Config ---
 // Fix Leaflet's default icon path issues in React
@@ -350,6 +351,60 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
   const [isLocationLocked, setIsLocationLocked] = useState(false);
   const [mapMode, setMapMode] = useState<'street' | 'satellite'>('street');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isExtractingText, setIsExtractingText] = useState(false);
+  const [extractedText, setExtractedText] = useState<string | null>(null);
+
+  const handleExtractText = async () => {
+    if (!previewImage) return;
+    
+    setIsExtractingText(true);
+    setExtractedText(null);
+    
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        
+        // Extract base64 data and mime type
+        const matches = previewImage.match(/^data:(.+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            throw new Error("Invalid image format");
+        }
+        
+        const mimeType = matches[1];
+        const base64Data = matches[2];
+
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: {
+                parts: [
+                    {
+                        inlineData: {
+                            mimeType: mimeType,
+                            data: base64Data
+                        }
+                    },
+                    {
+                        text: "Extract all readable text from this image. The document may contain marathi Hindi and English text. Preserve original formatting, line breaks, and punctuation. Do not translate the text. If any word is unclear, mark it as [uncertain]. Return only the extracted text."
+                    }
+                ]
+            }
+        });
+        
+        setExtractedText(response.text || "No text found.");
+    } catch (error) {
+        console.error("Text extraction failed", error);
+        setNotification("Failed to extract text. Please try again.");
+    } finally {
+        setIsExtractingText(false);
+    }
+  };
+
+  const handleCopyText = () => {
+      if (extractedText) {
+          navigator.clipboard.writeText(extractedText);
+          setNotification("Text copied to clipboard!");
+          setTimeout(() => setNotification(''), 2000);
+      }
+  };
 
   // Customer Lookup State
   const [searchTerm, setSearchTerm] = useState('');
@@ -936,15 +991,65 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
 
        {/* Preview Modal */}
        {previewImage && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-enter" onClick={() => setPreviewImage(null)}>
-            <div className="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center justify-center" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-enter" onClick={() => { setPreviewImage(null); setExtractedText(null); }}>
+            <div className="relative max-w-6xl w-full max-h-[90vh] flex flex-col md:flex-row gap-6 items-center justify-center" onClick={e => e.stopPropagation()}>
                 <button 
-                    onClick={() => setPreviewImage(null)}
-                    className="absolute -top-12 right-0 p-2 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors active:scale-95"
+                    onClick={() => { setPreviewImage(null); setExtractedText(null); }}
+                    className="absolute -top-12 right-0 p-2 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors active:scale-95 z-50"
                 >
                     <X size={24} />
                 </button>
-                <img src={previewImage} alt="Preview" className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10" />
+                
+                <div className={`relative transition-all duration-300 ${extractedText ? 'w-full md:w-1/2 h-[40vh] md:h-[80vh]' : 'w-full h-[80vh]'}`}>
+                    <img src={previewImage} alt="Preview" className="w-full h-full object-contain rounded-2xl shadow-2xl border border-white/10 bg-black" />
+                    
+                    {!extractedText && (
+                        <button 
+                            onClick={handleExtractText}
+                            disabled={isExtractingText}
+                            className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full font-bold shadow-xl hover:bg-slate-100 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            {isExtractingText ? (
+                                <>
+                                    <Loader2 size={20} className="animate-spin" /> Extracting...
+                                </>
+                            ) : (
+                                <>
+                                    <ScanText size={20} /> Extract Text
+                                </>
+                            )}
+                        </button>
+                    )}
+                </div>
+
+                {extractedText && (
+                    <div className="w-full md:w-1/2 h-[40vh] md:h-[80vh] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 flex flex-col overflow-hidden animate-slide-up">
+                        <div className="p-4 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center bg-slate-50 dark:bg-neutral-800/50">
+                            <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <FileText size={18} className="text-blue-500" /> Extracted Text
+                            </h3>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={handleCopyText}
+                                    className="p-2 hover:bg-slate-200 dark:hover:bg-neutral-700 rounded-lg text-slate-600 dark:text-neutral-400 transition-colors"
+                                    title="Copy to Clipboard"
+                                >
+                                    <Copy size={18} />
+                                </button>
+                                <button 
+                                    onClick={() => setExtractedText(null)}
+                                    className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 rounded-lg transition-colors"
+                                    title="Close Text View"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex-1 p-6 overflow-y-auto bg-slate-50 dark:bg-neutral-950 font-mono text-sm leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                            {extractedText}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
        )}
