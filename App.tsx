@@ -404,9 +404,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-screen h-[100dvh] w-full flex justify-center items-center p-0 transition-colors duration-500 overflow-hidden">
-      {/* App Container - Full Screen on Desktop */}
-      <div className="w-full h-full bg-slate-50/80 dark:bg-black/95 backdrop-blur-2xl shadow-2xl flex relative overflow-hidden border-0">
+    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-slate-50 dark:bg-black">
+      {/* App Container - Full Screen */}
+      <div className="w-full h-full flex relative overflow-hidden">
         
         {/* Left Sidebar - Visible on Desktop */}
         <Sidebar 
@@ -491,10 +491,11 @@ const App: React.FC = () => {
         <main 
           ref={mainRef}
           key={currentView} 
-          className="flex-1 overflow-y-auto scroll-smooth relative h-full flex flex-col"
+          className="flex-1 overflow-y-auto scroll-smooth relative h-full flex flex-col w-full"
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {/* Mobile Top Bar */}
-          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-crm-border sticky top-0 z-40">
+          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-crm-border sticky top-0 z-40 shrink-0">
             <button 
               onClick={() => setIsDrawerOpen(true)}
               className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
@@ -513,7 +514,7 @@ const App: React.FC = () => {
             <div className="w-10" /> {/* Spacer for balance */}
           </div>
 
-          <div className="w-full min-h-full px-3 md:px-8 pb-40 pt-4 md:pt-6">
+          <div className="w-full px-3 md:px-8 pb-32 pt-4 md:pt-6 flex-1">
             {currentView === 'dashboard' && (
               <DashboardView 
                 cars={cars} 
