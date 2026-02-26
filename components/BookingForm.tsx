@@ -858,66 +858,68 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
           </button>
        </div>
 
-       {/* Camera Modal */}
+       {/* Camera Modal - Floating Card */}
        {showCamera && (
-        <div className="fixed inset-0 z-[100] bg-black flex flex-col animate-enter">
-           <div className={`absolute inset-0 bg-white pointer-events-none transition-opacity duration-75 z-50 ${screenFlash ? 'opacity-100' : 'opacity-0'}`}></div>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none p-4 sm:p-8">
+           <div className="pointer-events-auto w-full max-w-md bg-black rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col h-[85vh] relative animate-enter">
+               <div className={`absolute inset-0 bg-white pointer-events-none transition-opacity duration-75 z-50 ${screenFlash ? 'opacity-100' : 'opacity-0'}`}></div>
 
-           <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
-              <div className="flex gap-4">
+               <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
+                  <div className="flex gap-4">
+                      <button 
+                        onClick={toggleFlash}
+                        className="bg-black/40 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform border border-white/10"
+                      >
+                            {getFlashIcon()}
+                      </button>
+                  </div>
+                  <span className="text-white/90 font-bold text-sm tracking-widest uppercase drop-shadow-md">Photo</span>
                   <button 
-                    onClick={toggleFlash}
-                    className="bg-black/40 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform border border-white/10"
+                    onClick={stopCamera}
+                    className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white active:scale-90 transition-transform hover:bg-red-500/50"
                   >
-                        {getFlashIcon()}
+                    <X size={24} />
                   </button>
-              </div>
-              <span className="text-white/90 font-bold text-sm tracking-widest uppercase drop-shadow-md">Photo</span>
-              <button 
-                onClick={stopCamera}
-                className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white active:scale-90 transition-transform hover:bg-red-500/50"
-              >
-                <X size={24} />
-              </button>
-           </div>
-           
-           <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center">
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
-                muted
-                className={`w-full h-full object-cover transition-transform duration-500 ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
-              />
-              <div className="absolute inset-0 pointer-events-none opacity-20">
-                 <div className="w-full h-full border-2 border-white/20 grid grid-cols-3 grid-rows-3">
-                    <div className="border-r border-b border-white/20"></div>
-                    <div className="border-r border-b border-white/20"></div>
-                    <div className="border-b border-white/20"></div>
-                    <div className="border-r border-b border-white/20"></div>
-                    <div className="border-r border-b border-white/20"></div>
-                    <div className="border-b border-white/20"></div>
-                    <div className="border-r border-white/20"></div>
-                    <div className="border-r border-white/20"></div>
-                    <div></div>
-                 </div>
-              </div>
-           </div>
+               </div>
+               
+               <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center">
+                  <video 
+                    ref={videoRef} 
+                    autoPlay 
+                    playsInline 
+                    muted
+                    className={`w-full h-full object-cover transition-transform duration-500 ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+                  />
+                  <div className="absolute inset-0 pointer-events-none opacity-20">
+                     <div className="w-full h-full border-2 border-white/20 grid grid-cols-3 grid-rows-3">
+                        <div className="border-r border-b border-white/20"></div>
+                        <div className="border-r border-b border-white/20"></div>
+                        <div className="border-b border-white/20"></div>
+                        <div className="border-r border-b border-white/20"></div>
+                        <div className="border-r border-b border-white/20"></div>
+                        <div className="border-b border-white/20"></div>
+                        <div className="border-r border-white/20"></div>
+                        <div className="border-r border-white/20"></div>
+                        <div></div>
+                     </div>
+                  </div>
+               </div>
 
-           <div className="h-32 bg-black/90 backdrop-blur-sm flex items-center justify-around pb-8 pt-4 px-6">
-              <div className="w-10 h-10 rounded-lg bg-white/10 border border-white/20"></div>
-              <button 
-                onClick={capturePhoto}
-                className="w-20 h-20 rounded-full bg-white border-4 border-slate-300 flex items-center justify-center active:scale-90 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-              >
-                 <div className="w-16 h-16 rounded-full bg-white border-[3px] border-slate-900" />
-              </button>
-              <button 
-                 onClick={switchCamera}
-                 className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white active:scale-90 transition-all active:rotate-180"
-              >
-                 <RefreshCw size={20} />
-              </button>
+               <div className="h-32 bg-black/90 backdrop-blur-sm flex items-center justify-around pb-4 pt-4 px-6">
+                  <div className="w-10 h-10 rounded-lg bg-white/10 border border-white/20"></div>
+                  <button 
+                    onClick={capturePhoto}
+                    className="w-20 h-20 rounded-full bg-white border-4 border-slate-300 flex items-center justify-center active:scale-90 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                  >
+                     <div className="w-16 h-16 rounded-full bg-white border-[3px] border-slate-900" />
+                  </button>
+                  <button 
+                     onClick={switchCamera}
+                     className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white active:scale-90 transition-all active:rotate-180"
+                  >
+                     <RefreshCw size={20} />
+                  </button>
+               </div>
            </div>
         </div>
        )}

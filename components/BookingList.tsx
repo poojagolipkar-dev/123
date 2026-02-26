@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Booking, BookingStatus, Car } from '../types';
-import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Mail, Trash2, FileEdit } from 'lucide-react';
+import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Trash2, FileEdit } from 'lucide-react';
 import { saveBooking } from '../services/storageService';
 import * as XLSX from 'xlsx';
-import { generateInvoicePDF, viewInvoicePDF, sendInvoiceWhatsApp, sendInvoiceEmail } from '../services/invoiceService';
+import { generateInvoicePDF, viewInvoicePDF, sendInvoiceWhatsApp } from '../services/invoiceService';
 
 interface BookingListProps {
   bookings: Booking[];
@@ -396,16 +396,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                             >
                                 <MessageCircle size={18} />
                             </button>
-                            <button 
-                                onClick={() => {
-                                    const car = cars.find(c => c.id === booking.carId);
-                                    if (car) sendInvoiceEmail(booking, car);
-                                }}
-                                className="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full hover:bg-red-500 hover:text-white transition-all hover:scale-110 shadow-sm border border-red-200/50 flex items-center justify-center"
-                                title="Send via Email"
-                            >
-                                <Mail size={18} />
-                            </button>
+
                             <button 
                                 onClick={() => {
                                     const car = cars.find(c => c.id === booking.carId);

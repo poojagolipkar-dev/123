@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Smartphone, Lock, User, Key, Shield, Check, X, Eye, EyeOff, LogOut, AlertCircle, Database, RefreshCw, Link } from 'lucide-react';
+import { Moon, Sun, Smartphone, Lock, User, Key, Shield, Check, X, Eye, EyeOff, LogOut, AlertCircle, Database, RefreshCw, Link, Save } from 'lucide-react';
 import { updateCredentials, getCredentials, setPin, getPin, removePin, verifyPin, setAppLocked } from '../services/authService';
 import { getSyncSettings, saveSyncSettings, performSync, restoreFromGoogleSheet, SyncSettings } from '../services/syncService';
 
@@ -246,16 +246,25 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                     {hasPin ? (
                         <button 
                             onClick={handleRemovePin}
-                            className="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors"
+                            className="px-6 py-2.5 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-red-500/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
                         >
+                            <Shield size={16} />
                             Disable Lock
                         </button>
                     ) : (
                         <button 
                             onClick={() => setIsSettingPin(!isSettingPin)}
-                            className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-bold hover:bg-blue-100 transition-colors"
+                            className={`px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 ${isSettingPin ? 'bg-slate-100 text-slate-600 dark:bg-neutral-700 dark:text-neutral-300' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-blue-500/30'}`}
                         >
-                            {isSettingPin ? 'Cancel' : 'Setup PIN'}
+                            {isSettingPin ? (
+                                <>
+                                    <X size={16} /> Cancel
+                                </>
+                            ) : (
+                                <>
+                                    <Shield size={16} /> Setup PIN
+                                </>
+                            )}
                         </button>
                     )}
                 </div>
@@ -435,28 +444,31 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                           </div>
                       )}
 
-                      <div className="pt-4 flex gap-3 flex-wrap">
+                      <div className="pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
                           <button 
                               onClick={handleSyncSettingsSave}
-                              className="flex-1 py-3 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:opacity-90 transition-opacity"
+                              className="py-4 px-6 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-2xl hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 active:scale-95"
                           >
-                              Save Settings
+                              <Save size={20} />
+                              <span>Save Config</span>
                           </button>
+                          
                           <button 
                               onClick={handleManualSync}
                               disabled={isSyncing || !syncSettings.scriptUrl}
-                              className={`flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 transition-all ${isSyncing ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-green-50 text-green-600 hover:bg-green-100 border border-green-200'}`}
+                              className={`py-4 px-6 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all border-2 active:scale-95 ${isSyncing ? 'bg-slate-100 text-slate-400 border-transparent cursor-not-allowed' : 'bg-white dark:bg-neutral-800 text-green-600 dark:text-green-400 border-green-100 dark:border-green-900/30 hover:border-green-500 dark:hover:border-green-500 hover:shadow-md hover:-translate-y-0.5'}`}
                           >
-                              <RefreshCw size={18} className={isSyncing ? 'animate-spin' : ''} /> 
-                              {isSyncing ? 'Syncing...' : 'Sync Now'}
+                              <RefreshCw size={20} className={isSyncing ? 'animate-spin' : ''} /> 
+                              <span>{isSyncing ? 'Syncing...' : 'Sync Data'}</span>
                           </button>
+
                           <button 
                               onClick={handleRestore}
                               disabled={isSyncing || !syncSettings.scriptUrl}
-                              className={`flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 transition-all ${isSyncing ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'}`}
+                              className={`py-4 px-6 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all border-2 active:scale-95 ${isSyncing ? 'bg-slate-100 text-slate-400 border-transparent cursor-not-allowed' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/30 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md hover:-translate-y-0.5'}`}
                           >
-                              <Database size={18} /> 
-                              Restore
+                              <Database size={20} /> 
+                              <span>Restore Data</span>
                           </button>
                       </div>
 

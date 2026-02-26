@@ -238,12 +238,7 @@ export const sendInvoiceWhatsApp = (booking: Booking, car: Car) => {
   window.open(url, '_blank');
 };
 
-export const sendInvoiceEmail = (booking: Booking, car: Car) => {
-  const subject = `Invoice INV-${booking.id} - Shree Self Driving Cars`;
-  const body = generateInvoiceText(booking, car);
-  const url = `mailto:${booking.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.open(url, '_blank');
-};
+
 
 export const shareInvoiceNative = async (booking: Booking, car: Car) => {
   const doc = new jsPDF();
