@@ -1447,29 +1447,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
              <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                  <div className="col-span-1 sm:col-span-2">
                      <label className="text-xs font-bold text-slate-500 dark:text-neutral-400 mb-2 block ml-1">Fastag Recharge By</label>
-                     <div className="flex gap-2">
-                         <button 
-                            type="button"
-                            onClick={() => handleChange('fastagRecharge', 'Client')}
-                            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors border ${formData.fastagRecharge === 'Client' ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 dark:bg-neutral-800 text-slate-600 dark:text-neutral-400 border-black dark:border-neutral-700'}`}
-                         >
-                            Client
-                         </button>
-                         <button 
-                            type="button"
-                            onClick={() => handleChange('fastagRecharge', 'Self')}
-                            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors border ${formData.fastagRecharge === 'Self' ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 dark:bg-neutral-800 text-slate-600 dark:text-neutral-400 border-black dark:border-neutral-700'}`}
-                         >
-                            Self
-                         </button>
-                     </div>
+                     <select
+                        value={formData.fastagRecharge || 'Client'}
+                        onChange={(e) => handleChange('fastagRecharge', e.target.value)}
+                        className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-neutral-800 border border-black dark:border-neutral-700 outline-none font-medium text-slate-700 dark:text-white text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all"
+                     >
+                        <option value="Client">Client</option>
+                        <option value="Vehicle Owner">Vehicle Owner</option>
+                     </select>
                  </div>
                  
-                 {formData.fastagRecharge === 'Self' && (
-                     <div className="col-span-1 sm:col-span-2">
-                        <Input label="Fastag Amount" type="number" value={formData.fastagRechargeAmount} onChange={(v:any) => handleChange('fastagRechargeAmount', Number(v))} icon={IndianRupee} />
-                     </div>
-                 )}
+                 <div className="col-span-1 sm:col-span-2">
+                    <Input label="Fastag Amount" type="number" value={formData.fastagRechargeAmount} onChange={(v:any) => handleChange('fastagRechargeAmount', Number(v))} icon={IndianRupee} />
+                 </div>
 
                  <Input label="Advance Payment" type="number" value={formData.advancePayment} onChange={(v:any) => handleChange('advancePayment', Number(v))} icon={IndianRupee} />
                  <Input label="Security Deposit" type="number" value={formData.securityDeposit} onChange={(v:any) => handleChange('securityDeposit', Number(v))} icon={IndianRupee} />

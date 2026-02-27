@@ -72,7 +72,7 @@ export interface Booking {
   otherDocs?: string[];
 
   // Payment
-  fastagRecharge: 'Client' | 'Self';
+  fastagRecharge: 'Client' | 'Self' | 'Vehicle Owner';
   fastagRechargeAmount?: number;
   advancePayment: number;
   securityDeposit: number;
