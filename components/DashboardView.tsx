@@ -500,62 +500,63 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       {/* --- Quick Stats Cards --- */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 animate-enter delay-75">
           {/* Card 1: Pending Balance */}
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-black p-4 rounded-3xl text-white flex flex-col justify-between shadow-lg shadow-slate-300 dark:shadow-black/50 border border-white/10 dark:border-neutral-800">
-             <div className="bg-white/10 w-8 h-8 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm">
-                <Wallet size={16} className="text-blue-300" />
+          <div className="bg-white dark:bg-neutral-900 p-5 rounded-[2rem] flex flex-col justify-between shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-neutral-800 group hover:scale-[1.02] transition-all duration-300">
+             <div className="bg-primary-50 dark:bg-primary-900/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary-500 transition-colors duration-300">
+                <Wallet size={24} className="text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors duration-300" />
              </div>
              <div>
-                <span className="text-[10px] sm:text-xs text-slate-400 font-medium block">Outstanding</span>
-                <span className="text-lg sm:text-xl font-bold tracking-tight">₹{stats.pendingAmount.toLocaleString()}</span>
+                <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider block mb-1">Outstanding</span>
+                <span className="text-2xl font-black tracking-tight text-slate-800 dark:text-white">₹{stats.pendingAmount.toLocaleString()}</span>
              </div>
           </div>
 
           {/* Card 1b: Total Collected */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-900 p-4 rounded-3xl text-white flex flex-col justify-between shadow-lg shadow-blue-200 dark:shadow-blue-900/40 border border-white/10">
-             <div className="bg-white/10 w-8 h-8 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm">
-                <IndianRupee size={16} className="text-white" />
+          <div className="bg-primary-500 dark:bg-primary-600 p-5 rounded-[2rem] text-white flex flex-col justify-between shadow-xl shadow-primary-200 dark:shadow-primary-900/40 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+             <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm">
+                <IndianRupee size={24} className="text-white" />
              </div>
-             <div>
-                <span className="text-[10px] sm:text-xs text-blue-100 font-medium block">Total Collected</span>
-                <span className="text-lg sm:text-xl font-bold tracking-tight">₹{stats.totalCollected.toLocaleString()}</span>
+             <div className="relative z-10">
+                <span className="text-xs text-primary-100 font-bold uppercase tracking-wider block mb-1">Total Collected</span>
+                <span className="text-2xl font-black tracking-tight">₹{stats.totalCollected.toLocaleString()}</span>
              </div>
           </div>
 
           {/* Card 2: Active Trips */}
-          <div className="bg-white dark:bg-neutral-900 border border-black dark:border-crm-border p-4 rounded-3xl flex flex-col justify-between shadow-sm transition-colors">
-             <div className="bg-blue-50 dark:bg-blue-900/30 w-8 h-8 rounded-full flex items-center justify-center mb-4">
-                <Activity size={16} className="text-blue-600 dark:text-blue-400" />
+          <div className="bg-white dark:bg-neutral-900 p-5 rounded-[2rem] flex flex-col justify-between shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-neutral-800 group hover:scale-[1.02] transition-all duration-300">
+             <div className="bg-slate-50 dark:bg-neutral-800 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors duration-300">
+                <Activity size={24} className="text-slate-600 dark:text-neutral-400 group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
              </div>
              <div>
-                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-neutral-400 font-medium block">Active Trips</span>
+                <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider block mb-1">Active Trips</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">{stats.activeTrips}</span>
-                    <span className="text-[10px] text-slate-400 dark:text-neutral-500">/ {bookings.length}</span>
+                    <span className="text-2xl font-black text-slate-800 dark:text-white">{stats.activeTrips}</span>
+                    <span className="text-xs text-slate-400 dark:text-neutral-500 font-medium">/ {bookings.length}</span>
                 </div>
              </div>
           </div>
 
           {/* Card 3: Fleet Status */}
-          <div className="bg-white dark:bg-neutral-900 border border-black dark:border-crm-border p-4 rounded-3xl flex flex-col justify-between shadow-sm transition-colors">
-             <div className="bg-emerald-50 dark:bg-emerald-900/30 w-8 h-8 rounded-full flex items-center justify-center mb-4">
-                <CarIcon size={16} className="text-emerald-600 dark:text-emerald-400" />
+          <div className="bg-white dark:bg-neutral-900 p-5 rounded-[2rem] flex flex-col justify-between shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-neutral-800 group hover:scale-[1.02] transition-all duration-300">
+             <div className="bg-emerald-50 dark:bg-emerald-900/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 transition-colors duration-300">
+                <CarIcon size={24} className="text-emerald-600 dark:text-emerald-400 group-hover:text-white transition-colors duration-300" />
              </div>
              <div>
-                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-neutral-400 font-medium block">Available Cars</span>
+                <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider block mb-1">Available Cars</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">{stats.available}</span>
-                    <span className="text-[10px] text-slate-400 dark:text-neutral-500">/ {stats.totalCars}</span>
+                    <span className="text-2xl font-black text-slate-800 dark:text-white">{stats.available}</span>
+                    <span className="text-xs text-slate-400 dark:text-neutral-500 font-medium">/ {stats.totalCars}</span>
                 </div>
              </div>
           </div>
       </div>
 
       {/* --- Revenue Chart Section --- */}
-      <div className="bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-black dark:border-crm-border animate-scale-in delay-100 transition-colors">
+      <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-neutral-800 animate-scale-in delay-100 transition-colors">
         <div className="flex flex-col gap-4 mb-6">
             <div className="flex justify-between items-center">
-                <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                    <TrendingUp size={18} className="text-blue-600 dark:text-blue-400" /> 
+                <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2 text-lg">
+                    <TrendingUp size={20} className="text-primary-600 dark:text-primary-400" /> 
                     Collected Revenue
                     <span className="text-slate-400 dark:text-neutral-500 text-sm font-normal">(₹{totalChartRevenue.toLocaleString()})</span>
                 </h2>
@@ -565,7 +566,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 <select
                     value={revenueCarId}
                     onChange={(e) => setRevenueCarId(e.target.value)}
-                    className="flex-1 min-w-[100px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-2 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
+                    className="flex-1 min-w-[120px] text-sm bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900 font-medium transition-colors"
                 >
                     <option value="">All Vehicles</option>
                     {cars.map(c => (
@@ -578,7 +579,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 <select 
                     value={revenueType} 
                     onChange={(e) => setRevenueType(e.target.value as any)}
-                    className="flex-1 min-w-[100px] text-xs bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-lg px-2 py-2 outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 font-medium transition-colors"
+                    className="flex-1 min-w-[120px] text-sm bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900 font-medium transition-colors"
                 >
                     <option value="monthly">Monthly</option>
                     <option value="daily">Daily</option>
@@ -588,37 +589,37 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 </select>
                 
                 {revenueType === 'custom' && (
-                    <div className="flex gap-1 flex-[2] w-full sm:w-auto">
-                        <input type="date" className="w-full text-[10px] p-1 border rounded-lg bg-slate-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white" value={customDateRange.start} onChange={e => setCustomDateRange({...customDateRange, start: e.target.value})} />
-                        <input type="date" className="w-full text-[10px] p-1 border rounded-lg bg-slate-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white" value={customDateRange.end} onChange={e => setCustomDateRange({...customDateRange, end: e.target.value})} />
+                    <div className="flex gap-2 flex-[2] w-full sm:w-auto">
+                        <input type="date" className="w-full text-xs p-2.5 border rounded-xl bg-slate-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white" value={customDateRange.start} onChange={e => setCustomDateRange({...customDateRange, start: e.target.value})} />
+                        <input type="date" className="w-full text-xs p-2.5 border rounded-xl bg-slate-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white" value={customDateRange.end} onChange={e => setCustomDateRange({...customDateRange, end: e.target.value})} />
                     </div>
                 )}
             </div>
         </div>
         
-        <div className="h-48 w-full">
+        <div className="h-64 w-full">
           {chartData.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-slate-400 dark:text-neutral-500 text-xs bg-slate-50/50 dark:bg-neutral-900/30 rounded-2xl border-2 border-dashed border-slate-100 dark:border-neutral-800 transition-colors">
-                 <TrendingUp size={24} className="mb-2 opacity-50"/>
+            <div className="h-full flex flex-col items-center justify-center text-slate-400 dark:text-neutral-500 text-sm bg-slate-50/50 dark:bg-neutral-900/30 rounded-2xl border-2 border-dashed border-slate-100 dark:border-neutral-800 transition-colors">
+                 <TrendingUp size={32} className="mb-3 opacity-50"/>
                  <span>No billing data found for selected period</span>
-                 {revenueType === 'custom' && !customDateRange.start && <span className="mt-1 text-[10px] text-blue-500">Select dates to view data</span>}
+                 {revenueType === 'custom' && !customDateRange.start && <span className="mt-1 text-xs text-primary-500">Select dates to view data</span>}
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#262626" : "#f1f5f9"} />
-                <XAxis dataKey="name" tick={{fontSize: 9, fill: darkMode ? '#a3a3a3' : '#64748b'}} axisLine={false} tickLine={false} dy={10} interval={0} />
+                <XAxis dataKey="name" tick={{fontSize: 10, fill: darkMode ? '#a3a3a3' : '#64748b'}} axisLine={false} tickLine={false} dy={10} interval={0} />
                 <YAxis hide />
                 <Tooltip 
                     cursor={{fill: darkMode ? '#171717' : '#f8fafc'}}
-                    contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: darkMode ? '#171717' : '#fff', color: darkMode ? '#fff' : '#000'}}
+                    contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', backgroundColor: darkMode ? '#171717' : '#fff', color: darkMode ? '#fff' : '#000', padding: '12px'}}
                     formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
                 />
                 <Bar 
                     dataKey="amt" 
-                    fill={darkMode ? "#3b82f6" : "#2563eb"} 
-                    radius={[6, 6, 0, 0]} 
-                    barSize={24} 
+                    fill="#FF6B2C" 
+                    radius={[8, 8, 0, 0]} 
+                    barSize={32} 
                     animationDuration={1000} 
                 />
                 </BarChart>
@@ -630,27 +631,27 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       {/* --- Upcoming Returns Section --- */}
       {upcomingReturns.length > 0 && (
           <div className="animate-enter delay-150">
-            <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-3 px-1 text-sm uppercase tracking-wide">
-                <CalendarClock size={16} className="text-blue-600 dark:text-blue-400" /> Upcoming Returns
+            <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4 px-1 text-sm uppercase tracking-wide">
+                <CalendarClock size={18} className="text-primary-600 dark:text-primary-400" /> Upcoming Returns
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {upcomingReturns.map(booking => (
-                    <div key={booking.id} className="bg-white dark:bg-neutral-900 p-4 rounded-2xl border border-black dark:border-crm-border shadow-sm flex justify-between items-center transition-colors">
-                        <div className="flex gap-3 items-center">
-                            <div className="bg-slate-100 dark:bg-neutral-800 p-2 rounded-xl text-slate-500 dark:text-neutral-400">
-                                <CarIcon size={18} />
+                    <div key={booking.id} className="bg-white dark:bg-neutral-900 p-5 rounded-[1.5rem] border border-slate-100 dark:border-neutral-800 shadow-lg shadow-slate-200/50 dark:shadow-none flex justify-between items-center transition-colors hover:scale-[1.02] duration-300">
+                        <div className="flex gap-4 items-center">
+                            <div className="bg-slate-50 dark:bg-neutral-800 p-3 rounded-2xl text-slate-500 dark:text-neutral-400">
+                                <CarIcon size={20} />
                             </div>
                             <div>
-                                <h4 className="font-bold text-slate-800 dark:text-white text-sm">{getCarName(booking.carId)}</h4>
+                                <h4 className="font-bold text-slate-800 dark:text-white text-base">{getCarName(booking.carId)}</h4>
                                 <p className="text-xs text-slate-500 dark:text-neutral-400 font-medium">{booking.fullName}</p>
                             </div>
                         </div>
                         <div className="text-right">
-                             <div className="text-xs font-bold text-slate-700 dark:text-neutral-200 bg-slate-50 dark:bg-neutral-800 px-2 py-1 rounded-lg flex items-center gap-1 justify-end">
-                                <CalendarClock size={12} className="text-blue-500" /> {booking.endDate}
+                             <div className="text-xs font-bold text-slate-700 dark:text-neutral-200 bg-slate-50 dark:bg-neutral-800 px-3 py-1.5 rounded-lg flex items-center gap-1 justify-end">
+                                <CalendarClock size={14} className="text-primary-500" /> {booking.endDate}
                              </div>
                              <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 flex items-center gap-1 justify-end">
-                                <Clock size={10} /> {booking.endTime}
+                                <Clock size={12} /> {booking.endTime}
                              </p>
                         </div>
                     </div>
@@ -661,20 +662,20 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
       {/* --- Fleet Folder Section --- */}
       <div>
-        <div className="flex justify-between items-center mb-4 px-1 animate-enter delay-200 mt-4">
-          <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2 text-lg">
-            <Folder size={20} className="text-blue-600 dark:text-blue-400" /> Fleet
+        <div className="flex justify-between items-center mb-6 px-1 animate-enter delay-200 mt-8">
+          <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2 text-xl">
+            <Folder size={24} className="text-primary-600 dark:text-primary-400" /> Fleet
           </h2>
           <button 
             onClick={openAddModal}
-            className="bg-slate-900 dark:bg-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform hover:bg-slate-800 hover:rotate-90 duration-300"
+            className="bg-slate-900 dark:bg-primary-600 text-white p-3 rounded-2xl shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform hover:bg-slate-800 hover:rotate-90 duration-300"
           >
-            <Plus size={20} />
+            <Plus size={24} />
           </button>
         </div>
 
         {/* Updated Grid for XL screens */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {cars.map((car, index) => {
             const kmDrivenSinceService = car.currentKm - car.lastServiceKm;
             const needsService = kmDrivenSinceService >= car.serviceInterval;
@@ -689,19 +690,19 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
             const delayClass = index === 0 ? 'delay-200' : index === 1 ? 'delay-300' : 'delay-400';
 
             return (
-              <div key={car.id} className={`bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-crm-border relative overflow-hidden group hover:shadow-xl transition-all duration-300 animate-enter ${delayClass}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-3">
-                    <div className="bg-blue-50 dark:bg-blue-900/20 p-1 rounded-2xl h-14 w-14 shrink-0 overflow-hidden flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform duration-300 border border-blue-100 dark:border-blue-900/50">
+              <div key={car.id} className={`bg-white dark:bg-neutral-900 p-6 rounded-[2rem] shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-neutral-800 relative overflow-hidden group hover:shadow-xl transition-all duration-300 animate-enter ${delayClass}`}>
+                <div className="flex justify-between items-start mb-5">
+                  <div className="flex gap-4">
+                    <div className="bg-primary-50 dark:bg-primary-900/20 p-1 rounded-2xl h-16 w-16 shrink-0 overflow-hidden flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-105 transition-transform duration-300 border border-primary-100 dark:border-primary-900/50">
                         {car.imageUrl ? (
                              <img src={car.imageUrl} alt={car.name} className="w-full h-full object-cover rounded-xl" />
                         ) : (
-                             <CarIcon size={24} />
+                             <CarIcon size={28} />
                         )}
                     </div>
                     <div>
-                        <h3 className="font-bold text-slate-800 dark:text-white text-lg">{car.name}</h3>
-                        <p className="text-xs text-slate-500 dark:text-neutral-400 font-mono bg-slate-100 dark:bg-neutral-800 px-2 py-0.5 rounded inline-block mt-1">{car.plateNumber}</p>
+                        <h3 className="font-bold text-slate-800 dark:text-white text-xl">{car.name}</h3>
+                        <p className="text-xs text-slate-500 dark:text-neutral-400 font-mono bg-slate-100 dark:bg-neutral-800 px-2 py-1 rounded-lg inline-block mt-1">{car.plateNumber}</p>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -712,65 +713,65 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 </div>
 
                 {/* Details Grid - Updated with Revenue */}
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                    <div className="bg-slate-50 dark:bg-neutral-800/50 p-2 rounded-xl text-center">
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                    <div className="bg-slate-50 dark:bg-neutral-800/50 p-3 rounded-2xl text-center">
                         <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold flex justify-center items-center gap-1 mb-1">
-                            <Gauge size={10} /> Odometer
+                            <Gauge size={12} /> Odometer
                         </span>
-                        <span className="text-xs font-bold text-slate-700 dark:text-neutral-200">{car.currentKm.toLocaleString()}</span>
+                        <span className="text-sm font-bold text-slate-700 dark:text-neutral-200">{car.currentKm.toLocaleString()}</span>
                     </div>
-                    <div className="bg-slate-50 dark:bg-neutral-800/50 p-2 rounded-xl text-center">
+                    <div className="bg-slate-50 dark:bg-neutral-800/50 p-3 rounded-2xl text-center">
                          <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold flex justify-center items-center gap-1 mb-1">
-                            <IndianRupee size={10} /> Revenue
+                            <IndianRupee size={12} /> Revenue
                          </span>
-                         <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">₹{carRevenue.toLocaleString()}</span>
+                         <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">₹{carRevenue.toLocaleString()}</span>
                     </div>
-                    <div className="bg-slate-50 dark:bg-neutral-800/50 p-2 rounded-xl text-center">
+                    <div className="bg-slate-50 dark:bg-neutral-800/50 p-3 rounded-2xl text-center">
                          <span className="text-[9px] text-slate-400 dark:text-neutral-500 block uppercase font-bold flex justify-center items-center gap-1 mb-1">
-                            <Wrench size={10} /> Next Service
+                            <Wrench size={12} /> Next Service
                          </span>
-                         <span className="text-xs font-bold text-slate-700 dark:text-neutral-200">{(car.lastServiceKm + car.serviceInterval).toLocaleString()}</span>
+                         <span className="text-sm font-bold text-slate-700 dark:text-neutral-200">{(car.lastServiceKm + car.serviceInterval).toLocaleString()}</span>
                     </div>
                 </div>
 
                 {/* Service Tracker */}
-                <div className="mb-4">
+                <div className="mb-5">
                   <div className="flex justify-between text-xs mb-2">
                     <span className={needsService ? "text-red-500 dark:text-red-400 font-bold flex items-center gap-1" : "text-slate-500 dark:text-neutral-400 font-medium"}>
-                      {needsService && <AlertTriangle size={12} className="animate-bounce" />}
+                      {needsService && <AlertTriangle size={14} className="animate-bounce" />}
                       Service Health
                     </span>
                     <span className="text-slate-400 dark:text-neutral-500 font-medium">{Math.round(serviceProgress)}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-neutral-800 rounded-full h-2.5 overflow-hidden">
+                  <div className="w-full bg-slate-100 dark:bg-neutral-800 rounded-full h-3 overflow-hidden">
                     <div 
-                      className={`h-full rounded-full transition-all duration-1000 ease-out ${needsService ? 'bg-red-500' : 'bg-blue-500'}`} 
+                      className={`h-full rounded-full transition-all duration-1000 ease-out ${needsService ? 'bg-red-500' : 'bg-primary-500'}`} 
                       style={{ width: `${serviceProgress}%` }}
                     ></div>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2 border-t border-slate-100 dark:border-neutral-800 pt-3">
+                <div className="flex gap-3 border-t border-slate-100 dark:border-neutral-800 pt-4">
                    {needsService && (
                     <button 
                       onClick={() => handleServiceUpdate(car)}
-                      className="flex-1 text-xs bg-emerald-600 text-white py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-emerald-700 transition-colors active:scale-95 shadow-lg shadow-emerald-200 dark:shadow-none"
+                      className="flex-1 text-xs bg-emerald-600 text-white py-3 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-emerald-700 transition-colors active:scale-95 shadow-lg shadow-emerald-200 dark:shadow-none"
                     >
-                      <CheckCircle size={14} /> Service Done
+                      <CheckCircle size={16} /> Service Done
                     </button>
                   )}
                   <button 
                       onClick={() => openEditModal(car)}
-                      className="flex-1 text-xs bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-neutral-200 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors active:scale-95"
+                      className="flex-1 text-xs bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-neutral-200 py-3 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors active:scale-95"
                     >
-                      <Edit size={14} /> Edit
+                      <Edit size={16} /> Edit
                     </button>
                    <button 
                       onClick={() => onDeleteCar(car.id)}
-                      className="w-10 text-xs bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors active:scale-95"
+                      className="w-12 text-xs bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 py-3 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors active:scale-95"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={16} />
                     </button>
                 </div>
               </div>

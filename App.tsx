@@ -683,15 +683,15 @@ const App: React.FC = () => {
                 touchAction: 'none' 
             }}
           >
-            <nav className="bg-slate-900/90 dark:bg-neutral-800/90 backdrop-blur-xl text-white p-1.5 rounded-full shadow-2xl flex items-center gap-1 border border-white/10 relative max-w-[92vw] overflow-x-auto no-scrollbar">
+            <nav className="bg-[#1F2937] text-white p-2 rounded-full shadow-2xl flex items-center gap-2 border border-white/5 relative max-w-[92vw] overflow-x-auto no-scrollbar">
                 
                 {/* Drag Handle */}
                 <div 
-                    className="p-2 cursor-move text-slate-500 hover:text-white active:text-blue-400 shrink-0"
+                    className="p-3 cursor-move text-gray-400 hover:text-white active:text-primary-400 shrink-0"
                     onMouseDown={handleDragStart}
                     onTouchStart={handleDragStart}
                 >
-                    <Move size={16} />
+                    <Move size={18} />
                 </div>
 
                 {navItems.filter(item => item.id !== 'settings').map((item) => {
@@ -704,18 +704,18 @@ const App: React.FC = () => {
                                 setCurrentView(item.id as ViewState);
                                 setEditingBooking(null);
                             }}
-                            className={`p-2.5 rounded-full transition-all duration-200 flex items-center justify-center shrink-0 ${isActive ? 'bg-blue-600 text-white shadow-lg scale-110' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                            className={`p-3.5 rounded-full transition-all duration-300 flex items-center justify-center shrink-0 ${isActive ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30 scale-110' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
                         >
-                            <Icon size={18} />
+                            <Icon size={20} />
                         </button>
                     )
                 })}
                 
                 <button
                     onClick={() => setIsDrawerOpen(true)}
-                    className="p-2.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors shrink-0"
+                    className="p-3.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors shrink-0"
                 >
-                    <Menu size={18} />
+                    <Menu size={20} />
                 </button>
             </nav>
           </div>
