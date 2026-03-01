@@ -161,7 +161,8 @@ const DocumentRow = ({
   onFileUpload, 
   onCameraCapture, 
   onFileRemove,
-  onPreview
+  onPreview,
+  onExtractText
 }: {
   label: string, 
   idValue: string, 
@@ -171,7 +172,8 @@ const DocumentRow = ({
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void, 
   onCameraCapture: () => void,
   onFileRemove: (index: number) => void,
-  onPreview: (file: string) => void
+  onPreview: (file: string) => void,
+  onExtractText?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
   // Ensure files is an array to prevent "map is not a function" error (handles corrupt data/strings)
   const safeFiles = Array.isArray(files) ? files : [];
@@ -199,13 +201,20 @@ const DocumentRow = ({
                       type="button" 
                       onClick={onCameraCapture}
                       className="flex-1 sm:flex-none w-auto sm:w-11 h-11 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-800 active:scale-95 transition-all shadow-sm border border-black dark:border-blue-800"
+                      title="Camera"
                   >
                       <Camera size={20} />
                   </button>
-                  <label className="flex-1 sm:flex-none w-auto sm:w-11 h-11 flex items-center justify-center bg-white dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-neutral-700 active:scale-95 transition-all shadow-sm border border-black dark:border-neutral-600">
+                  <label className="flex-1 sm:flex-none w-auto sm:w-11 h-11 flex items-center justify-center bg-white dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-neutral-700 active:scale-95 transition-all shadow-sm border border-black dark:border-neutral-600" title="Upload Document">
                       <Upload size={20} />
                       <input type="file" accept="image/*,application/pdf" multiple className="hidden" onChange={onFileUpload} />
                   </label>
+                  {onExtractText && (
+                    <label className="flex-1 sm:flex-none w-auto sm:w-11 h-11 flex items-center justify-center bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-xl cursor-pointer hover:bg-amber-200 dark:hover:bg-amber-800 active:scale-95 transition-all shadow-sm border border-black dark:border-amber-800" title="Extract Text">
+                        <ScanText size={20} />
+                        <input type="file" accept="image/*" className="hidden" onChange={onExtractText} />
+                    </label>
+                  )}
               </div>
           </div>
 
@@ -391,8 +400,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
     });
   };
 
-  const handleExtractText = async () => {
-    if (!previewImage) return;
+  const handleExtractText = async (imageOverride?: string) => {
+    const imageToUse = imageOverride || previewImage;
+    if (!imageToUse) return;
     
     setIsExtractingText(true);
     setExtractedText(null);
@@ -407,7 +417,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         const ai = new GoogleGenAI({ apiKey });
         
         // Compress image to ensure it fits within payload limits and processes faster on mobile
-        const compressedImage = await compressImage(previewImage);
+        const compressedImage = await compressImage(imageToUse);
 
         // Extract base64 data and mime type
         const matches = compressedImage.match(/^data:(.+);base64,(.+)$/);
@@ -442,6 +452,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         setNotification(`Failed: ${error.message || "Unknown error"}`);
     } finally {
         setIsExtractingText(false);
+    }
+  };
+
+  const handleFileExtract = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const imageData = reader.result as string;
+            setPreviewImage(imageData);
+            handleExtractText(imageData);
+        };
+        reader.readAsDataURL(file);
     }
   };
 
@@ -1365,6 +1389,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('aadharCard')}
                     onFileRemove={(i) => handleRemoveFile('aadharCard', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                 <DocumentRow 
                     label="PAN Card" 
@@ -1376,6 +1401,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('panCard')}
                     onFileRemove={(i) => handleRemoveFile('panCard', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                 <DocumentRow 
                     label="Driving License" 
@@ -1387,6 +1413,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('drivingLicense')}
                     onFileRemove={(i) => handleRemoveFile('drivingLicense', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                 <DocumentRow 
                     label="Light Bill" 
@@ -1397,6 +1424,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('lightBill')}
                     onFileRemove={(i) => handleRemoveFile('lightBill', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                  <DocumentRow 
                     label="Gas Bill" 
@@ -1407,6 +1435,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('gasBill')}
                     onFileRemove={(i) => handleRemoveFile('gasBill', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                  <DocumentRow 
                     label="Rent Agreement" 
@@ -1417,6 +1446,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('rentAgreement')}
                     onFileRemove={(i) => handleRemoveFile('rentAgreement', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                  <DocumentRow 
                     label="Passport" 
@@ -1427,6 +1457,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('passport')}
                     onFileRemove={(i) => handleRemoveFile('passport', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                 <DocumentRow 
                     label="Other Docs" 
@@ -1437,6 +1468,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                     onCameraCapture={() => startCamera('otherDocs')}
                     onFileRemove={(i) => handleRemoveFile('otherDocs', i)}
                     onPreview={setPreviewImage}
+                    onExtractText={handleFileExtract}
                 />
                 
                 {/* House Type Dropdown Added Here */}
