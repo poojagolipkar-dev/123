@@ -354,8 +354,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
   const [isExtractingText, setIsExtractingText] = useState(false);
   const [extractedText, setExtractedText] = useState<string | null>(null);
 
-  const compressImage = (base64Str: string, maxWidth = 1024, maxHeight = 1024): Promise<string> => {
-    return new Promise((resolve) => {
+  const compressImage = (base64Str: string, maxWidth = 800, maxHeight = 800): Promise<string> => {
+    return new Promise((resolve, reject) => {
       const img = new Image();
       img.src = base64Str;
       img.onload = () => {
@@ -363,6 +363,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         let width = img.width;
         let height = img.height;
 
+        // More aggressive compression for mobile
         if (width > height) {
           if (width > maxWidth) {
             height *= maxWidth / width;
@@ -378,9 +379,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
+        if (!ctx) {
+            reject(new Error("Could not get canvas context"));
+            return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        // Lower quality for faster mobile processing
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
       };
+      img.onerror = (e) => reject(e);
     });
   };
 
@@ -391,7 +398,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
     setExtractedText(null);
     
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        // Ensure API key is available
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            throw new Error("API Key not configured");
+        }
+
+        const ai = new GoogleGenAI({ apiKey });
         
         // Compress image to ensure it fits within payload limits and processes faster on mobile
         const compressedImage = await compressImage(previewImage);
@@ -406,7 +419,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         const base64Data = matches[2];
 
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
+            model: "gemini-2.5-flash-image", // Use faster model for mobile
             contents: {
                 parts: [
                     {
@@ -423,9 +436,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         });
         
         setExtractedText(response.text || "No text found.");
-    } catch (error) {
+    } catch (error: any) {
         console.error("Text extraction failed", error);
-        setNotification("Failed to extract text. Please try again.");
+        setNotification(`Failed: ${error.message || "Unknown error"}`);
     } finally {
         setIsExtractingText(false);
     }
