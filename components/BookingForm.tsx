@@ -401,7 +401,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         // Ensure API key is available
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            throw new Error("API Key not configured");
+            throw new Error("API Key not configured. Please check environment variables.");
         }
 
         const ai = new GoogleGenAI({ apiKey });
@@ -418,8 +418,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         const mimeType = matches[1];
         const base64Data = matches[2];
 
+        // Use gemini-3-flash-preview for better text extraction capabilities
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-image", // Use faster model for mobile
+            model: "gemini-3-flash-preview", 
             contents: {
                 parts: [
                     {
@@ -429,7 +430,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                         }
                     },
                     {
-                        text: "Extract all readable text from this image. The document may contain marathi Hindi and English text. Preserve original formatting, line breaks, and punctuation. Do not translate the text. If any word is unclear, mark it as [uncertain]. Return only the extracted text."
+                        text: "Extract all readable text from this image. The document may contain Marathi, Hindi, and English text. Preserve original formatting, line breaks, and punctuation. Do not translate the text. If any word is unclear, mark it as [uncertain]. Return only the extracted text."
                     }
                 ]
             }
