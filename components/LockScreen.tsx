@@ -42,9 +42,9 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
   }, [pin]);
 
   return (
-    <div className="fixed inset-0 bg-[#1E1E1E] dark:bg-black z-[200] flex flex-col items-center justify-center p-4">
+    <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-xs flex flex-col items-center animate-enter">
-        <div className="w-16 h-16 bg-white/5 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/10 dark:border-neutral-700">
+        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-crm-border">
           <Lock size={32} className="text-blue-500" />
         </div>
         
@@ -57,14 +57,14 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
             <div 
               key={i} 
               className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                pin.length > i ? 'bg-blue-500 scale-110 shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-white/10 dark:bg-neutral-700'
+                pin.length > i ? 'bg-blue-500 scale-110' : 'bg-slate-700'
               }`}
             />
           ))}
         </div>
 
         {error && (
-          <div className="text-red-400 text-sm font-medium mb-4 flex items-center gap-2 animate-pulse">
+          <div className="text-red-500 text-sm font-medium mb-4 flex items-center gap-2 animate-pulse">
             <AlertCircle size={14} /> {error}
           </div>
         )}
@@ -75,7 +75,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
             <button
               key={num}
               onClick={() => handleNumberClick(num)}
-              className="h-16 rounded-full bg-white/5 dark:bg-neutral-800/50 text-white text-2xl font-medium hover:bg-white/10 dark:hover:bg-neutral-700 active:scale-95 transition-all border border-white/10 dark:border-neutral-700/50"
+              className="h-16 rounded-full bg-slate-800/50 text-white text-2xl font-medium hover:bg-slate-700 active:scale-95 transition-all border border-slate-700/50"
             >
               {num}
             </button>
@@ -88,13 +88,13 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
           </button>
           <button
             onClick={() => handleNumberClick(0)}
-            className="h-16 rounded-full bg-white/5 dark:bg-neutral-800/50 text-white text-2xl font-medium hover:bg-white/10 dark:hover:bg-neutral-700 active:scale-95 transition-all border border-white/10 dark:border-neutral-700/50"
+            className="h-16 rounded-full bg-slate-800/50 text-white text-2xl font-medium hover:bg-slate-700 active:scale-95 transition-all border border-slate-700/50"
           >
             0
           </button>
           <button
             onClick={handleBackspace}
-            className="h-16 rounded-full text-slate-500 hover:text-white hover:bg-white/5 transition-colors flex items-center justify-center active:scale-95"
+            className="h-16 rounded-full text-slate-400 hover:text-white hover:bg-slate-800/30 transition-colors flex items-center justify-center active:scale-95"
           >
             <Delete size={24} />
           </button>

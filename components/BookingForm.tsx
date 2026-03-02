@@ -34,7 +34,7 @@ interface BookingFormProps {
 
 // Helper Components
 const Section = ({ title, icon: Icon, children, className }: any) => (
-  <div className={`bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-crm-border mb-5 animate-enter transition-colors ${className}`}>
+  <div className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-3xl shadow-md border border-black dark:border-crm-border mb-5 animate-enter transition-colors ${className}`}>
     <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-5 border-b border-black dark:border-crm-border pb-3">
       <div className="bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-lg text-blue-600 dark:text-blue-400">
         <Icon size={16} /> 
@@ -81,7 +81,7 @@ const Input = ({ label, type = 'text', value, onChange, placeholder, readOnly = 
 
 const ClientPhotoUpload = ({ value, onCapture, onUpload, onClear }: any) => {
   return (
-    <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-br from-white to-slate-50 dark:from-neutral-900 dark:to-black shadow-2xl border border-slate-100 dark:border-neutral-800 transition-all hover:shadow-blue-500/10 max-w-sm mx-auto p-1">
+    <div className="relative group overflow-hidden rounded-3xl bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md shadow-2xl border border-slate-100 dark:border-neutral-800 transition-all hover:shadow-blue-500/10 max-w-sm mx-auto p-1">
       {/* Premium Gradient Border Effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
       
@@ -179,7 +179,7 @@ const DocumentRow = ({
   const safeFiles = Array.isArray(files) ? files : [];
   
   return (
-      <div className="bg-slate-50 dark:bg-neutral-800/50 p-4 rounded-2xl border border-black dark:border-neutral-700 shadow-sm animate-enter transition-all hover:border-blue-200 dark:hover:border-blue-800 group">
+      <div className="bg-slate-50/80 dark:bg-neutral-800/40 backdrop-blur-md p-4 rounded-2xl border border-black dark:border-neutral-700 shadow-sm animate-enter transition-all hover:border-blue-200 dark:hover:border-blue-800 group">
           <div className="flex justify-between items-center mb-3">
                <label className="text-xs font-bold text-slate-700 dark:text-neutral-200 uppercase tracking-wide flex items-center gap-2">
                   {label}
@@ -1050,7 +1050,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
        {/* Camera Modal - Floating Card */}
        {showCamera && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none p-4 sm:p-8">
-           <div className="pointer-events-auto w-full max-w-md bg-black rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col h-[85vh] relative animate-enter">
+           <div className="pointer-events-auto w-full max-w-md bg-black/80 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col h-[85vh] relative animate-enter">
                <div className={`absolute inset-0 bg-white pointer-events-none transition-opacity duration-75 z-50 ${screenFlash ? 'opacity-100' : 'opacity-0'}`}></div>
 
                <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
@@ -1154,8 +1154,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                 </div>
 
                 {extractedText && (
-                    <div className="w-full md:w-1/2 h-[40vh] md:h-[80vh] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 flex flex-col overflow-hidden animate-slide-up">
-                        <div className="p-4 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center bg-slate-50 dark:bg-neutral-800/50">
+                    <div className="w-full md:w-1/2 h-[40vh] md:h-[80vh] bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 flex flex-col overflow-hidden animate-slide-up">
+                        <div className="p-4 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center bg-slate-50/50 dark:bg-neutral-800/50 backdrop-blur-sm">
                             <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                 <FileText size={18} className="text-blue-500" /> Extracted Text
                             </h3>
@@ -1204,7 +1204,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
        <div className="px-5 mt-5">
         
         {/* Customer Lookup Section */}
-        <div className="bg-white dark:bg-neutral-900 p-5 rounded-3xl shadow-md border border-black dark:border-crm-border mb-5 animate-enter relative z-30">
+        <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-3xl shadow-md border border-black dark:border-crm-border mb-5 animate-enter relative z-30">
             <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wide flex items-center gap-2 mb-4 border-b border-black dark:border-crm-border pb-3">
                 <div className="bg-slate-100 dark:bg-neutral-800 p-1.5 rounded-lg text-slate-700 dark:text-neutral-300">
                     <Users size={16} /> 

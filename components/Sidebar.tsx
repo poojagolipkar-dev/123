@@ -18,12 +18,12 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, darkMode }) => {
   return (
-    <aside className="hidden md:flex flex-col w-64 bg-[#1E1E1E] dark:bg-neutral-900 border-r border-white/5 dark:border-crm-border h-screen transition-colors duration-300">
+    <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-neutral-900 border-r border-slate-200 dark:border-crm-border h-screen transition-colors duration-300">
       <div className="p-6 flex items-center gap-3">
         <Logo size="md" />
         <div>
-          <h1 className="font-black text-white dark:text-white tracking-tighter leading-none text-base font-mono">SHREE SELF DRIVING</h1>
-          <p className="text-[10px] font-bold text-slate-500 dark:text-neutral-500 uppercase tracking-widest mt-0.5 font-mono">& CAR RENTAL SERVICE</p>
+          <h1 className="font-bold text-slate-800 dark:text-white tracking-tight leading-none text-lg font-display">SHREE SELF DRIVING</h1>
+          <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</p>
         </div>
       </div>
 
@@ -38,8 +38,8 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
               onClick={() => onViewChange(item.id as ViewState)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 group ${
                 isActive
-                  ? 'bg-white dark:bg-white text-slate-900 dark:text-slate-900 shadow-lg shadow-white/10 dark:shadow-none font-bold'
-                  : 'text-slate-400 dark:text-neutral-400 hover:bg-white/5 dark:hover:bg-neutral-800 hover:text-white dark:hover:text-white'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none font-bold'
+                  : 'text-slate-500 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Icon 
@@ -55,12 +55,12 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
         })}
       </nav>
 
-      <div className="p-6 border-t border-white/5 dark:border-crm-border">
-        <div className="bg-white/5 dark:bg-neutral-800/50 rounded-2xl p-4">
-          <p className="text-[10px] font-bold text-slate-500 dark:text-neutral-400 uppercase mb-2">System Status</p>
+      <div className="p-6 border-t border-slate-100 dark:border-crm-border">
+        <div className="bg-slate-50 dark:bg-neutral-800/50 rounded-2xl p-4">
+          <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase mb-2">System Status</p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-xs font-medium text-slate-300 dark:text-neutral-300">All Systems Online</span>
+            <span className="text-xs font-medium text-slate-600 dark:text-neutral-300">All Systems Online</span>
           </div>
         </div>
       </div>

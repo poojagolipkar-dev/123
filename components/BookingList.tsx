@@ -65,17 +65,17 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
   const getCardStyle = (status: BookingStatus) => {
     switch (status) {
         case BookingStatus.ONGOING:
-            return 'border-red-200 dark:border-red-900/50 border-l-[6px] border-l-red-500 bg-red-50/50 dark:bg-red-900/10';
+            return 'border-red-200 dark:border-red-900/50 border-l-[6px] border-l-red-500 bg-red-50/60 dark:bg-red-900/20 backdrop-blur-md';
         case BookingStatus.COMPLETED:
-            return 'border-emerald-200 dark:border-emerald-900/50 border-l-[6px] border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10';
+            return 'border-emerald-200 dark:border-emerald-900/50 border-l-[6px] border-l-emerald-500 bg-emerald-50/60 dark:bg-emerald-900/20 backdrop-blur-md';
         case BookingStatus.PRE_BOOKING:
-            return 'border-blue-200 dark:border-blue-900/50 border-l-[6px] border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
+            return 'border-blue-200 dark:border-blue-900/50 border-l-[6px] border-l-blue-500 bg-blue-50/60 dark:bg-blue-900/20 backdrop-blur-md';
         case BookingStatus.DRAFT:
-            return 'border-amber-200 dark:border-amber-900/50 border-l-[6px] border-l-amber-400 bg-amber-50/50 dark:bg-amber-900/10';
+            return 'border-amber-200 dark:border-amber-900/50 border-l-[6px] border-l-amber-400 bg-amber-50/60 dark:bg-amber-900/20 backdrop-blur-md';
         case BookingStatus.CANCELLED:
-            return 'border-slate-200 dark:border-slate-800 border-l-[6px] border-l-slate-400 bg-slate-50 dark:bg-slate-900/50 grayscale opacity-75';
+            return 'border-slate-200 dark:border-slate-800 border-l-[6px] border-l-slate-400 bg-slate-50/60 dark:bg-slate-900/40 backdrop-blur-md grayscale opacity-75';
         default:
-            return 'border-black dark:border-crm-border bg-white dark:bg-neutral-900';
+            return 'border-black dark:border-crm-border bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md';
     }
   };
 
@@ -180,7 +180,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by client, car, or address..."
-            className="w-full pl-11 pr-10 py-4 bg-white dark:bg-neutral-900 border border-black dark:border-crm-border rounded-2xl shadow-sm text-sm outline-none focus:border-blue-500 transition-all text-slate-700 dark:text-white font-medium placeholder:text-slate-400 dark:placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900"
+            className="w-full pl-11 pr-10 py-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border border-black dark:border-crm-border rounded-2xl shadow-sm text-sm outline-none focus:border-blue-500 transition-all text-slate-700 dark:text-white font-medium placeholder:text-slate-400 dark:placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900"
         />
         {searchQuery && (
             <button 
@@ -193,7 +193,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
       </div>
 
       {/* Filters Section */}
-      <div className="bg-white dark:bg-neutral-900 p-4 rounded-3xl shadow-sm border border-black dark:border-crm-border animate-enter transition-colors delay-75">
+      <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-4 rounded-3xl shadow-sm border border-black dark:border-crm-border animate-enter transition-colors delay-75">
         <div className="flex items-center gap-2 mb-3">
             <Filter size={16} className="text-blue-600 dark:text-blue-400"/>
             <span className="text-xs font-bold text-slate-800 dark:text-neutral-200 uppercase tracking-wide">Filters</span>

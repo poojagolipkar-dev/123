@@ -433,7 +433,7 @@ const App: React.FC = () => {
 
         {/* Mobile Slidable Drawer */}
         <div 
-          className={`fixed top-0 left-0 h-full w-72 max-w-[85vw] bg-white dark:bg-neutral-900 z-[101] md:hidden transition-transform duration-500 ease-out shadow-2xl ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`fixed top-0 left-0 h-full w-72 max-w-[85vw] bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md z-[101] md:hidden transition-transform duration-500 ease-out shadow-2xl ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >
           <div className="flex flex-col h-full">
             <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-neutral-800">
@@ -442,8 +442,8 @@ const App: React.FC = () => {
                   <span className="text-white font-black text-sm">S</span>
                 </div>
                 <div>
-                  <h1 className="font-black text-slate-800 dark:text-white tracking-tighter text-sm leading-none">SHREE SELF DRIVING</h1>
-                  <p className="text-[9px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest mt-0.5">& CAR RENTAL SERVICE</p>
+                  <h1 className="font-bold text-slate-800 dark:text-white tracking-tight text-sm leading-none font-display">SHREE SELF DRIVING</h1>
+                  <p className="text-[8px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</p>
                 </div>
               </div>
               <button 
@@ -511,8 +511,8 @@ const App: React.FC = () => {
                 <span className="text-white font-black text-[10px]">S</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-white tracking-tighter text-sm leading-none font-mono">SHREE SELF DRIVING</span>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-tight font-mono">& CAR RENTAL SERVICE</span>
+                <span className="font-bold text-white tracking-tight text-sm leading-none font-display">SHREE SELF DRIVING</span>
+                <span className="text-[8px] font-black text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</span>
               </div>
             </div>
             <div className="w-10" /> {/* Spacer for balance */}
