@@ -149,7 +149,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   return (
     <div className="space-y-6 animate-enter p-1 md:p-5 pb-24">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight animate-slide-in">Settings</h2>
+        <h2 className="text-2xl font-bold text-white tracking-tight animate-slide-in">Settings</h2>
         <button 
             onClick={onLogout}
             className="flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors font-medium text-sm"

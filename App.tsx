@@ -9,7 +9,7 @@ import LockScreen from './components/LockScreen';
 import SettingsView from './components/SettingsView';
 
 import Sidebar from './components/Sidebar';
-import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking } from './services/storageService';
+import { getBookings, getCars, saveBooking, saveCar, getDraft, deleteCar, deleteBooking, initStorage } from './services/storageService';
 import { getNotifications, saveNotification, markAllAsRead, clearNotifications } from './services/notificationService';
 import { isAuthenticated, isAppLocked, setAppLocked, logout, getPin } from './services/authService';
 import { getSyncSettings, performSync } from './services/syncService';
@@ -247,11 +247,15 @@ const App: React.FC = () => {
 
   // Load Data on Mount (only if logged in, but we can load anyway for readiness)
   useEffect(() => {
-    if (isLoggedIn) {
-        setBookings(getBookings());
-        setCars(getCars());
-        setNotifications(getNotifications());
-    }
+    const loadData = async () => {
+        await initStorage();
+        if (isLoggedIn) {
+            setBookings(getBookings());
+            setCars(getCars());
+            setNotifications(getNotifications());
+        }
+    };
+    loadData();
   }, [isLoggedIn]);
 
   const addNotification = (type: 'info' | 'success' | 'warning' | 'error', message: string) => {
@@ -280,7 +284,7 @@ const App: React.FC = () => {
 
 
 
-  const handleSaveBooking = (booking: Booking) => {
+  const handleSaveBooking = async (booking: Booking) => {
     // If completing, update car mileage
     if (booking.status === BookingStatus.COMPLETED) {
         const car = cars.find(c => c.id === booking.carId);
@@ -314,7 +318,7 @@ const App: React.FC = () => {
         setCurrentView('all_bookings');
     }
 
-    saveBooking(booking);
+    await saveBooking(booking);
     setBookings(getBookings()); // Refresh
     setEditingBooking(null);
   };
@@ -339,9 +343,9 @@ const App: React.FC = () => {
     }
   };
 
-  const handleDeleteBooking = (id: string) => {
+  const handleDeleteBooking = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this booking? This action cannot be undone.")) {
-        deleteBooking(id);
+        await deleteBooking(id);
         setBookings(getBookings());
         addNotification('warning', `Booking deleted`);
     }
@@ -404,7 +408,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-slate-50 dark:bg-black">
+    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-[#1E1E1E] dark:bg-black">
       {/* App Container - Full Screen */}
       <div className="w-full h-full flex relative overflow-hidden">
         
@@ -495,10 +499,10 @@ const App: React.FC = () => {
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {/* Mobile Top Bar */}
-          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-100 dark:border-crm-border sticky top-0 z-40 shrink-0">
+          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#1E1E1E]/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-slate-700 dark:border-crm-border sticky top-0 z-40 shrink-0">
             <button 
               onClick={() => setIsDrawerOpen(true)}
-              className="p-2 -ml-2 text-slate-600 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
+              className="p-2 -ml-2 text-white dark:text-neutral-300 hover:bg-white/10 dark:hover:bg-neutral-800 rounded-xl transition-colors"
             >
               <Menu size={24} />
             </button>
@@ -507,7 +511,7 @@ const App: React.FC = () => {
                 <span className="text-white font-black text-[10px]">S</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-slate-800 dark:text-white tracking-tighter text-sm leading-none font-mono">SHREE SELF DRIVING</span>
+                <span className="font-black text-white tracking-tighter text-sm leading-none font-mono">SHREE SELF DRIVING</span>
                 <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-tight font-mono">& CAR RENTAL SERVICE</span>
               </div>
             </div>
@@ -552,7 +556,7 @@ const App: React.FC = () => {
             {/* Draft View Logic */}
             {currentView === 'draft' && (
               <div className="space-y-6 animate-enter p-1 md:p-5">
-                  <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-4 tracking-tight animate-slide-in">Drafts</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4 tracking-tight animate-slide-in">Drafts</h2>
                   
                   {/* Unsaved Auto-Draft Section */}
                   {unsavedDraft && (

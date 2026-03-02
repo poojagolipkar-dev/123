@@ -85,10 +85,14 @@ export const restoreFromGoogleSheet = async (): Promise<{ success: boolean; mess
     const data = await response.json();
     
     if (data.bookings) {
-        data.bookings.forEach((b: Booking) => saveBooking(b));
+        for (const b of data.bookings) {
+            await saveBooking(b);
+        }
     }
     if (data.cars) {
-        data.cars.forEach((c: Car) => saveCar(c));
+        for (const c of data.cars) {
+            saveCar(c);
+        }
     }
 
     return { success: true, message: 'Data restored successfully', data };

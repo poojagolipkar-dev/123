@@ -258,7 +258,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 px-1 animate-enter delay-100 gap-3">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight transition-colors">
+        <h2 className="text-2xl font-bold text-white tracking-tight animate-slide-in">
           {getTitle()}
         </h2>
         <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
@@ -291,7 +291,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
           <div className="bg-slate-100 dark:bg-neutral-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 dark:text-neutral-500 transition-colors">
             <Search size={24} />
           </div>
-          <p className="text-slate-500 dark:text-neutral-400 font-medium">No bookings found.</p>
+          <p className="text-slate-400 font-medium">No bookings found.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
