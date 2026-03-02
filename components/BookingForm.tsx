@@ -363,16 +363,27 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
   const [isExtractingText, setIsExtractingText] = useState(false);
   const [extractedText, setExtractedText] = useState<string | null>(null);
 
-  const compressImage = (base64Str: string, maxWidth = 800, maxHeight = 800): Promise<string> => {
+  const compressImage = (imageSrc: string, maxWidth = 1024, maxHeight = 1024): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.src = base64Str;
+      
+      // Set a 15-second timeout for image loading
+      const timeout = setTimeout(() => {
+        img.onload = null;
+        img.onerror = null;
+        reject(new Error("Image loading timed out. The file might be too large or your connection is slow."));
+      }, 15000);
+
+      img.crossOrigin = "anonymous";
+      img.src = imageSrc;
+      
       img.onload = () => {
+        clearTimeout(timeout);
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
 
-        // More aggressive compression for mobile
+        // Calculate new dimensions while maintaining aspect ratio
         if (width > height) {
           if (width > maxWidth) {
             height *= maxWidth / width;
@@ -389,46 +400,65 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         if (!ctx) {
-            reject(new Error("Could not get canvas context"));
+            reject(new Error("Could not initialize image processor (Canvas)."));
             return;
         }
-        ctx.drawImage(img, 0, 0, width, height);
-        // Lower quality for faster mobile processing
-        resolve(canvas.toDataURL('image/jpeg', 0.6));
+        
+        try {
+            ctx.drawImage(img, 0, 0, width, height);
+            // 0.7 quality is optimal for OCR balance
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            
+            // Basic check for failed canvas export (common on low-memory mobile devices)
+            if (compressedDataUrl === 'data:,' || compressedDataUrl.length < 100) {
+                reject(new Error("Image processing failed. Your device might be low on memory. Try a smaller photo."));
+                return;
+            }
+            
+            resolve(compressedDataUrl);
+        } catch (e) {
+            reject(new Error("Failed to process image for extraction."));
+        }
       };
-      img.onerror = (e) => reject(e);
+      
+      img.onerror = () => {
+        clearTimeout(timeout);
+        reject(new Error("Failed to load image. Please ensure it's a valid image file."));
+      };
     });
   };
 
   const handleExtractText = async (imageOverride?: string) => {
     const imageToUse = imageOverride || previewImage;
-    if (!imageToUse) return;
+    if (!imageToUse) {
+        setNotification("No image selected for extraction.");
+        return;
+    }
     
     setIsExtractingText(true);
     setExtractedText(null);
     
     try {
-        // Ensure API key is available
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            throw new Error("API Key not configured. Please check environment variables.");
+            throw new Error("Gemini API Key is not configured. Please check environment settings.");
         }
 
         const ai = new GoogleGenAI({ apiKey });
         
-        // Compress image to ensure it fits within payload limits and processes faster on mobile
+        // Compress image for mobile performance
         const compressedImage = await compressImage(imageToUse);
 
         // Extract base64 data and mime type
         const matches = compressedImage.match(/^data:(.+);base64,(.+)$/);
         if (!matches || matches.length !== 3) {
-            throw new Error("Invalid image format");
+            throw new Error("Image processing resulted in an invalid format.");
         }
         
         const mimeType = matches[1];
         const base64Data = matches[2];
 
-        // Use gemini-3-flash-preview for better text extraction capabilities
+        // Use gemini-3-flash-preview for high-quality text extraction
         const response = await ai.models.generateContent({
             model: "gemini-3-flash-preview", 
             contents: {
@@ -440,16 +470,32 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
                         }
                     },
                     {
-                        text: "Extract all readable text from this image. The document may contain Marathi, Hindi, and English text. Preserve original formatting, line breaks, and punctuation. Do not translate the text. If any word is unclear, mark it as [uncertain]. Return only the extracted text."
+                        text: "Extract all readable text from this document image. The document may contain Marathi, Hindi, and English text. Preserve original formatting, line breaks, and punctuation. Do not translate. If any word is unclear, mark it as [uncertain]. Return ONLY the extracted text."
                     }
                 ]
             }
         });
         
-        setExtractedText(response.text || "No text found.");
+        const text = response.text;
+        if (!text || text.trim().length === 0) {
+            setExtractedText("No readable text found in this image.");
+        } else {
+            setExtractedText(text);
+        }
     } catch (error: any) {
-        console.error("Text extraction failed", error);
-        setNotification(`Failed: ${error.message || "Unknown error"}`);
+        console.error("Extraction Error:", error);
+        let errorMsg = "Extraction failed.";
+        
+        if (error.message?.includes("API_KEY_INVALID")) {
+            errorMsg = "Invalid API Key configuration.";
+        } else if (error.message?.includes("quota")) {
+            errorMsg = "API usage limit reached. Please try again later.";
+        } else if (error.message) {
+            errorMsg = error.message;
+        }
+        
+        setNotification(`⚠️ ${errorMsg}`);
+        setTimeout(() => setNotification(''), 6000);
     } finally {
         setIsExtractingText(false);
     }
@@ -459,13 +505,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
     const files = e.target.files;
     if (files && files.length > 0) {
         const file = files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const imageData = reader.result as string;
-            setPreviewImage(imageData);
-            handleExtractText(imageData);
-        };
-        reader.readAsDataURL(file);
+        
+        // Validation for file type
+        if (!file.type.startsWith('image/')) {
+            setNotification("Please select a valid image file (JPG, PNG).");
+            return;
+        }
+
+        // Use URL.createObjectURL for memory efficiency
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewImage(objectUrl);
+        handleExtractText(objectUrl);
+        
+        // Reset input
+        e.target.value = '';
     }
   };
 
