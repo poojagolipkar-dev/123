@@ -211,26 +211,43 @@ const App: React.FC = () => {
     if (!isLoggedIn || isLocked) return;
 
     let lockTimer: NodeJS.Timeout;
-    const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
+    const LOCK_TIME = 5 * 60 * 1000; // 5 minutes
+
+    const lockApp = () => {
+      if (!getPin()) return;
+      setIsLocked(true);
+      setAppLocked(true);
+    };
 
     const resetLockTimer = () => {
       clearTimeout(lockTimer);
       if (!getPin()) return; // Don't lock if no PIN set
       
-      lockTimer = setTimeout(() => {
-        setIsLocked(true);
-        setAppLocked(true);
-      }, LOCK_TIME);
+      lockTimer = setTimeout(lockApp, LOCK_TIME);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        lockApp();
+      }
+    };
+
+    const handleBlur = () => {
+      lockApp();
     };
 
     const events = ['mousemove', 'mousedown', 'touchstart', 'click', 'keydown', 'scroll'];
     events.forEach(event => window.addEventListener(event, resetLockTimer, true));
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
     
     resetLockTimer();
 
     return () => {
       clearTimeout(lockTimer);
       events.forEach(event => window.removeEventListener(event, resetLockTimer, true));
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
     };
   }, [isLoggedIn, isLocked]);
 
