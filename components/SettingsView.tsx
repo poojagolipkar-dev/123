@@ -8,6 +8,8 @@ interface SettingsViewProps {
   toggleTheme: () => void;
   showBottomNav: boolean;
   toggleBottomNav: () => void;
+  autoHideNav: boolean;
+  toggleAutoHideNav: () => void;
   onLogout: () => void;
 }
 
@@ -16,6 +18,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   toggleTheme, 
   showBottomNav, 
   toggleBottomNav,
+  autoHideNav,
+  toggleAutoHideNav,
   onLogout
 }) => {
   const [activeTab, setActiveTab] = useState<'general' | 'security' | 'sync'>('general');
@@ -224,6 +228,25 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                     className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out ${showBottomNav ? 'bg-blue-600' : 'bg-slate-200 dark:bg-neutral-700'}`}
                 >
                     <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${showBottomNav ? 'translate-x-6' : 'translate-x-0'}`} />
+                </button>
+            </div>
+
+            {/* Auto-Hide Nav Toggle */}
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-crm-border flex items-center justify-between group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+                <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${autoHideNav ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-400'}`}>
+                        <RefreshCw size={24} />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-800 dark:text-white text-lg">Auto-Hide Menu</h3>
+                        <p className="text-slate-500 dark:text-neutral-400 text-sm">Automatically hide the menu when idle</p>
+                    </div>
+                </div>
+                <button 
+                    onClick={toggleAutoHideNav}
+                    className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out ${autoHideNav ? 'bg-blue-600' : 'bg-slate-200 dark:bg-neutral-700'}`}
+                >
+                    <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${autoHideNav ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
             </div>
         </div>

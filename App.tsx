@@ -19,6 +19,13 @@ const App: React.FC = () => {
   const [isLocked, setIsLocked] = useState(false);
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [showBottomNav, setShowBottomNav] = useState(false);
+  const [autoHideNav, setAutoHideNav] = useState(() => {
+    if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('autoHideNav');
+        return saved === 'true' || saved === null; // Default to true
+    }
+    return true;
+  });
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -44,6 +51,11 @@ const App: React.FC = () => {
 
   // Idle Timer Logic
   useEffect(() => {
+    if (!autoHideNav) {
+        setIsNavIdle(false);
+        return;
+    }
+
     const resetIdle = () => {
         setIsNavIdle(false);
         if (idleTimer.current) clearTimeout(idleTimer.current);
@@ -155,6 +167,10 @@ const App: React.FC = () => {
         window.removeEventListener('touchend', handleDragEnd);
     };
   }, [isDragging]);
+
+  useEffect(() => {
+    localStorage.setItem('autoHideNav', autoHideNav.toString());
+  }, [autoHideNav]);
 
   // Theme State
   const [darkMode, setDarkMode] = useState(() => {
@@ -408,7 +424,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-[#F5F7FA] dark:bg-black">
+    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-[#1E1E1E] dark:bg-black">
       {/* App Container - Full Screen */}
       <div className="w-full h-full flex relative overflow-hidden">
         
@@ -669,6 +685,8 @@ const App: React.FC = () => {
                 toggleTheme={toggleTheme}
                 showBottomNav={showBottomNav}
                 toggleBottomNav={() => setShowBottomNav(!showBottomNav)}
+                autoHideNav={autoHideNav}
+                toggleAutoHideNav={() => setAutoHideNav(!autoHideNav)}
                 onLogout={() => {
                     logout();
                     setIsLoggedIn(false);
