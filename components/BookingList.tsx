@@ -92,11 +92,63 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
   const handleExportCSV = () => {
     if (filteredBookings.length === 0) return;
     
+    const dataToExport = filteredBookings.map(b => {
+        const car = cars.find(c => c.id === b.carId);
+        return {
+            'Booking ID': b.id,
+            'Status': b.status,
+            'Booking Created At': new Date(b.createdAt).toLocaleString(),
+            // 1. Vehicle Details
+            'Vehicle Name': car ? car.name : 'Unknown',
+            'Plate Number': car ? car.plateNumber : 'Unknown',
+            'Car ID': b.carId,
+            // 2. Location & GPS
+            'GPS Location': b.gpsLocation || '',
+            'Address': b.address,
+            // 3. Trip Duration
+            'Start Date': b.startDate,
+            'Start Time': b.startTime,
+            'End Date': b.endDate,
+            'End Time': b.endTime,
+            'Total Days': b.totalDays,
+            'Total Time': b.totalTime || '',
+            // 4. Odometer (KM)
+            'Checkout KM': b.checkoutKm,
+            'Checkin KM': b.checkinKm,
+            'Total KM': b.totalKmTravelled,
+            // 5. Client Details
+            'Full Name': b.fullName,
+            'Mobile': b.mobile,
+            'Email': b.email || '',
+            // 6. Documents
+            'Aadhar Card ID': b.aadharCardId || '',
+            'PAN Card ID': b.panCardId || '',
+            'Driving License ID': b.drivingLicenseId || '',
+            'Light Bill ID': b.lightBillId || '',
+            'Gas Bill ID': b.gasBillId || '',
+            'Rent Agreement ID': b.rentAgreementId || '',
+            'Passport ID': b.passportId || '',
+            'Other Docs ID': b.otherDocsId || '',
+            // 7. Residence Type
+            'House Type': b.houseType || '',
+            // 8. Payment Details
+            'Fastag Recharge': b.fastagRecharge,
+            'Fastag Amount': b.fastagRechargeAmount || 0,
+            'Advance Payment': b.advancePayment,
+            'Security Deposit': b.securityDeposit,
+            'Gross Total': b.grossTotal,
+            'Total Paid': b.totalPaid,
+            'Net Balance': b.netBalance,
+            // 9. Remarks
+            'Remarks': b.remarks
+        };
+    });
+
     // Create header row
-    const headers = Object.keys(filteredBookings[0]).join(',');
+    const headers = Object.keys(dataToExport[0]).join(',');
     // Create rows
-    const rows = filteredBookings.map(b => 
-      Object.values(b).map(val => `"${val}"`).join(',')
+    const rows = dataToExport.map(row => 
+      Object.values(row).map(val => `"${val}"`).join(',')
     ).join('\n');
     
     const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows;
@@ -109,6 +161,76 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleExportXLSX = () => {
+    if (filteredBookings.length === 0) return;
+    
+    try {
+        const dataToExport = filteredBookings.map(b => {
+            const car = cars.find(c => c.id === b.carId);
+            return {
+                'Booking ID': b.id,
+                'Status': b.status,
+                'Booking Created At': new Date(b.createdAt).toLocaleString(),
+                // 1. Vehicle Details
+                'Vehicle Name': car ? car.name : 'Unknown',
+                'Plate Number': car ? car.plateNumber : 'Unknown',
+                'Car ID': b.carId,
+                // 2. Location & GPS
+                'GPS Location': b.gpsLocation || '',
+                'Address': b.address,
+                // 3. Trip Duration
+                'Start Date': b.startDate,
+                'Start Time': b.startTime,
+                'End Date': b.endDate,
+                'End Time': b.endTime,
+                'Total Days': b.totalDays,
+                'Total Time': b.totalTime || '',
+                // 4. Odometer (KM)
+                'Checkout KM': b.checkoutKm,
+                'Checkin KM': b.checkinKm,
+                'Total KM': b.totalKmTravelled,
+                // 5. Client Details
+                'Full Name': b.fullName,
+                'Mobile': b.mobile,
+                'Email': b.email || '',
+                // 6. Documents
+                'Aadhar Card ID': b.aadharCardId || '',
+                'PAN Card ID': b.panCardId || '',
+                'Driving License ID': b.drivingLicenseId || '',
+                'Light Bill ID': b.lightBillId || '',
+                'Gas Bill ID': b.gasBillId || '',
+                'Rent Agreement ID': b.rentAgreementId || '',
+                'Passport ID': b.passportId || '',
+                'Other Docs ID': b.otherDocsId || '',
+                // 7. Residence Type
+                'House Type': b.houseType || '',
+                // 8. Payment Details
+                'Fastag Recharge': b.fastagRecharge,
+                'Fastag Amount': b.fastagRechargeAmount || 0,
+                'Advance Payment': b.advancePayment,
+                'Security Deposit': b.securityDeposit,
+                'Gross Total': b.grossTotal,
+                'Total Paid': b.totalPaid,
+                'Net Balance': b.netBalance,
+                // 9. Remarks
+                'Remarks': b.remarks
+            };
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
+        
+        const moduleName = filterStatus ? filterStatus.toLowerCase().replace(/\s+/g, '_') : 'all_bookings';
+        const fileName = `${moduleName}_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+        console.error("XLSX Export Error:", error);
+        alert("Failed to export XLSX. Please try again.");
+    }
   };
 
   const handleImportData = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,6 +404,12 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-200 px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-neutral-800 shadow-sm active:scale-95 transition-transform hover:bg-slate-50 dark:hover:bg-neutral-800 whitespace-nowrap"
             >
                 <Download size={14} /> Export CSV
+            </button>
+            <button 
+                onClick={handleExportXLSX}
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-200 dark:shadow-none active:scale-95 transition-transform hover:bg-blue-700 whitespace-nowrap"
+            >
+                <Download size={14} /> Export XLSX
             </button>
         </div>
       </div>

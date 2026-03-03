@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Car, Booking, BookingStatus, Notification } from '../types';
-import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check, Gauge, Wrench, Clock } from 'lucide-react';
+import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check, Gauge, Wrench, Clock, Download } from 'lucide-react';
 import { logout, updateCredentials, getCredentials, setPin, removePin, getPin } from '../services/authService';
 import { resetAllOdometers } from '../services/storageService';
+import * as XLSX from 'xlsx';
 
 interface DashboardProps {
   cars: Car[];
@@ -364,6 +365,55 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
     }
   };
 
+  const handleExportFleetXLSX = () => {
+    if (cars.length === 0) return;
+    
+    try {
+        const dataToExport = cars.map(car => {
+            const carRevenue = bookings
+                .filter(b => b.carId === car.id && b.status !== BookingStatus.CANCELLED && b.status !== BookingStatus.DRAFT)
+                .reduce((sum, b) => sum + (Number(b.totalPaid) || 0), 0);
+                
+            return {
+                'Vehicle Name': car.name,
+                'Plate Number': car.plateNumber,
+                'Model': car.model || '2024',
+                'Status': car.status,
+                'Current KM': car.currentKm,
+                'Last Service KM': car.lastServiceKm,
+                'Service Interval': car.serviceInterval,
+                'Total Revenue': carRevenue
+            };
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Fleet");
+        
+        const fileName = `dashboard_fleet_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+        console.error("XLSX Export Error:", error);
+        alert("Failed to export XLSX. Please try again.");
+    }
+  };
+
+  const handleExportRevenueXLSX = () => {
+    if (chartData.length === 0) return;
+    
+    try {
+        const worksheet = XLSX.utils.json_to_sheet(chartData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Revenue");
+        
+        const fileName = `dashboard_revenue_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+        console.error("XLSX Export Error:", error);
+        alert("Failed to export XLSX. Please try again.");
+    }
+  };
+
   const handleCarDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -560,6 +610,12 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                     Collected Revenue
                     <span className="text-slate-400 dark:text-neutral-500 text-sm font-normal">(₹{totalChartRevenue.toLocaleString()})</span>
                 </h2>
+                <button 
+                    onClick={handleExportRevenueXLSX}
+                    className="bg-white/10 backdrop-blur-md text-slate-600 dark:text-white px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-white/20 hover:bg-slate-50 dark:hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2"
+                >
+                    <Download size={14} /> Export Revenue
+                </button>
             </div>
 
             <div className="flex gap-2 animate-enter flex-wrap">
@@ -666,12 +722,20 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           <h2 className="font-bold text-white flex items-center gap-2 text-xl">
             <Folder size={24} className="text-primary-600 dark:text-primary-400" /> Fleet
           </h2>
-          <button 
-            onClick={openAddModal}
-            className="bg-slate-900 dark:bg-primary-600 text-white p-3 rounded-2xl shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform hover:bg-slate-800 hover:rotate-90 duration-300"
-          >
-            <Plus size={24} />
-          </button>
+          <div className="flex gap-2">
+            <button 
+                onClick={handleExportFleetXLSX}
+                className="bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-bold border border-white/20 hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2"
+            >
+                <Download size={14} /> Export Fleet
+            </button>
+            <button 
+                onClick={openAddModal}
+                className="bg-slate-900 dark:bg-primary-600 text-white p-3 rounded-2xl shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform hover:bg-slate-800 hover:rotate-90 duration-300"
+            >
+                <Plus size={24} />
+            </button>
+          </div>
         </div>
 
         {/* Updated Grid for XL screens */}

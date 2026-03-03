@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Booking, BookingStatus, Car } from '../types';
-import { Camera, MapPin, Upload, Calendar, Clock, CreditCard, Save, X, User, FileEdit, CheckCircle, Loader2, CheckSquare, Trash2, FileText, SwitchCamera, Zap, ZapOff, Sun, RefreshCw, Aperture, PlayCircle, Search, Locate, Layers, Globe, ArrowLeft, AlertCircle, AlertTriangle, Car as CarIcon, Home, Users, Satellite, KeyRound, Lock, Unlock, Phone, Mail, FileText as FileIcon, IndianRupee, ScanText, Copy } from 'lucide-react';
+import { Camera, MapPin, Upload, Calendar, Clock, CreditCard, Save, X, User, FileEdit, CheckCircle, Loader2, CheckSquare, Trash2, FileText, SwitchCamera, Zap, ZapOff, Sun, RefreshCw, Aperture, PlayCircle, Search, Locate, Layers, Globe, ArrowLeft, AlertCircle, AlertTriangle, Car as CarIcon, Home, Users, Satellite, KeyRound, Lock, Unlock, Phone, Mail, FileText as FileIcon, IndianRupee, ScanText, Copy, Download } from 'lucide-react';
 import { saveDraft, clearDraft, generateNextBookingId, getBookings } from '../services/storageService';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { GoogleGenAI } from "@google/genai";
+import * as XLSX from 'xlsx';
 
 // --- OpenStreetMap / Leaflet Config ---
 // Fix Leaflet's default icon path issues in React
@@ -1020,6 +1021,70 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
     }
   };
 
+  const handleExportXLSX = () => {
+    try {
+        const car = cars.find(c => c.id === formData.carId);
+        const dataToExport = [{
+            'Booking ID': formData.id || 'NEW',
+            'Status': formData.status || 'DRAFT',
+            'Booking Created At': formData.createdAt ? new Date(formData.createdAt).toLocaleString() : new Date().toLocaleString(),
+            // 1. Vehicle Details
+            'Vehicle Name': car ? car.name : 'Unknown',
+            'Plate Number': car ? car.plateNumber : 'Unknown',
+            'Car ID': formData.carId,
+            // 2. Location & GPS
+            'GPS Location': formData.gpsLocation || '',
+            'Address': formData.address,
+            // 3. Trip Duration
+            'Start Date': formData.startDate,
+            'Start Time': formData.startTime,
+            'End Date': formData.endDate,
+            'End Time': formData.endTime,
+            'Total Days': formData.totalDays,
+            'Total Time': formData.totalTime || '',
+            // 4. Odometer (KM)
+            'Checkout KM': formData.checkoutKm,
+            'Checkin KM': formData.checkinKm,
+            'Total KM': formData.totalKmTravelled,
+            // 5. Client Details
+            'Full Name': formData.fullName,
+            'Mobile': formData.mobile,
+            'Email': formData.email || '',
+            // 6. Documents
+            'Aadhar Card ID': formData.aadharCardId || '',
+            'PAN Card ID': formData.panCardId || '',
+            'Driving License ID': formData.drivingLicenseId || '',
+            'Light Bill ID': formData.lightBillId || '',
+            'Gas Bill ID': formData.gasBillId || '',
+            'Rent Agreement ID': formData.rentAgreementId || '',
+            'Passport ID': formData.passportId || '',
+            'Other Docs ID': formData.otherDocsId || '',
+            // 7. Residence Type
+            'House Type': formData.houseType || '',
+            // 8. Payment Details
+            'Fastag Recharge': formData.fastagRecharge,
+            'Fastag Amount': formData.fastagRechargeAmount || 0,
+            'Advance Payment': formData.advancePayment,
+            'Security Deposit': formData.securityDeposit,
+            'Gross Total': formData.grossTotal,
+            'Total Paid': formData.totalPaid,
+            'Net Balance': formData.netBalance,
+            // 9. Remarks
+            'Remarks': formData.remarks
+        }];
+
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Booking_Details");
+        
+        const fileName = `new_booking_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+        console.error("XLSX Export Error:", error);
+        alert("Failed to export XLSX. Please try again.");
+    }
+  };
+
   const formatAadhar = (value: string) => {
     const numbers = value.replace(/\D/g, '');
     const truncated = numbers.slice(0, 12);
@@ -1042,9 +1107,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ cars, initialData, mode, onSa
           <h2 className="text-base md:text-xl font-bold text-white tracking-tight truncate pr-2 flex-1">
             {mode === 'complete' ? 'Complete Trip' : mode === 'edit' ? 'Edit Booking' : 'New Booking'}
           </h2>
-          <button type="button" onClick={onCancel} className="p-2 bg-slate-200/50 dark:bg-neutral-800 rounded-full text-slate-600 dark:text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 shrink-0 ml-2">
-            <X className="w-5 h-5 md:w-6 md:h-6" />
-          </button>
+          <div className="flex items-center gap-2">
+                <button 
+                    type="button" 
+                    onClick={handleExportXLSX}
+                    className="p-2 bg-white/10 dark:bg-neutral-800 rounded-lg text-white hover:bg-white/20 transition-colors active:scale-95 flex items-center gap-2 text-xs font-bold"
+                    title="Export as XLSX"
+                >
+                    <Download size={16} /> <span className="hidden sm:inline">Export XLSX</span>
+                </button>
+                <button type="button" onClick={onCancel} className="p-2 bg-slate-200/50 dark:bg-neutral-800 rounded-full text-slate-600 dark:text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 shrink-0 ml-2">
+                    <X className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+          </div>
        </div>
 
        {/* Camera Modal - Floating Card */}
