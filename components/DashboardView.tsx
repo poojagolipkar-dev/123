@@ -562,13 +562,13 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           </div>
 
           {/* Card 1b: Total Collected */}
-          <div className="bg-primary-500/80 dark:bg-primary-600/80 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden border border-primary-400/30">
+          <div className="bg-[#2596be]/80 dark:bg-[#2596be]/90 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden border border-[#2596be]/30">
              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
              <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm">
                 <IndianRupee size={24} className="text-white" />
              </div>
              <div className="relative z-10">
-                <span className="text-xs text-primary-100 font-bold uppercase tracking-wider block mb-1">Total Collected</span>
+                <span className="text-xs text-blue-50 font-bold uppercase tracking-wider block mb-1">Total Collected</span>
                 <span className="text-2xl font-black tracking-tight">₹{stats.totalCollected.toLocaleString()}</span>
              </div>
           </div>
