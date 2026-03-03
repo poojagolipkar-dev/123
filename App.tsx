@@ -408,7 +408,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-[#1E1E1E] dark:bg-black">
+    <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-[#F5F7FA] dark:bg-black">
       {/* App Container - Full Screen */}
       <div className="w-full h-full flex relative overflow-hidden">
         

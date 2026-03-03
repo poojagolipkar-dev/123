@@ -549,14 +549,15 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
       {/* --- Quick Stats Cards --- */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 animate-enter delay-75">
-          {/* Card 1: Pending Balance */}
-          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
-             <div className="bg-primary-50 dark:bg-primary-900/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary-500 transition-colors duration-300">
-                <Wallet size={24} className="text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors duration-300" />
+          {/* Card 1: Pending Balance (Outstanding) */}
+          <div className="bg-red-500/80 dark:bg-red-600/80 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between border border-red-400/30 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+             <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm">
+                <Wallet size={24} className="text-white" />
              </div>
-             <div>
-                <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider block mb-1">Outstanding</span>
-                <span className="text-2xl font-black tracking-tight text-slate-800 dark:text-white">₹{stats.pendingAmount.toLocaleString()}</span>
+             <div className="relative z-10">
+                <span className="text-xs text-red-100 font-bold uppercase tracking-wider block mb-1">Outstanding</span>
+                <span className="text-2xl font-black tracking-tight">₹{stats.pendingAmount.toLocaleString()}</span>
              </div>
           </div>
 
@@ -573,32 +574,43 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           </div>
 
           {/* Card 2: Active Trips */}
-          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
-             <div className="bg-slate-50 dark:bg-neutral-800 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors duration-300">
-                <Activity size={24} className="text-slate-600 dark:text-neutral-400 group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
+          <div className="bg-emerald-500/80 dark:bg-emerald-600/80 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between border border-emerald-400/30 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+             <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm">
+                <Activity size={24} className="text-white" />
              </div>
-             <div>
-                <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider block mb-1">Active Trips</span>
+             <div className="relative z-10">
+                <span className="text-xs text-emerald-100 font-bold uppercase tracking-wider block mb-1">Active Trips</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-slate-800 dark:text-white">{stats.activeTrips}</span>
-                    <span className="text-xs text-slate-400 dark:text-neutral-500 font-medium">/ {bookings.length}</span>
+                    <span className="text-2xl font-black">{stats.activeTrips}</span>
+                    <span className="text-xs text-emerald-100/70 font-medium">/ {bookings.length}</span>
                 </div>
              </div>
           </div>
 
-          {/* Card 3: Fleet Status */}
-          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
-             <div className="bg-emerald-50 dark:bg-emerald-900/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 transition-colors duration-300">
-                <CarIcon size={24} className="text-emerald-600 dark:text-emerald-400 group-hover:text-white transition-colors duration-300" />
+          {/* Card 3: Fleet Status (Available Cars) */}
+          <div className="bg-amber-500/80 dark:bg-amber-600/80 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between border border-amber-400/30 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+             <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm">
+                <CarIcon size={24} className="text-white" />
              </div>
-             <div>
-                <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase tracking-wider block mb-1">Available Cars</span>
+             <div className="relative z-10">
+                <span className="text-xs text-amber-100 font-bold uppercase tracking-wider block mb-1">Available Cars</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-slate-800 dark:text-white">{stats.available}</span>
-                    <span className="text-xs text-slate-400 dark:text-neutral-500 font-medium">/ {stats.totalCars}</span>
+                    <span className="text-2xl font-black">{stats.available}</span>
+                    <span className="text-xs text-amber-100/70 font-medium">/ {stats.totalCars}</span>
                 </div>
              </div>
           </div>
+      </div>
+
+      <div className="flex justify-end px-1 animate-enter delay-100">
+          <button 
+              onClick={handleExportRevenueXLSX}
+              className="bg-[#064e3b] hover:bg-[#065f46] text-white px-6 py-3 rounded-2xl text-xs font-bold shadow-sm hover:shadow-md transition-all active:scale-95 flex items-center gap-2 border border-emerald-700/50"
+          >
+              <Download size={16} /> Export Revenue
+          </button>
       </div>
 
       {/* --- Revenue Chart Section --- */}
@@ -610,12 +622,6 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                     Collected Revenue
                     <span className="text-slate-400 dark:text-neutral-500 text-sm font-normal">(₹{totalChartRevenue.toLocaleString()})</span>
                 </h2>
-                <button 
-                    onClick={handleExportRevenueXLSX}
-                    className="bg-white/10 backdrop-blur-md text-slate-600 dark:text-white px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 dark:border-white/20 hover:bg-slate-50 dark:hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2"
-                >
-                    <Download size={14} /> Export Revenue
-                </button>
             </div>
 
             <div className="flex gap-2 animate-enter flex-wrap">
@@ -725,7 +731,8 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           <div className="flex gap-2">
             <button 
                 onClick={handleExportFleetXLSX}
-                className="bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-bold border border-white/20 hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2"
+                style={{ backgroundColor: '#7B00FF' }}
+                className="text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:shadow-md transition-all active:scale-95 flex items-center gap-2 border border-white/10"
             >
                 <Download size={14} /> Export Fleet
             </button>

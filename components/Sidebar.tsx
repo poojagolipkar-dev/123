@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
       <div className="p-6 flex items-center gap-3">
         <Logo size="md" />
         <div>
-          <h1 className="font-bold text-slate-800 dark:text-white tracking-tight leading-none text-lg font-display">SHREE SELF DRIVING</h1>
+          <h1 className="font-bold text-slate-900 dark:text-white tracking-tight leading-none text-lg font-display">SHREE SELF DRIVING</h1>
           <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</p>
         </div>
       </div>
@@ -36,9 +36,9 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
             <button
               key={item.id}
               onClick={() => onViewChange(item.id as ViewState)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 group ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                 isActive
-                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none font-bold'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm font-bold'
                   : 'text-slate-500 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
