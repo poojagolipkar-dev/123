@@ -454,7 +454,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
             <div className="relative" ref={notificationRef}>
                 <button 
                     onClick={() => setShowNotifications(!showNotifications)}
-                    className="w-10 h-10 rounded-full bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 shadow-sm flex items-center justify-center text-slate-600 dark:text-neutral-300 hover:scale-105 active:scale-95 transition-all relative"
+                    className="w-10 h-10 rounded-full bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 flex items-center justify-center text-slate-600 dark:text-neutral-300 hover:scale-105 active:scale-95 transition-all relative"
                 >
                     <Bell size={20} />
                     {unreadCount > 0 && (
@@ -466,7 +466,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                    <div className="fixed left-4 right-4 top-20 md:absolute md:left-auto md:-right-2 md:top-12 md:w-96 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 dark:border-crm-border z-50 overflow-hidden animate-scale-in origin-top-right">
+                    <div className="fixed left-4 right-4 top-20 md:absolute md:left-auto md:-right-2 md:top-12 md:w-96 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-crm-border z-50 overflow-hidden animate-scale-in origin-top-right">
                         <div className="p-4 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center bg-slate-50/50 dark:bg-neutral-800/50 backdrop-blur-sm">
                             <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                 <Bell size={16} className="text-blue-500"/> Notifications
@@ -534,13 +534,13 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
             <button 
                 onClick={openSettings}
-                className="w-10 h-10 rounded-full bg-slate-900 dark:bg-white border border-transparent shadow-md flex items-center justify-center text-white dark:text-slate-900 hover:scale-105 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-slate-900 dark:bg-white border border-transparent flex items-center justify-center text-white dark:text-slate-900 hover:scale-105 active:scale-95 transition-all"
             >
                 <User size={20} />
             </button>
             <button 
                 onClick={toggleTheme}
-                className="w-10 h-10 rounded-full bg-white dark:bg-neutral-800 border border-black shadow-sm flex items-center justify-center text-slate-600 dark:text-yellow-400 hover:scale-105 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-white dark:bg-neutral-800 border border-black flex items-center justify-center text-slate-600 dark:text-yellow-400 hover:scale-105 active:scale-95 transition-all"
             >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -550,7 +550,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       {/* --- Quick Stats Cards --- */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 animate-enter delay-75">
           {/* Card 1: Pending Balance */}
-          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
+          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
              <div className="bg-primary-50 dark:bg-primary-900/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary-500 transition-colors duration-300">
                 <Wallet size={24} className="text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors duration-300" />
              </div>
@@ -561,7 +561,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           </div>
 
           {/* Card 1b: Total Collected */}
-          <div className="bg-primary-500/80 dark:bg-primary-600/80 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between shadow-xl shadow-primary-200 dark:shadow-primary-900/40 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden border border-primary-400/30">
+          <div className="bg-primary-500/80 dark:bg-primary-600/80 backdrop-blur-md p-5 rounded-[2rem] text-white flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden border border-primary-400/30">
              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
              <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm">
                 <IndianRupee size={24} className="text-white" />
@@ -573,7 +573,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           </div>
 
           {/* Card 2: Active Trips */}
-          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
+          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
              <div className="bg-slate-50 dark:bg-neutral-800 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors duration-300">
                 <Activity size={24} className="text-slate-600 dark:text-neutral-400 group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
              </div>
@@ -587,7 +587,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
           </div>
 
           {/* Card 3: Fleet Status */}
-          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
+          <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[2rem] flex flex-col justify-between border border-slate-200 dark:border-neutral-700 group hover:scale-[1.02] transition-all duration-300">
              <div className="bg-emerald-50 dark:bg-emerald-900/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-500 transition-colors duration-300">
                 <CarIcon size={24} className="text-emerald-600 dark:text-emerald-400 group-hover:text-white transition-colors duration-300" />
              </div>
@@ -602,7 +602,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       </div>
 
       {/* --- Revenue Chart Section --- */}
-      <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-6 rounded-[2rem] shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-neutral-700 animate-scale-in delay-100 transition-colors">
+      <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-6 rounded-[2rem] border border-slate-200 dark:border-neutral-700 animate-scale-in delay-100 transition-colors">
         <div className="flex flex-col gap-4 mb-6">
             <div className="flex justify-between items-center">
                 <h2 className="font-bold text-slate-800 dark:text-white flex items-center gap-2 text-lg">
@@ -692,7 +692,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {upcomingReturns.map(booking => (
-                    <div key={booking.id} className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[1.5rem] border border-slate-200 dark:border-neutral-700 shadow-lg shadow-slate-200/50 dark:shadow-none flex justify-between items-center transition-colors hover:scale-[1.02] duration-300">
+                    <div key={booking.id} className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-5 rounded-[1.5rem] border border-slate-200 dark:border-neutral-700 flex justify-between items-center transition-colors hover:scale-[1.02] duration-300">
                         <div className="flex gap-4 items-center">
                             <div className="bg-slate-50 dark:bg-neutral-800 p-3 rounded-2xl text-slate-500 dark:text-neutral-400">
                                 <CarIcon size={20} />
@@ -731,7 +731,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
             </button>
             <button 
                 onClick={openAddModal}
-                className="bg-slate-900 dark:bg-primary-600 text-white p-3 rounded-2xl shadow-lg shadow-slate-200 dark:shadow-none active:scale-95 transition-transform hover:bg-slate-800 hover:rotate-90 duration-300"
+                className="bg-slate-900 dark:bg-primary-600 text-white p-3 rounded-2xl active:scale-95 transition-transform hover:bg-slate-800 hover:rotate-90 duration-300"
             >
                 <Plus size={24} />
             </button>
@@ -754,7 +754,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
             const delayClass = index === 0 ? 'delay-200' : index === 1 ? 'delay-300' : 'delay-400';
 
             return (
-              <div key={car.id} className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-6 rounded-[2rem] shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-neutral-700 relative overflow-hidden group hover:shadow-xl transition-all duration-300 animate-enter ${delayClass}`}>
+              <div key={car.id} className={`bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md p-6 rounded-[2rem] border border-slate-200 dark:border-neutral-700 relative overflow-hidden group transition-all duration-300 animate-enter ${delayClass}`}>
                 <div className="flex justify-between items-start mb-5">
                   <div className="flex gap-4">
                     <div className="bg-primary-50 dark:bg-primary-900/20 p-1 rounded-2xl h-16 w-16 shrink-0 overflow-hidden flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-105 transition-transform duration-300 border border-primary-100 dark:border-primary-900/50">
@@ -820,7 +820,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                    {needsService && (
                     <button 
                       onClick={() => handleServiceUpdate(car)}
-                      className="flex-1 text-xs bg-emerald-600 text-white py-3 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-emerald-700 transition-colors active:scale-95 shadow-lg shadow-emerald-200 dark:shadow-none"
+                      className="flex-1 text-xs bg-emerald-600 text-white py-3 rounded-xl flex justify-center items-center gap-2 font-bold hover:bg-emerald-700 transition-colors active:scale-95"
                     >
                       <CheckCircle size={16} /> Service Done
                     </button>
@@ -847,7 +847,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       {/* Settings Modal */}
       {showSettings && (
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-              <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md w-full max-w-sm rounded-3xl shadow-2xl animate-scale-in border border-black dark:border-crm-border">
+              <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md w-full max-w-sm rounded-3xl animate-scale-in border border-black dark:border-crm-border">
                   <div className="p-5 border-b border-slate-100 dark:border-neutral-800 flex justify-between items-center">
                       <h3 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
                           <Settings size={20} className="text-blue-500"/> Account
@@ -923,7 +923,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
 
                       <button 
                           onClick={handleSaveSettings}
-                          className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
+                          className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all"
                       >
                           Save Changes
                       </button>
@@ -963,7 +963,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
       {showCarModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] overflow-y-auto animate-fade-in">
           <div className="min-h-full flex items-center justify-center p-4 pb-24">
-            <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md w-full max-w-sm rounded-3xl shadow-2xl animate-scale-in transition-colors border border-black dark:border-neutral-800 relative">
+            <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md w-full max-w-sm rounded-3xl animate-scale-in transition-colors border border-black dark:border-neutral-800 relative">
                 
                 {/* Content Area */}
                 <div className="p-6 space-y-5">
@@ -978,14 +978,14 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                                     <CarIcon size={32} className="text-slate-400 dark:text-neutral-500" />
                                 )}
                             </div>
-                            <label className="absolute bottom-[-10px] right-[-10px] bg-blue-600 text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-colors active:scale-90">
+                            <label className="absolute bottom-[-10px] right-[-10px] bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-colors active:scale-90">
                                 <Upload size={14} />
                                 <input type="file" accept="image/*" className="hidden" onChange={handleCarImageUpload} />
                             </label>
                             {newCar.imageUrl && (
                                 <button 
                                     onClick={() => setNewCar({...newCar, imageUrl: undefined})}
-                                    className="absolute top-[-5px] left-[-5px] bg-red-500 text-white p-1 rounded-full shadow-lg hover:bg-red-600 active:scale-90"
+                                    className="absolute top-[-5px] left-[-5px] bg-red-500 text-white p-1 rounded-full hover:bg-red-600 active:scale-90"
                                 >
                                     <X size={12} />
                                 </button>
@@ -1075,7 +1075,7 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
                 {/* Actions */}
                 <div className="p-4 border-t border-slate-100 dark:border-neutral-800 bg-slate-50/80 dark:bg-black/20 backdrop-blur-sm flex gap-3 rounded-b-3xl">
                 <button onClick={() => setShowCarModal(false)} className="flex-1 p-3.5 text-slate-600 dark:text-neutral-300 font-bold bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 hover:bg-slate-50 dark:hover:bg-neutral-700 rounded-xl transition-colors">Cancel</button>
-                <button onClick={handleSaveCar} className="flex-1 p-3.5 bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-blue-900/20 active:scale-95 transition-all hover:bg-blue-700">
+                <button onClick={handleSaveCar} className="flex-1 p-3.5 bg-blue-600 text-white rounded-xl font-bold active:scale-95 transition-all hover:bg-blue-700">
                     {newCar.id ? 'Update Car' : 'Save Car'}
                 </button>
                 </div>
