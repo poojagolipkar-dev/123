@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Smartphone, Lock, User, Key, Shield, Check, X, Eye, EyeOff, LogOut, AlertCircle, Database, RefreshCw, Link, Save } from 'lucide-react';
+import { Moon, Sun, Smartphone, Lock, User, Key, Shield, Check, X, Eye, EyeOff, LogOut, AlertCircle, Database, RefreshCw, Link, Save, Activity } from 'lucide-react';
 import { updateCredentials, getCredentials, setPin, getPin, removePin, verifyPin, setAppLocked } from '../services/authService';
 import { getSyncSettings, saveSyncSettings, performSync, restoreFromGoogleSheet, SyncSettings } from '../services/syncService';
 
@@ -24,6 +24,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'general' | 'security' | 'sync'>('general');
   const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [refreshRateTrigger, setRefreshRateTrigger] = useState(0);
   
   // Security State
   const [currentPassword, setCurrentPassword] = useState('');
@@ -248,6 +249,47 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                 >
                     <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${autoHideNav ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
+            </div>
+
+            {/* Refresh Rate Selection */}
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-crm-border flex flex-col gap-4 group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                        <Activity size={24} />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-800 dark:text-white text-lg">Refresh Rate</h3>
+                        <p className="text-slate-500 dark:text-neutral-400 text-sm">Adjust frame rate limit for performance</p>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-4 gap-2 bg-slate-50 dark:bg-neutral-900 p-1.5 rounded-xl">
+                    {['auto', '60', '90', '120'].map((rate) => {
+                        const currentRate = localStorage.getItem('preferredRefreshRate') || 'auto';
+                        const isActive = currentRate === rate;
+                        return (
+                            <button
+                                key={rate}
+                                onClick={() => {
+                                    localStorage.setItem('preferredRefreshRate', rate);
+                                    window.dispatchEvent(new Event('refreshRateChanged'));
+                                    // Force re-render
+                                    setActiveTab('general'); 
+                                    // Small hack to force update without adding state just for this if we want to keep it simple, 
+                                    // but better to use state. Let's assume we add state in the component.
+                                    setRefreshRateTrigger(prev => prev + 1);
+                                }}
+                                className={`py-2 rounded-lg text-xs font-bold transition-all ${
+                                    isActive 
+                                    ? 'bg-white dark:bg-neutral-700 text-purple-600 dark:text-white shadow-sm' 
+                                    : 'text-slate-500 dark:text-neutral-500 hover:text-slate-700 dark:hover:text-neutral-300'
+                                }`}
+                            >
+                                {rate === 'auto' ? 'Auto' : `${rate}Hz`}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
         </div>
       )}

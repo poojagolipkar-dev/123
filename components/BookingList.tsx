@@ -3,7 +3,7 @@ import { Booking, BookingStatus, Car } from '../types';
 import { Download, Search, Edit3, CheckCircle, Calendar, X, MapPin, Filter, CarFront, ChevronDown, User, Upload, FileText, Eye, MessageCircle, Trash2, FileEdit } from 'lucide-react';
 import { saveBooking } from '../services/storageService';
 import * as XLSX from 'xlsx';
-import { generateInvoicePDF, viewInvoicePDF, sendInvoiceWhatsApp } from '../services/invoiceService';
+import { generateInvoicePDF, viewInvoicePDF, sendInvoiceWhatsApp, generateBookingReportPDF } from '../services/invoiceService';
 
 interface BookingListProps {
   bookings: Booking[];
@@ -409,7 +409,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 onClick={() => {
                     if (filteredBookings.length === 0) return;
                     // Pass all filtered bookings and the full cars list to the generator
-                    generateInvoicePDF(filteredBookings, cars);
+                    generateBookingReportPDF(filteredBookings, cars);
                 }}
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-200 dark:shadow-none active:scale-95 transition-transform hover:bg-red-700 whitespace-nowrap"
             >

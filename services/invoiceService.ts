@@ -119,6 +119,111 @@ export const generateInvoicePDF = (booking: Booking | Booking[], car: Car | Car[
   }
 };
 
+export const generateBookingReportPDF = (bookings: Booking[], cars: Car[]) => {
+  const doc = new jsPDF('l', 'mm', 'a3'); // Landscape A3 for maximum width
+
+  const tableColumn = [
+    "Booking ID", "Status", "Booking Created At", "Vehicle Name", "Plate Number", "Car ID",
+    "GPS Location", "Address", "Start Date", "Start Time", "End Date", "End Time",
+    "Total Days", "Total Time", "Checkout KM", "Checkin KM", "Total KM",
+    "Full Name", "Mobile", "Email",
+    "Aadhar Card ID", "PAN Card ID", "Driving License ID", "Light Bill ID", "Gas Bill ID", "Rent Agreement ID", "Passport ID", "Other Docs ID",
+    "House Type", "Fastag Recharge", "Fastag Amount", "Advance Payment", "Security Deposit", "Gross Total", "Total Paid", "Net Balance", "Remarks"
+  ];
+
+  const tableRows: any[] = [];
+
+  bookings.forEach(booking => {
+    const car = cars.find(c => c.id === booking.carId);
+    const bookingData = [
+      booking.id,
+      booking.status,
+      new Date(booking.createdAt).toLocaleString(),
+      car ? car.name : 'Unknown',
+      car ? car.plateNumber : 'Unknown',
+      booking.carId,
+      booking.gpsLocation || '',
+      booking.address || '',
+      booking.startDate,
+      booking.startTime,
+      booking.endDate,
+      booking.endTime,
+      booking.totalDays,
+      booking.totalTime || '',
+      booking.checkoutKm,
+      booking.checkinKm,
+      booking.totalKmTravelled,
+      booking.fullName,
+      booking.mobile,
+      booking.email || '',
+      booking.aadharCardId || '',
+      booking.panCardId || '',
+      booking.drivingLicenseId || '',
+      booking.lightBillId || '',
+      booking.gasBillId || '',
+      booking.rentAgreementId || '',
+      booking.passportId || '',
+      booking.otherDocsId || '',
+      booking.houseType || '',
+      booking.fastagRecharge || '',
+      booking.fastagRechargeAmount || 0,
+      booking.advancePayment || 0,
+      booking.securityDeposit || 0,
+      booking.grossTotal || 0,
+      booking.totalPaid || 0,
+      booking.netBalance || 0,
+      booking.remarks || ''
+    ];
+    tableRows.push(bookingData);
+  });
+
+  doc.setFontSize(18);
+  doc.setTextColor(40);
+  doc.text("All Bookings Report", 14, 15);
+  
+  doc.setFontSize(10);
+  doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+  doc.text(`Total Records: ${bookings.length}`, 14, 27);
+
+  autoTable(doc, {
+    startY: 35,
+    head: [tableColumn],
+    body: tableRows,
+    theme: 'grid',
+    styles: { 
+        fontSize: 7, 
+        cellPadding: 2, 
+        overflow: 'linebreak',
+        halign: 'left',
+        valign: 'middle'
+    },
+    headStyles: { 
+        fillColor: [41, 128, 185], 
+        textColor: 255, 
+        fontSize: 7, 
+        fontStyle: 'bold',
+        halign: 'center'
+    },
+    columnStyles: {
+      0: { cellWidth: 15 }, // ID
+      1: { cellWidth: 15 }, // Status
+      2: { cellWidth: 20 }, // Created At
+      7: { cellWidth: 25 }, // Address
+      36: { cellWidth: 25 } // Remarks
+    },
+    didDrawPage: (data) => {
+        // Footer
+        const str = 'Page ' + (doc as any).internal.getNumberOfPages();
+        doc.setFontSize(8);
+        const pageSize = doc.internal.pageSize;
+        const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+        doc.text(str, data.settings.margin.left, pageHeight - 10);
+    }
+  });
+
+  doc.save(`All_Bookings_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+};
+
 export const viewInvoicePDF = (booking: Booking, car: Car) => {
   const doc = new jsPDF();
 
