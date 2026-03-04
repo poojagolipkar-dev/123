@@ -50,6 +50,8 @@ const App: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartPos = useRef({ x: 0, y: 0 });
   const navStartPos = useRef({ x: 0, y: 0 });
+  const navRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
   const idleTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Idle Timer Logic
@@ -68,7 +70,8 @@ const App: React.FC = () => {
     };
 
     const events = ['mousedown', 'mousemove', 'touchstart', 'touchmove', 'scroll', 'click', 'keydown'];
-    events.forEach(e => window.addEventListener(e, resetIdle));
+    // Use passive listeners for better scroll performance
+    events.forEach(e => window.addEventListener(e, resetIdle, { passive: true }));
     
     resetIdle();
 
@@ -76,18 +79,21 @@ const App: React.FC = () => {
         events.forEach(e => window.removeEventListener(e, resetIdle));
         if (idleTimer.current) clearTimeout(idleTimer.current);
     };
-  }, []);
+  }, [autoHideNav]);
 
   // Drag Logic
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    // Only allow dragging from the handle or specific area if needed
-    // For now, we attach this to the container or a handle
     setIsDragging(true);
     const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     
     dragStartPos.current = { x: clientX, y: clientY };
     navStartPos.current = { ...navPosition };
+    
+    // Disable transition during drag for instant response
+    if (navRef.current) {
+        navRef.current.style.transition = 'none';
+    }
   };
 
   const handleDragMove = (e: any) => {
@@ -97,39 +103,56 @@ const App: React.FC = () => {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     
-    const dx = clientX - dragStartPos.current.x;
-    const dy = clientY - dragStartPos.current.y;
-    
-    let newX = navStartPos.current.x + dx;
-    let newY = navStartPos.current.y + dy;
-    
-    // Boundary checks (keep fully on screen)
-    // Assuming nav width approx 300px, height 60px. 
-    // We can refine this by using ref to get actual dimensions.
-    const navEl = document.getElementById('floating-nav');
-    const width = navEl ? navEl.offsetWidth : 300;
-    const height = navEl ? navEl.offsetHeight : 60;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-    const maxX = window.innerWidth - width;
-    const maxY = window.innerHeight - height;
-    
-    newX = Math.max(0, Math.min(maxX, newX));
-    newY = Math.max(0, Math.min(maxY, newY));
+    rafRef.current = requestAnimationFrame(() => {
+        const dx = clientX - dragStartPos.current.x;
+        const dy = clientY - dragStartPos.current.y;
+        
+        let newX = navStartPos.current.x + dx;
+        let newY = navStartPos.current.y + dy;
+        
+        const navEl = navRef.current;
+        const width = navEl ? navEl.offsetWidth : 300;
+        const height = navEl ? navEl.offsetHeight : 60;
 
-    setNavPosition({ x: newX, y: newY });
+        const maxX = window.innerWidth - width;
+        const maxY = window.innerHeight - height;
+        
+        newX = Math.max(0, Math.min(maxX, newX));
+        newY = Math.max(0, Math.min(maxY, newY));
+
+        // Direct DOM update for 120Hz smoothness
+        if (navEl) {
+            navEl.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+        }
+        
+        // Store for state update on end
+        navStartPos.current = { x: newX, y: newY }; // Temporarily store current pos
+    });
   };
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    
+    // Update React state to persist position
+    setNavPosition(navStartPos.current);
+    
+    // Re-enable transition
+    if (navRef.current) {
+        navRef.current.style.transition = '';
+        navRef.current.style.transform = ''; // Clear inline transform so state takes over via style prop or class
+    }
   };
 
   // Keep nav on screen on resize
   useEffect(() => {
     const handleResize = () => {
         setNavPosition((prev: { x: number; y: number }) => {
-            const navEl = document.getElementById('floating-nav');
-            const width = navEl ? navEl.offsetWidth : 300; // Fallback width
-            const height = navEl ? navEl.offsetHeight : 60; // Fallback height
+            const navEl = navRef.current;
+            const width = navEl ? navEl.offsetWidth : 300; 
+            const height = navEl ? navEl.offsetHeight : 60; 
             
             const maxX = window.innerWidth - width;
             const maxY = window.innerHeight - height;
@@ -141,7 +164,7 @@ const App: React.FC = () => {
         });
     };
     
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -153,7 +176,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (isDragging) {
-        window.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mousemove', handleDragMove, { passive: false });
         window.addEventListener('mouseup', handleDragEnd);
         window.addEventListener('touchmove', handleDragMove, { passive: false });
         window.addEventListener('touchend', handleDragEnd);
@@ -168,6 +191,7 @@ const App: React.FC = () => {
         window.removeEventListener('mouseup', handleDragEnd);
         window.removeEventListener('touchmove', handleDragMove);
         window.removeEventListener('touchend', handleDragEnd);
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [isDragging]);
 
@@ -707,10 +731,10 @@ const App: React.FC = () => {
           {/* Floating Movable Navigation Bar */}
           <div 
             id="floating-nav"
+            ref={navRef}
             className={`md:hidden fixed z-[999] transition-all duration-500 ease-in-out ${!showBottomNav || (isNavIdle && !isDragging) ? 'opacity-0 scale-90 translate-y-10 pointer-events-none' : 'opacity-100 scale-100 translate-y-0 pointer-events-auto'}`}
             style={{ 
-                left: navPosition.x, 
-                top: navPosition.y,
+                transform: `translate3d(${navPosition.x}px, ${navPosition.y}px, 0)`,
                 touchAction: 'none' 
             }}
           >

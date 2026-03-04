@@ -21,7 +21,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
   const [searchQuery, setSearchQuery] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredBookings = bookings.filter(b => {
+  const filteredBookings = React.useMemo(() => bookings.filter(b => {
     // Status Filter
     if (filterStatus && b.status !== filterStatus) return false;
     
@@ -46,7 +46,7 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
     }
 
     return true;
-  });
+  }), [bookings, filterStatus, dateRange, selectedCarId, searchQuery, cars]);
 
   const getCarName = (id: string) => {
     const car = cars.find(c => c.id === id);
@@ -407,10 +407,9 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
             </button>
             <button 
                 onClick={() => {
-                    filteredBookings.forEach(booking => {
-                        const car = cars.find(c => c.id === booking.carId);
-                        if (car) generateInvoicePDF(booking, car);
-                    });
+                    if (filteredBookings.length === 0) return;
+                    // Pass all filtered bookings and the full cars list to the generator
+                    generateInvoicePDF(filteredBookings, cars);
                 }}
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-200 dark:shadow-none active:scale-95 transition-transform hover:bg-red-700 whitespace-nowrap"
             >
@@ -447,7 +446,13 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                    {/* Avatar */}
                    <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-black/20 overflow-hidden shrink-0 border-2 border-[#D6F527] shadow-sm">
                       {booking.clientPhoto ? (
-                          <img src={booking.clientPhoto} alt={booking.fullName} className="w-full h-full object-cover" />
+                          <img 
+                            src={booking.clientPhoto} 
+                            alt={booking.fullName} 
+                            className="w-full h-full object-cover" 
+                            loading="lazy"
+                            decoding="async"
+                          />
                       ) : (
                           <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-neutral-500">
                              <User size={20} />
