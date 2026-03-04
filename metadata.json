@@ -1,6 +1,6 @@
 {
-  "name": "Shree Self Driving CRM",
-  "description": "A premium mobile-sized CRM for car rental management including booking, fleet tracking, and revenue analytics.",
+  "name": "Shree",
+  "description": "A premium CRM for Shree, featuring booking management, fleet tracking, and analytics.",
   "requestFramePermissions": [
     "camera",
     "geolocation"

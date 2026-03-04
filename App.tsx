@@ -475,8 +475,8 @@ const App: React.FC = () => {
                   <span className="text-white font-black text-sm">S</span>
                 </div>
                 <div>
-                  <h1 className="font-bold text-slate-800 dark:text-white tracking-tight text-sm leading-none font-display">SHREE SELF DRIVING</h1>
-                  <p className="text-[8px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</p>
+                  <h1 className="font-bold text-slate-800 dark:text-white tracking-tight text-sm leading-none font-display">SHREE</h1>
+                  <p className="text-[8px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">SELF DRIVING SERVICE</p>
                 </div>
               </div>
               <button 
@@ -544,8 +544,8 @@ const App: React.FC = () => {
                 <span className="text-white font-black text-[10px]">S</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-white tracking-tight text-sm leading-none font-display">SHREE SELF DRIVING</span>
-                <span className="text-[8px] font-black text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</span>
+                <span className="font-bold text-white tracking-tight text-sm leading-none font-display">SHREE</span>
+                <span className="text-[8px] font-black text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">SELF DRIVING SERVICE</span>
               </div>
             </div>
             <div className="w-10" /> {/* Spacer for balance */}

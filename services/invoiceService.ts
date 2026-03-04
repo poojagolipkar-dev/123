@@ -19,7 +19,7 @@ export const generateInvoicePDF = (booking: Booking, car: Car) => {
   // --- Company Info (Right Side) ---
   doc.setFontSize(12);
   doc.setTextColor(0);
-  doc.text("Shree Self Driving Cars", 195, 30, { align: "right" });
+  doc.text("Shree", 195, 30, { align: "right" });
   doc.setFontSize(10);
   doc.setTextColor(100);
   doc.text("123, Main Street, Mumbai", 195, 35, { align: "right" });
@@ -97,7 +97,7 @@ export const generateInvoicePDF = (booking: Booking, car: Car) => {
   const footerY = (doc as any).lastAutoTable.finalY + 20;
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text("Thank you for choosing Shree Self Driving Cars!", 105, footerY, { align: "center" });
+  doc.text("Thank you for choosing Shree!", 105, footerY, { align: "center" });
   doc.text("For any queries, please contact support.", 105, footerY + 5, { align: "center" });
 
   // Save the PDF
@@ -121,7 +121,7 @@ export const viewInvoicePDF = (booking: Booking, car: Car) => {
   // --- Company Info (Right Side) ---
   doc.setFontSize(12);
   doc.setTextColor(0);
-  doc.text("Shree Self Driving Cars", 195, 30, { align: "right" });
+  doc.text("Shree", 195, 30, { align: "right" });
   doc.setFontSize(10);
   doc.setTextColor(100);
   doc.text("123, Main Street, Mumbai", 195, 35, { align: "right" });
@@ -199,7 +199,7 @@ export const viewInvoicePDF = (booking: Booking, car: Car) => {
   const footerY = (doc as any).lastAutoTable.finalY + 20;
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text("Thank you for choosing Shree Self Driving Cars!", 105, footerY, { align: "center" });
+  doc.text("Thank you for choosing Shree!", 105, footerY, { align: "center" });
   doc.text("For any queries, please contact support.", 105, footerY + 5, { align: "center" });
 
   // Open PDF in new tab
@@ -229,7 +229,7 @@ Gross Total: Rs. ${booking.grossTotal || 0}
 Paid: Rs. ${booking.totalPaid || 0}
 *Net Balance: Rs. ${booking.netBalance || 0}*
 
-Thank you for choosing Shree Self Driving Cars! 🙏`;
+Thank you for choosing Shree! 🙏`;
 };
 
 export const sendInvoiceWhatsApp = (booking: Booking, car: Car) => {

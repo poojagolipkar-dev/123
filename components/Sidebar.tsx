@@ -22,8 +22,8 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, currentView, onViewChange, 
       <div className="p-6 flex items-center gap-3">
         <Logo size="md" />
         <div>
-          <h1 className="font-bold text-slate-900 dark:text-white tracking-tight leading-none text-lg font-display">SHREE SELF DRIVING</h1>
-          <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</p>
+          <h1 className="font-bold text-slate-900 dark:text-white tracking-tight leading-none text-lg font-display">SHREE</h1>
+          <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mt-1 font-sans opacity-80">SELF DRIVING SERVICE</p>
         </div>
       </div>
 

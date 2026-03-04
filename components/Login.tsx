@@ -32,8 +32,16 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     try {
       // Simulate biometric authentication
       // In a real app, this would use WebAuthn
+      setIsSending(true);
+      setError('');
+      
+      // Simulate scanning delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setIsSending(false);
       onLogin();
     } catch (err) {
+      setIsSending(false);
       console.error('Biometric error:', err);
       setError('Biometric authentication failed');
     }
@@ -162,13 +170,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                     <button 
                         type="button"
                         onClick={handleBiometricLogin}
-                        className="flex items-center gap-3 px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded-2xl border border-blue-500/20 transition-all active:scale-95 group w-full justify-center"
+                        disabled={isSending}
+                        className="flex items-center gap-3 px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded-2xl border border-blue-500/20 transition-all active:scale-95 group w-full justify-center disabled:opacity-70"
                     >
-                        <div className="flex items-center gap-2">
-                            <Fingerprint size={20} className="group-hover:scale-110 transition-transform" />
-                            <Smartphone size={16} className="group-hover:scale-110 transition-transform" />
-                        </div>
-                        <span className="font-bold text-sm">Biometric Unlock</span>
+                        {isSending ? (
+                            <div className="w-5 h-5 border-2 border-blue-600/30 border-t-blue-600 rounded-full animate-spin"></div>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <Fingerprint size={20} className="group-hover:scale-110 transition-transform" />
+                                <Smartphone size={16} className="group-hover:scale-110 transition-transform" />
+                            </div>
+                        )}
+                        <span className="font-bold text-sm">{isSending ? 'Verifying...' : 'Biometric Unlock'}</span>
                     </button>
                 </div>
              </form>
