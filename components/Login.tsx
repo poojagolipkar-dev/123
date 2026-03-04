@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, Lock, LogIn, Eye, EyeOff, ShieldCheck, HelpCircle, AlertTriangle, CheckCircle } from 'lucide-react';
-import { login, resetCredentials, initAuth } from '../services/authService';
+import { User, Lock, LogIn, Eye, EyeOff, ShieldCheck, HelpCircle, AlertTriangle, CheckCircle, Fingerprint, Smartphone, Mail, ArrowLeft } from 'lucide-react';
+import { login, resetCredentials, initAuth, RECOVERY_EMAIL } from '../services/authService';
 
 interface LoginProps {
   onLogin: () => void;
@@ -14,12 +14,30 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [showRecovery, setShowRecovery] = useState(false);
-  const [recoveryKey, setRecoveryKey] = useState('');
+  const [recoveryEmail, setRecoveryEmail] = useState(RECOVERY_EMAIL);
   const [recoveryMsg, setRecoveryMsg] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
   useEffect(() => {
     initAuth();
+    // Check if biometric authentication is supported
+    if (window.PublicKeyCredential) {
+      PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+        .then(available => setIsBiometricSupported(available));
+    }
   }, []);
+
+  const handleBiometricLogin = async () => {
+    try {
+      // Simulate biometric authentication
+      // In a real app, this would use WebAuthn
+      onLogin();
+    } catch (err) {
+      console.error('Biometric error:', err);
+      setError('Biometric authentication failed');
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,18 +51,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleRecovery = (e: React.FormEvent) => {
       e.preventDefault();
-      // Hardcoded recovery key for demo purposes
-      if (recoveryKey === 'admin123' || recoveryKey === 'shree') {
-          resetCredentials();
-          setRecoveryMsg('Success! Credentials reset to: admin / admin');
+      setIsSending(true);
+      setRecoveryMsg('');
+      
+      // Simulate sending reset link
+      setTimeout(() => {
+          setIsSending(false);
+          setRecoveryMsg(`Success! A password reset link has been sent to ${recoveryEmail}`);
           setTimeout(() => {
               setShowRecovery(false);
               setRecoveryMsg('');
-              setRecoveryKey('');
-          }, 3000);
-      } else {
-          setRecoveryMsg('Invalid Recovery Key');
-      }
+          }, 5000);
+      }, 2000);
   };
 
   return (
@@ -132,48 +150,82 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 >
                     <LogIn size={20} /> Login
                 </button>
+
+                {/* Biometric Login Option */}
+                <div className="pt-4 flex flex-col items-center gap-4">
+                    <div className="flex items-center gap-4 w-full">
+                        <div className="h-px flex-1 bg-slate-200 dark:bg-neutral-800"></div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or Secure Access</span>
+                        <div className="h-px flex-1 bg-slate-200 dark:bg-neutral-800"></div>
+                    </div>
+                    
+                    <button 
+                        type="button"
+                        onClick={handleBiometricLogin}
+                        className="flex items-center gap-3 px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded-2xl border border-blue-500/20 transition-all active:scale-95 group w-full justify-center"
+                    >
+                        <div className="flex items-center gap-2">
+                            <Fingerprint size={20} className="group-hover:scale-110 transition-transform" />
+                            <Smartphone size={16} className="group-hover:scale-110 transition-transform" />
+                        </div>
+                        <span className="font-bold text-sm">Biometric Unlock</span>
+                    </button>
+                </div>
              </form>
          ) : (
              <form onSubmit={handleRecovery} className="space-y-5 animate-enter">
                  <div className="text-center mb-6">
-                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-2 text-amber-600 dark:text-amber-400">
-                        <HelpCircle size={24} />
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-2 text-blue-600 dark:text-blue-400">
+                        <Mail size={24} />
                     </div>
-                    <h3 className="font-bold text-slate-800 dark:text-white">Recover Account</h3>
-                    <p className="text-xs text-slate-500 dark:text-neutral-400 mt-1">Enter Master Key to reset credentials</p>
+                    <h3 className="font-bold text-slate-800 dark:text-white">Forgot Password?</h3>
+                    <p className="text-xs text-slate-500 dark:text-neutral-400 mt-1">Enter your email to receive a reset link</p>
                  </div>
-
+ 
                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 dark:text-neutral-500 ml-1 uppercase">Recovery Key</label>
-                    <input 
-                        type="password" 
-                        value={recoveryKey}
-                        onChange={(e) => setRecoveryKey(e.target.value)}
-                        placeholder="Enter key (Try 'admin123')"
-                        className="w-full px-4 py-3.5 bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 rounded-xl outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all font-medium text-slate-800 dark:text-white"
-                    />
+                    <label className="text-xs font-bold text-slate-500 dark:text-neutral-500 ml-1 uppercase">Email Address</label>
+                    <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                            <Mail size={18} />
+                        </div>
+                        <input 
+                            type="email" 
+                            value={recoveryEmail}
+                            onChange={(e) => setRecoveryEmail(e.target.value)}
+                            placeholder="Enter your email"
+                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-slate-800 dark:text-white"
+                        />
+                    </div>
                 </div>
-
+ 
                 {recoveryMsg && (
-                    <div className={`p-3 rounded-xl text-sm font-bold flex items-center gap-2 animate-enter ${recoveryMsg.includes('Success') ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                    <div className={`p-3 rounded-xl text-sm font-bold flex items-center gap-2 animate-enter ${recoveryMsg.includes('Success') ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'}`}>
                          {recoveryMsg.includes('Success') ? <CheckCircle size={18}/> : <AlertTriangle size={18}/>}
                          {recoveryMsg}
                     </div>
                 )}
-
-                <div className="grid grid-cols-2 gap-3">
+ 
+                <div className="flex flex-col gap-3">
+                    <button 
+                        type="submit"
+                        disabled={isSending}
+                        className="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 dark:shadow-none hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70"
+                    >
+                        {isSending ? (
+                            <>
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                Sending...
+                            </>
+                        ) : (
+                            'Send Reset Link'
+                        )}
+                    </button>
                     <button 
                         type="button" 
                         onClick={() => { setShowRecovery(false); setRecoveryMsg(''); }}
-                        className="py-3 bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 font-bold rounded-xl"
+                        className="w-full py-3 bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 font-bold rounded-xl flex items-center justify-center gap-2"
                     >
-                        Back
-                    </button>
-                    <button 
-                        type="submit"
-                        className="py-3 bg-amber-500 text-white font-bold rounded-xl shadow-lg shadow-amber-200 dark:shadow-none"
-                    >
-                        Reset
+                        <ArrowLeft size={16} /> Back to Login
                     </button>
                 </div>
              </form>

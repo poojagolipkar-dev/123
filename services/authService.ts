@@ -1,6 +1,8 @@
 
 const CREDENTIALS_KEY = 'shree_crm_credentials';
 const SESSION_KEY = 'shree_crm_session';
+export const RECOVERY_EMAIL = 'shreeselfdriving@gmail.com';
+const RECOVERY_KEY = 'SHREE-RECOVER-2026'; // Hardcoded recovery key for the CRM
 
 // Initialize with default credentials if none exist
 export const initAuth = () => {
@@ -87,4 +89,8 @@ export const updateCredentials = (u: string, p: string) => {
 export const resetCredentials = () => {
     const defaultCreds = { username: 'admin', password: 'admin' };
     localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(defaultCreds));
+};
+
+export const verifyRecoveryKey = (key: string): boolean => {
+    return key.toUpperCase() === RECOVERY_KEY;
 };
