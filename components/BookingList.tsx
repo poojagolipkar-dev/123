@@ -406,6 +406,17 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                 <Download size={14} /> Export CSV
             </button>
             <button 
+                onClick={() => {
+                    filteredBookings.forEach(booking => {
+                        const car = cars.find(c => c.id === booking.carId);
+                        if (car) generateInvoicePDF(booking, car);
+                    });
+                }}
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-200 dark:shadow-none active:scale-95 transition-transform hover:bg-red-700 whitespace-nowrap"
+            >
+                <FileText size={14} /> Export PDF
+            </button>
+            <button 
                 onClick={handleExportXLSX}
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-200 dark:shadow-none active:scale-95 transition-transform hover:bg-blue-700 whitespace-nowrap"
             >
@@ -549,6 +560,16 @@ const BookingList: React.FC<BookingListProps> = ({ bookings, cars, filterStatus,
                         <>
                              <button onClick={() => onEdit(booking)} className="p-2.5 bg-white dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 rounded-full hover:bg-slate-50 dark:hover:bg-neutral-700 hover:shadow hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-110 shadow-sm border border-black/5">
                                 <Edit3 size={18} />
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    const car = cars.find(c => c.id === booking.carId);
+                                    if (car) generateInvoicePDF(booking, car);
+                                }}
+                                className="p-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-500 hover:text-white transition-all hover:scale-110 shadow-sm border border-blue-200/50 flex items-center justify-center"
+                                title="Download Invoice"
+                            >
+                                <FileText size={18} />
                             </button>
                             <button onClick={() => onComplete(booking)} className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full hover:bg-emerald-500 hover:text-white hover:shadow-lg hover:shadow-emerald-200 dark:hover:shadow-none transition-all hover:scale-110 shadow-sm border border-emerald-200/50">
                                 <CheckCircle size={18} />

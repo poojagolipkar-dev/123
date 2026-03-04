@@ -3,6 +3,8 @@
   "description": "A premium CRM for Shree, featuring booking management, fleet tracking, and analytics.",
   "requestFramePermissions": [
     "camera",
-    "geolocation"
+    "geolocation",
+    "publickey-credentials-create",
+    "publickey-credentials-get"
   ]
 }

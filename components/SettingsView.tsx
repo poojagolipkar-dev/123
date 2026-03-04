@@ -266,35 +266,34 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                             <p className="text-slate-500 dark:text-neutral-400 text-sm">Secure the app with a PIN code</p>
                         </div>
                     </div>
-                    {hasPin ? (
-                        <button 
-                            onClick={handleRemovePin}
-                            className="px-6 py-2.5 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-red-500/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
-                        >
-                            <Shield size={16} />
-                            Disable Lock
-                        </button>
-                    ) : (
-                        <button 
-                            onClick={() => setIsSettingPin(!isSettingPin)}
-                            className={`px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 ${isSettingPin ? 'bg-slate-100 text-slate-600 dark:bg-neutral-700 dark:text-neutral-300' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-blue-500/30'}`}
-                        >
-                            {isSettingPin ? (
-                                <>
-                                    <X size={16} /> Cancel
-                                </>
-                            ) : (
-                                <>
-                                    <Shield size={16} /> Setup PIN
-                                </>
-                            )}
-                        </button>
-                    )}
+                    
+                    {/* Toggle Switch for App Lock */}
+                    <button 
+                        onClick={() => {
+                            if (hasPin) {
+                                handleRemovePin();
+                            } else {
+                                setIsSettingPin(true);
+                            }
+                        }}
+                        className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out ${hasPin ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-neutral-700'}`}
+                    >
+                        <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${hasPin ? 'translate-x-6' : 'translate-x-0'}`} />
+                    </button>
                 </div>
 
                 {isSettingPin && !hasPin && (
-                    <form onSubmit={handlePinSubmit} className="bg-slate-50 dark:bg-neutral-900/50 p-4 rounded-xl border border-slate-200 dark:border-neutral-700 animate-fade-in">
-                        <h4 className="font-bold text-slate-700 dark:text-neutral-300 mb-4 text-sm uppercase tracking-wider">Set New PIN</h4>
+                    <form onSubmit={handlePinSubmit} className="bg-slate-50 dark:bg-neutral-900/50 p-4 rounded-xl border border-slate-200 dark:border-neutral-700 animate-fade-in mt-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <h4 className="font-bold text-slate-700 dark:text-neutral-300 text-sm uppercase tracking-wider">Set New PIN</h4>
+                            <button 
+                                type="button"
+                                onClick={() => setIsSettingPin(false)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-neutral-300"
+                            >
+                                <X size={16} />
+                            </button>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-bold text-slate-500 mb-1">Enter PIN</label>
@@ -305,6 +304,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                                     onChange={(e) => setLocalPin(e.target.value.replace(/\D/g, ''))}
                                     className="w-full p-3 bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-mono text-center tracking-widest text-lg"
                                     placeholder="••••"
+                                    autoFocus
                                 />
                             </div>
                             <div>
