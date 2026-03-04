@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Unlock, Delete, AlertCircle, Mail, Key, ArrowLeft, CheckCircle, Fingerprint, Smartphone, LogOut, Eye, EyeOff } from 'lucide-react';
-import { verifyPin, getPin, RECOVERY_EMAIL, verifyRecoveryKey, removePin, verifyPassword } from '../services/authService';
+import { verifyPin, getPin, RECOVERY_EMAIL, verifyRecoveryKey, removePin, verifyPassword, authenticateWithBiometrics } from '../services/authService';
 
 interface LockScreenProps {
   onUnlock: () => void;
@@ -47,11 +47,15 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
       setIsSending(true);
       setError('');
       
-      // Simulate biometric scanning delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const success = await authenticateWithBiometrics();
       
       setIsSending(false);
-      onUnlock();
+      
+      if (success) {
+        onUnlock();
+      } else {
+        setError('Biometric authentication failed or cancelled');
+      }
     } catch (err) {
       setIsSending(false);
       setError('Biometric authentication failed');

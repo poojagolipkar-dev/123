@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, Lock, LogIn, Eye, EyeOff, ShieldCheck, HelpCircle, AlertTriangle, CheckCircle, Fingerprint, Smartphone, Mail, ArrowLeft } from 'lucide-react';
-import { login, resetCredentials, initAuth, RECOVERY_EMAIL } from '../services/authService';
+import { login, resetCredentials, initAuth, RECOVERY_EMAIL, authenticateWithBiometrics } from '../services/authService';
 
 interface LoginProps {
   onLogin: () => void;
@@ -30,16 +30,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleBiometricLogin = async () => {
     try {
-      // Simulate biometric authentication
-      // In a real app, this would use WebAuthn
       setIsSending(true);
       setError('');
       
-      // Simulate scanning delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const success = await authenticateWithBiometrics();
       
       setIsSending(false);
-      onLogin();
+      
+      if (success) {
+        onLogin();
+      } else {
+        setError('Biometric authentication failed or cancelled');
+      }
     } catch (err) {
       setIsSending(false);
       console.error('Biometric error:', err);

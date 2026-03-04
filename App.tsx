@@ -16,7 +16,10 @@ import { getSyncSettings, performSync } from './services/syncService';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+  const [isLocked, setIsLocked] = useState(() => {
+      // Initialize directly to prevent flash of content
+      return isAppLocked() && !!getPin();
+  });
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [showBottomNav, setShowBottomNav] = useState(false);
   const [autoHideNav, setAutoHideNav] = useState(() => {
@@ -415,7 +418,11 @@ const App: React.FC = () => {
           <>
             {/* Pass theme for consistent look even on login, though logic is inside App */}
             <div className={darkMode ? 'dark' : ''}>
-                <Login onLogin={() => setIsLoggedIn(true)} />
+                <Login onLogin={() => {
+                    setIsLoggedIn(true);
+                    setIsLocked(false);
+                    setAppLocked(false);
+                }} />
             </div>
           </>
       );
