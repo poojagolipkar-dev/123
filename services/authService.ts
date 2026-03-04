@@ -94,3 +94,8 @@ export const resetCredentials = () => {
 export const verifyRecoveryKey = (key: string): boolean => {
     return key.toUpperCase() === RECOVERY_KEY;
 };
+
+export const verifyPassword = (password: string): boolean => {
+    const creds = getCredentials();
+    return creds.password === password;
+};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Unlock, Delete, AlertCircle, Mail, Key, ArrowLeft, CheckCircle } from 'lucide-react';
-import { verifyPin, getPin, RECOVERY_EMAIL, verifyRecoveryKey, removePin } from '../services/authService';
+import { Lock, Unlock, Delete, AlertCircle, Mail, Key, ArrowLeft, CheckCircle, Fingerprint, Smartphone, LogOut, Eye, EyeOff } from 'lucide-react';
+import { verifyPin, getPin, RECOVERY_EMAIL, verifyRecoveryKey, removePin, verifyPassword } from '../services/authService';
 
 interface LockScreenProps {
   onUnlock: () => void;
@@ -14,6 +14,9 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
   
   // Recovery State
   const [isRecovering, setIsRecovering] = useState(false);
+  const [isUsingPassword, setIsUsingPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [recoveryKey, setRecoveryKey] = useState('');
   const [recoveryStep, setRecoveryStep] = useState<'request' | 'verify' | 'success'>('request');
 
@@ -30,6 +33,30 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
   };
 
   const [isSending, setIsSending] = useState(false);
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    if (window.PublicKeyCredential) {
+      PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+        .then(available => setIsBiometricSupported(available));
+    }
+  }, []);
+
+  const handleBiometricUnlock = async () => {
+    try {
+      setIsSending(true);
+      setError('');
+      
+      // Simulate biometric scanning delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setIsSending(false);
+      onUnlock();
+    } catch (err) {
+      setIsSending(false);
+      setError('Biometric authentication failed');
+    }
+  };
 
   const handleRequestRecovery = () => {
     // Simulate sending email with a small delay
@@ -66,6 +93,18 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
     }
   };
 
+  const handlePasswordUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (verifyPassword(password)) {
+        onUnlock();
+    } else {
+        setError('Incorrect Password');
+        setShake(true);
+        setTimeout(() => setShake(false), 500);
+        setPassword('');
+    }
+  };
+
   useEffect(() => {
     if (pin.length === 4) {
       handleUnlock();
@@ -82,19 +121,52 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
             </div>
             
             <h2 className="text-2xl font-bold text-white mb-2">App Locked</h2>
-            <p className="text-slate-400 text-sm mb-8 text-center">Enter your 4-digit PIN to unlock</p>
+            <p className="text-slate-400 text-sm mb-8 text-center">
+                {isUsingPassword ? 'Enter your password to unlock' : 'Enter your 4-digit PIN to unlock'}
+            </p>
 
-            {/* PIN Dots */}
-            <div className={`flex gap-4 mb-8 ${shake ? 'animate-shake' : ''}`}>
-              {[0, 1, 2, 3].map((i) => (
-                <div 
-                  key={i} 
-                  className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                    pin.length > i ? 'bg-blue-500 scale-110' : 'bg-slate-700'
-                  }`}
-                />
-              ))}
-            </div>
+            {/* PIN Dots or Password Input */}
+            {!isUsingPassword ? (
+                <div className={`flex gap-4 mb-8 ${shake ? 'animate-shake' : ''}`}>
+                {[0, 1, 2, 3].map((i) => (
+                    <div 
+                    key={i} 
+                    className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                        pin.length > i ? 'bg-blue-500 scale-110' : 'bg-slate-700'
+                    }`}
+                    />
+                ))}
+                </div>
+            ) : (
+                <form onSubmit={handlePasswordUnlock} className="w-full mb-8 space-y-4 animate-enter">
+                    <div className="relative group">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                            <Key size={20} />
+                        </div>
+                        <input 
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter Password"
+                            autoFocus
+                            className="w-full pl-12 pr-12 py-4 bg-slate-800 border border-slate-700 rounded-2xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-bold text-white text-center"
+                        />
+                        <button 
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                    </div>
+                    <button 
+                        type="submit"
+                        className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+                    >
+                        Unlock with Password
+                    </button>
+                </form>
+            )}
 
             {error && (
               <div className="text-red-500 text-sm font-medium mb-4 flex items-center gap-2 animate-pulse">
@@ -102,35 +174,71 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock, onLogout }) => {
               </div>
             )}
 
-            {/* Keypad */}
-            <div className="grid grid-cols-3 gap-4 w-full mb-8">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                <button
-                  key={num}
-                  onClick={() => handleNumberClick(num)}
-                  className="h-16 rounded-full bg-slate-800/50 text-white text-2xl font-medium hover:bg-slate-700 active:scale-95 transition-all border border-slate-700/50"
+            {/* Biometric Option */}
+            {isBiometricSupported && (
+                <button 
+                    onClick={handleBiometricUnlock}
+                    disabled={isSending}
+                    className="mb-6 flex items-center gap-2 px-4 py-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-xl border border-blue-500/20 transition-all active:scale-95 disabled:opacity-50"
                 >
-                  {num}
+                    {isSending ? (
+                        <div className="w-4 h-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin"></div>
+                    ) : (
+                        <Fingerprint size={18} />
+                    )}
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                        {isSending ? 'Verifying...' : 'Biometric Unlock'}
+                    </span>
                 </button>
-              ))}
-              <button 
-                onClick={() => setIsRecovering(true)}
-                className="h-16 rounded-full text-xs font-bold text-slate-500 hover:text-white transition-colors flex flex-col items-center justify-center"
-              >
-                FORGOT?
-              </button>
-              <button
-                onClick={() => handleNumberClick(0)}
-                className="h-16 rounded-full bg-slate-800/50 text-white text-2xl font-medium hover:bg-slate-700 active:scale-95 transition-all border border-slate-700/50"
-              >
-                0
-              </button>
-              <button
-                onClick={handleBackspace}
-                className="h-16 rounded-full text-slate-400 hover:text-white hover:bg-slate-800/30 transition-colors flex items-center justify-center active:scale-95"
-              >
-                <Delete size={24} />
-              </button>
+            )}
+
+            {/* Keypad or Switch Option */}
+            {!isUsingPassword ? (
+                <div className="grid grid-cols-3 gap-4 w-full mb-8">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                    <button
+                    key={num}
+                    onClick={() => handleNumberClick(num)}
+                    className="h-16 rounded-full bg-slate-800/50 text-white text-2xl font-medium hover:bg-slate-700 active:scale-95 transition-all border border-slate-700/50"
+                    >
+                    {num}
+                    </button>
+                ))}
+                <button 
+                    onClick={() => setIsRecovering(true)}
+                    className="h-16 rounded-full text-xs font-bold text-slate-500 hover:text-white transition-colors flex flex-col items-center justify-center"
+                >
+                    FORGOT?
+                </button>
+                <button
+                    onClick={() => handleNumberClick(0)}
+                    className="h-16 rounded-full bg-slate-800/50 text-white text-2xl font-medium hover:bg-slate-700 active:scale-95 transition-all border border-slate-700/50"
+                    >
+                    0
+                </button>
+                <button
+                    onClick={handleBackspace}
+                    className="h-16 rounded-full text-slate-400 hover:text-white hover:bg-slate-800/30 transition-colors flex items-center justify-center active:scale-95"
+                >
+                    <Delete size={24} />
+                </button>
+                </div>
+            ) : null}
+
+            <div className="flex flex-col gap-3 items-center w-full">
+                <button 
+                    onClick={() => setIsUsingPassword(!isUsingPassword)}
+                    className="text-blue-400 hover:text-blue-300 transition-colors text-xs font-bold uppercase tracking-widest"
+                >
+                    {isUsingPassword ? 'Use PIN Code' : 'Use Password'}
+                </button>
+                
+                <button 
+                    onClick={onLogout}
+                    className="flex items-center gap-2 text-slate-500 hover:text-red-400 transition-colors text-xs font-bold uppercase tracking-widest mt-2"
+                >
+                    <LogOut size={14} /> Switch Account / Logout
+                </button>
             </div>
           </>
         ) : (

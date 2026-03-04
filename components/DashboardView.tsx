@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Car, Booking, BookingStatus, Notification } from '../types';
-import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check, Gauge, Wrench, Clock, Download } from 'lucide-react';
+import { Plus, Folder, AlertTriangle, CheckCircle, Car as CarIcon, TrendingUp, Edit, Trash2, Wallet, Activity, CalendarClock, ArrowUpRight, Zap, Filter, IndianRupee, Moon, Sun, Upload, X, FileText, User, Settings, LogOut, Key, Shield, Eye, EyeOff, Smartphone, Bell, Check, Gauge, Wrench, Clock, Download, Lock } from 'lucide-react';
 import { logout, updateCredentials, getCredentials, setPin, removePin, getPin } from '../services/authService';
 import { resetAllOdometers } from '../services/storageService';
 import * as XLSX from 'xlsx';
@@ -15,12 +15,13 @@ interface DashboardProps {
   onUpdateCar: (car: Car) => void;
   onDeleteCar: (id: string) => void;
   onLogout: () => void;
+  onLock: () => void;
   notifications?: Notification[];
   onMarkAllRead?: () => void;
   onClearNotifications?: () => void;
 }
 
-const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, toggleTheme, onAddCar, onUpdateCar, onDeleteCar, onLogout, notifications = [], onMarkAllRead, onClearNotifications }) => {
+const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, toggleTheme, onAddCar, onUpdateCar, onDeleteCar, onLogout, onLock, notifications = [], onMarkAllRead, onClearNotifications }) => {
   const [revenueType, setRevenueType] = useState<'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom'>('monthly');
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
   const [revenueCarId, setRevenueCarId] = useState<string>('');
@@ -533,10 +534,11 @@ const DashboardView: React.FC<DashboardProps> = ({ cars, bookings, darkMode, tog
             </div>
 
             <button 
-                onClick={openSettings}
-                className="w-10 h-10 rounded-full bg-slate-900 dark:bg-white border border-transparent flex items-center justify-center text-white dark:text-slate-900 hover:scale-105 active:scale-95 transition-all"
+                onClick={onLock}
+                className="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 border border-transparent flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all shadow-lg shadow-red-500/20"
+                title="Lock App"
             >
-                <User size={20} />
+                <Lock size={20} />
             </button>
             <button 
                 onClick={toggleTheme}

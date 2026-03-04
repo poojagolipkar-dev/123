@@ -421,29 +421,10 @@ const App: React.FC = () => {
       );
   }
 
-  if (isLocked) {
-      return (
-          <div className={darkMode ? 'dark' : ''}>
-            <LockScreen 
-                onUnlock={() => {
-                    setIsLocked(false);
-                    setAppLocked(false);
-                }} 
-                onLogout={() => {
-                    logout();
-                    setIsLoggedIn(false);
-                    setIsLocked(false);
-                    setAppLocked(false);
-                }}
-            />
-          </div>
-      );
-  }
-
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden transition-colors duration-500 bg-[#1E1E1E] dark:bg-black">
       {/* App Container - Full Screen */}
-      <div className="w-full h-full flex relative overflow-hidden">
+      <div className={`w-full h-full flex relative overflow-hidden ${isLocked ? 'blur-md pointer-events-none' : ''}`}>
         
         {/* Left Sidebar - Visible on Desktop */}
         <Sidebar 
@@ -475,8 +456,8 @@ const App: React.FC = () => {
                   <span className="text-white font-black text-sm">S</span>
                 </div>
                 <div>
-                  <h1 className="font-bold text-slate-800 dark:text-white tracking-tight text-sm leading-none font-display">SHREE</h1>
-                  <p className="text-[8px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">SELF DRIVING SERVICE</p>
+                  <h1 className="font-bold text-slate-800 dark:text-white tracking-tight text-sm leading-none font-display">SHREE SELF DRIVING</h1>
+                  <p className="text-[8px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</p>
                 </div>
               </div>
               <button 
@@ -544,8 +525,8 @@ const App: React.FC = () => {
                 <span className="text-white font-black text-[10px]">S</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-white tracking-tight text-sm leading-none font-display">SHREE</span>
-                <span className="text-[8px] font-black text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">SELF DRIVING SERVICE</span>
+                <span className="font-bold text-white tracking-tight text-sm leading-none font-display">SHREE SELF DRIVING</span>
+                <span className="text-[8px] font-black text-blue-400 uppercase tracking-[0.15em] mt-1 font-sans opacity-80">& CAR RENTAL SERVICE</span>
               </div>
             </div>
             <div className="w-10" /> {/* Spacer for balance */}
@@ -564,6 +545,10 @@ const App: React.FC = () => {
                 onLogout={() => {
                     logout();
                     setIsLoggedIn(false);
+                }}
+                onLock={() => {
+                    setIsLocked(true);
+                    setAppLocked(true);
                 }}
                 notifications={notifications}
                 onMarkAllRead={handleMarkAllRead}
@@ -761,6 +746,24 @@ const App: React.FC = () => {
         </main>
 
       </div>
+
+      {/* App Lock Overlay */}
+      {isLocked && (
+          <div className={darkMode ? 'dark' : ''}>
+            <LockScreen 
+                onUnlock={() => {
+                    setIsLocked(false);
+                    setAppLocked(false);
+                }} 
+                onLogout={() => {
+                    logout();
+                    setIsLoggedIn(false);
+                    setIsLocked(false);
+                    setAppLocked(false);
+                }}
+            />
+          </div>
+      )}
     </div>
   );
 };
